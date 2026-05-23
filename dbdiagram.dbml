@@ -1,0 +1,364 @@
+// Billing v3 — PostgreSQL schema for EF Core + CQRS
+// Stack: MediatR (CQRS), FluentValidation, Gridify (list/filter/sort), Dapper optional for heavy transaction I/O
+// No PostgreSQL CRUD functions — queries/commands live in the .NET application layer.
+
+Project billing_v3 {
+  database_type: 'PostgreSQL'
+  Note: '''
+    Persistence:
+      - master entities: EF Core DbContext + typed aggregates
+      - transaction entities (optional): Dapper when volume/complex SQL warrants it
+    CQRS:
+      - Queries: Gridify over IQueryable or projected read DTOs; allowed fields from app_entity_field
+      - Commands: MediatR handlers + FluentValidation (not app_entity_rule)
+    UI metadata:
+      - app_entity_screen* drives React grid/form layout per menu
+    Business tables (masters/transactions) include audit columns:
+      created_at, updated_at, created_by, updated_by,
+      is_enabled, is_active, is_deleted, deleted_at
+  '''
+}
+
+Enum app_role_code {
+  admin
+  user
+  anon
+}
+
+Enum endpoint_access_mode {
+  public
+  authenticated
+  anon
+}
+
+Enum app_entity_kind {
+  master
+  transaction
+}
+
+Enum app_entity_persist_mode {
+  ef_core
+  dapper
+}
+
+Enum app_field_data_type {
+  text
+  boolean
+  integer
+  bigint
+  numeric
+  timestamptz
+  uuid
+  date
+}
+
+Enum app_entity_column_align {
+  left
+  center
+  right
+}
+
+Enum app_entity_format_hint {
+  text
+  number
+  currency
+  percent
+  date
+  datetime
+  boolean
+  badge
+  textarea
+}
+
+// ---------------------------------------------------------------------------
+// Auth
+// ---------------------------------------------------------------------------
+
+Table app_role {
+  role_id int [pk, increment]
+  role_code varchar [not null, unique, note: 'admin | user | anon']
+  display_name varchar [not null]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int
+  updated_by int
+}
+
+Table app_user {
+  user_id int [pk, increment]
+  email varchar [not null, note: 'unique on lower(trim(email)) in DDL']
+  password_hash varchar [not null]
+  role_id int [not null, ref: > app_role.role_id]
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table refresh_token {
+  refresh_token_id int [pk, increment]
+  user_id int [not null, ref: > app_user.user_id]
+  token_sha256_hex varchar [not null, note: 'unique while revoked_at IS NULL']
+  expires_at timestamptz [not null]
+  created_at timestamptz [not null, default: `now()`]
+  revoked_at timestamptz
+  replaced_by_id int [ref: > refresh_token.refresh_token_id]
+}
+
+// ---------------------------------------------------------------------------
+// Menus + endpoint authorization
+// ---------------------------------------------------------------------------
+
+Table app_menu {
+  menu_id int [pk, increment]
+  menu_code varchar [not null, unique]
+  display_name varchar [not null]
+  route_path varchar [not null, unique]
+  icon varchar
+  parent_menu_id int [ref: > app_menu.menu_id]
+  sort_order int [not null, default: 0]
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table app_role_menu {
+  role_id int [not null, ref: > app_role.role_id]
+  menu_id int [not null, ref: > app_menu.menu_id]
+  is_enabled boolean [not null, default: true]
+  is_displayed boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+
+  indexes {
+    (role_id, menu_id) [pk]
+  }
+}
+
+Table app_endpoint {
+  endpoint_id int [pk, increment]
+  endpoint_code varchar [not null, unique, note: 'Maps to MediatR request or minimal API route']
+  http_method varchar [not null, default: '*']
+  route_pattern varchar [not null]
+  menu_id int [ref: > app_menu.menu_id]
+  access_mode endpoint_access_mode [not null, default: 'authenticated']
+  description varchar
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table app_role_endpoint {
+  role_id int [not null, ref: > app_role.role_id]
+  endpoint_id int [not null, ref: > app_endpoint.endpoint_id]
+  is_enabled boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+
+  indexes {
+    (role_id, endpoint_id) [pk]
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Entity registry (API + Gridify contract + UI metadata)
+// Validation rules: FluentValidation in code — not stored in DB
+// ---------------------------------------------------------------------------
+
+Table app_entity {
+  entity_id int [pk, increment]
+  entity_name varchar [not null, unique, note: 'API code e.g. product — maps to CQRS feature name']
+  entity_kind app_entity_kind [not null]
+  persist_mode app_entity_persist_mode [not null, default: 'ef_core', note: 'dapper for optional transaction hot path']
+  table_name varchar [not null, unique, note: 'Physical PostgreSQL table; EF maps via entity type']
+  display_name varchar [not null]
+  description varchar
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table app_entity_field {
+  entity_field_id int [pk, increment]
+  entity_id int [not null, ref: > app_entity.entity_id]
+  field_name varchar [not null, note: 'Property/column name for Gridify + DTO mapping']
+  data_type app_field_data_type [not null]
+  filterable boolean [not null, default: true, note: 'Gridify: allow filter on this field']
+  sortable boolean [not null, default: true, note: 'Gridify: allow sort on this field']
+  selectable boolean [not null, default: true, note: 'Query projection whitelist']
+  writable boolean [not null, default: false, note: 'Command DTO / upsert whitelist']
+  is_required boolean [not null, default: false, note: 'UI hint only; enforce in FluentValidation']
+  min_length int [note: 'UI hint only']
+  max_length int [note: 'UI hint only']
+  validation_regex varchar [note: 'UI hint only']
+  default_value varchar
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (entity_id, field_name) [unique]
+  }
+}
+
+Table app_entity_dependency {
+  entity_dependency_id int [pk, increment]
+  parent_entity_id int [not null, ref: > app_entity.entity_id]
+  child_entity_id int [not null, ref: > app_entity.entity_id]
+  child_fk_column varchar [not null, note: 'Checked in delete command handler before soft delete']
+  created_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (parent_entity_id, child_entity_id) [unique]
+  }
+}
+
+// ---------------------------------------------------------------------------
+// UI screen layout (one menu = one React route: grid + form)
+// ---------------------------------------------------------------------------
+
+Table app_entity_screen {
+  entity_screen_id int [pk, increment]
+  entity_id int [not null, ref: > app_entity.entity_id]
+  menu_id int [not null, ref: > app_menu.menu_id, note: 'One menu: table + inline edit form']
+  description varchar
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+
+  indexes {
+    (menu_id) [unique]
+    (entity_id, menu_id) [unique]
+  }
+}
+
+Table app_entity_screen_column {
+  entity_screen_column_id int [pk, increment]
+  entity_screen_id int [not null, ref: > app_entity_screen.entity_screen_id]
+  entity_field_id int [not null, ref: > app_entity_field.entity_field_id]
+  display_label varchar
+  is_visible boolean [not null, default: true]
+  display_order int [not null, default: 0]
+  column_width int
+  min_width int
+  is_pinned boolean [not null, default: false]
+  align app_entity_column_align [not null, default: 'left']
+  format_hint app_entity_format_hint
+  allow_sort boolean [note: 'NULL = inherit app_entity_field.sortable']
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (entity_screen_id, entity_field_id) [unique]
+  }
+}
+
+Table app_entity_screen_field {
+  entity_screen_field_id int [pk, increment]
+  entity_screen_id int [not null, ref: > app_entity_screen.entity_screen_id]
+  entity_field_id int [not null, ref: > app_entity_field.entity_field_id]
+  display_label varchar
+  is_visible boolean [not null, default: true]
+  display_order int [not null, default: 0]
+  format_hint app_entity_format_hint
+  is_read_only boolean [not null, default: false]
+  is_active boolean [not null, default: true]
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+
+  indexes {
+    (entity_screen_id, entity_field_id) [unique]
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Business masters
+// ---------------------------------------------------------------------------
+
+Table name_board {
+  name_board_id int [pk, increment]
+  name varchar [not null]
+  code varchar [not null, unique]
+  owner_name varchar [not null]
+  owner_phone varchar
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table truck {
+  truck_id int [pk, increment]
+  truck_number varchar [not null, unique]
+  name_board_id int [not null, ref: > name_board.name_board_id]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table driver {
+  driver_id int [pk, increment]
+  name varchar [not null]
+  mobile varchar [not null]
+  truck_id int [not null, ref: > truck.truck_id]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+TableGroup auth {
+  app_role
+  app_user
+  refresh_token
+}
+
+TableGroup access_control {
+  app_menu
+  app_role_menu
+  app_endpoint
+  app_role_endpoint
+}
+
+TableGroup app_entity_registry {
+  app_entity
+  app_entity_field
+  app_entity_dependency
+}
+
+TableGroup app_entity_ui {
+  app_entity_screen
+  app_entity_screen_column
+  app_entity_screen_field
+}
+
+TableGroup business_masters {
+  name_board
+  truck
+  driver
+}

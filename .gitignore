@@ -1,0 +1,24 @@
+## Build / IDE
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+.vs/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+## .NET
+project.lock.json
+artifacts/
+
+## Docker / local
+.containers/
+
+## Graphify cache (regenerate locally)
+graphify-out/cache/
+
+## Secrets
+appsettings.*.local.json
+**/secrets.json

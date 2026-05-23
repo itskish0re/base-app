@@ -1,0 +1,40 @@
+using System.Data;
+using Application.Abstractions.Data;
+using Domain.Masters;
+using Domain.Registry;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage;
+
+namespace Infrastructure.Persistence;
+
+public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
+    : DbContext(options), IUnitOfWork
+{
+    public DbSet<NameBoard> NameBoards => Set<NameBoard>();
+
+    public DbSet<Truck> Trucks => Set<Truck>();
+
+    public DbSet<Driver> Drivers => Set<Driver>();
+
+    public DbSet<AppEntity> AppEntities => Set<AppEntity>();
+
+    public DbSet<AppEntityField> AppEntityFields => Set<AppEntityField>();
+
+    public DbSet<AppEntityDependency> AppEntityDependencies => Set<AppEntityDependency>();
+
+    public DbSet<AppEntityScreen> AppEntityScreens => Set<AppEntityScreen>();
+
+    public DbSet<AppEntityScreenColumn> AppEntityScreenColumns => Set<AppEntityScreenColumn>();
+
+    public DbSet<AppEntityScreenField> AppEntityScreenFields => Set<AppEntityScreenField>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        modelBuilder.HasDefaultSchema("public");
+        modelBuilder.ApplyConfigurationsFromAssembly(typeof(BillingDbContext).Assembly);
+        base.OnModelCreating(modelBuilder);
+    }
+
+    public async Task<IDbTransaction> BeginTransactionAsync() =>
+        (await Database.BeginTransactionAsync()).GetDbTransaction();
+}
