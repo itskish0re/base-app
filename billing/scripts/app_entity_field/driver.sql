@@ -3,7 +3,7 @@
 INSERT INTO app_entity_field (
     entity_id,
     field_name,
-    data_type,
+    field_data_type_id,
     filterable,
     sortable,
     selectable,
@@ -16,7 +16,7 @@ INSERT INTO app_entity_field (
 SELECT
     e.entity_id,
     v.field_name,
-    v.data_type,
+    t.field_data_type_id,
     v.filterable,
     v.sortable,
     v.selectable,
@@ -41,11 +41,12 @@ CROSS JOIN (
         ('updated_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
         ('created_by', 'integer', false, false, true, false, false, NULL::int, NULL::int),
         ('updated_by', 'integer', false, false, true, false, false, NULL::int, NULL::int)
-) AS v(field_name, data_type, filterable, sortable, selectable, writable, is_required, min_length, max_length)
+) AS v(field_name, type_code, filterable, sortable, selectable, writable, is_required, min_length, max_length)
+INNER JOIN app_field_data_type t ON t.type_code = v.type_code
 WHERE e.entity_name = 'driver'
 ON CONFLICT (entity_id, field_name) DO UPDATE
 SET
-    data_type = EXCLUDED.data_type,
+    field_data_type_id = EXCLUDED.field_data_type_id,
     filterable = EXCLUDED.filterable,
     sortable = EXCLUDED.sortable,
     selectable = EXCLUDED.selectable,

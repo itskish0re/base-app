@@ -17,6 +17,8 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
 
     public DbSet<Driver> Drivers => Set<Driver>();
 
+    public DbSet<AppFieldDataType> AppFieldDataTypes => Set<AppFieldDataType>();
+
     public DbSet<AppEntity> AppEntities => Set<AppEntity>();
 
     public DbSet<AppEntityField> AppEntityFields => Set<AppEntityField>();

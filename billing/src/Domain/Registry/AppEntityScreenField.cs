@@ -14,7 +14,7 @@ public sealed class AppEntityScreenField
 
     public int DisplayOrder { get; set; }
 
-    public string? FormatHint { get; set; }
+    public string? FieldComponent { get; set; }
 
     public bool IsReadOnly { get; set; }
 

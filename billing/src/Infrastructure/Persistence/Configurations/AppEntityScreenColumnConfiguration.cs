@@ -20,7 +20,7 @@ internal sealed class AppEntityScreenColumnConfiguration : IEntityTypeConfigurat
         builder.Property(x => x.MinWidth).HasColumnName("min_width");
         builder.Property(x => x.IsPinned).HasColumnName("is_pinned");
         builder.Property(x => x.Align).HasColumnName("align").HasMaxLength(16);
-        builder.Property(x => x.FormatHint).HasColumnName("format_hint").HasMaxLength(32);
+        builder.Property(x => x.ColumnComponent).HasColumnName("column_component").HasMaxLength(64);
         builder.Property(x => x.AllowSort).HasColumnName("allow_sort");
         builder.Property(x => x.IsActive).HasColumnName("is_active");
         builder.Property(x => x.CreatedAt).HasColumnName("created_at");

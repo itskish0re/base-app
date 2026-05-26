@@ -13,7 +13,7 @@ internal sealed class AppEntityFieldConfiguration : IEntityTypeConfiguration<App
         builder.Property(x => x.EntityFieldId).HasColumnName("entity_field_id");
         builder.Property(x => x.EntityId).HasColumnName("entity_id");
         builder.Property(x => x.FieldName).HasColumnName("field_name").HasMaxLength(128);
-        builder.Property(x => x.DataType).HasColumnName("data_type").HasMaxLength(32);
+        builder.Property(x => x.FieldDataTypeId).HasColumnName("field_data_type_id");
         builder.Property(x => x.Filterable).HasColumnName("filterable");
         builder.Property(x => x.Sortable).HasColumnName("sortable");
         builder.Property(x => x.Selectable).HasColumnName("selectable");
@@ -27,5 +27,9 @@ internal sealed class AppEntityFieldConfiguration : IEntityTypeConfiguration<App
         builder.Property(x => x.UpdatedAt).HasColumnName("updated_at");
         builder.HasIndex(x => new { x.EntityId, x.FieldName }).IsUnique();
         builder.HasOne(x => x.Entity).WithMany(x => x.Fields).HasForeignKey(x => x.EntityId);
+        builder.HasOne(x => x.FieldDataType)
+            .WithMany(x => x.EntityFields)
+            .HasForeignKey(x => x.FieldDataTypeId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

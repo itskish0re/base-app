@@ -16,7 +16,7 @@ internal sealed class AppEntityScreenFieldConfiguration : IEntityTypeConfigurati
         builder.Property(x => x.DisplayLabel).HasColumnName("display_label");
         builder.Property(x => x.IsVisible).HasColumnName("is_visible");
         builder.Property(x => x.DisplayOrder).HasColumnName("display_order");
-        builder.Property(x => x.FormatHint).HasColumnName("format_hint").HasMaxLength(32);
+        builder.Property(x => x.FieldComponent).HasColumnName("field_component").HasMaxLength(64);
         builder.Property(x => x.IsReadOnly).HasColumnName("is_read_only");
         builder.Property(x => x.IsActive).HasColumnName("is_active");
         builder.Property(x => x.CreatedAt).HasColumnName("created_at");

@@ -12,7 +12,8 @@ VALUES
     ('auth.login', 'POST', '/api/auth/login', 'public', 'Sign in', true, NOW()),
     ('auth.refresh', 'POST', '/api/auth/refresh', 'public', 'Refresh access token', true, NOW()),
     ('auth.revoke', 'POST', '/api/auth/revoke', 'authenticated', 'Revoke refresh tokens', true, NOW()),
-    ('access.navigation', 'GET', '/api/access/navigation', 'authenticated', 'Sidebar navigation for role', true, NOW())
+    ('access.navigation', 'GET', '/api/access/navigation', 'authenticated', 'Sidebar navigation for role', true, NOW()),
+    ('screens.get-by-menu', 'GET', '/api/screens/by-menu/{menuCode}', 'authenticated', 'Screen metadata for grid and form UI', true, NOW())
 ON CONFLICT (endpoint_code) DO UPDATE
 SET
     http_method = EXCLUDED.http_method,

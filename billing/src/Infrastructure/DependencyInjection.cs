@@ -59,6 +59,7 @@ public static class DependencyInjection
         services.AddScoped<ITruckRepository, TruckRepository>();
         services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
+        services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();
 
         services.AddDbContext<BillingDbContext>(options =>

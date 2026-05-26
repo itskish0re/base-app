@@ -22,7 +22,7 @@ public sealed class AppEntityScreenColumn
 
     public string Align { get; set; } = "left";
 
-    public string? FormatHint { get; set; }
+    public string? ColumnComponent { get; set; }
 
     public bool? AllowSort { get; set; }
 

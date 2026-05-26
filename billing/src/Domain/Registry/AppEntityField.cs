@@ -8,7 +8,7 @@ public sealed class AppEntityField
 
     public string FieldName { get; set; } = null!;
 
-    public string DataType { get; set; } = null!;
+    public int FieldDataTypeId { get; set; }
 
     public bool Filterable { get; set; } = true;
 
@@ -33,4 +33,6 @@ public sealed class AppEntityField
     public DateTime UpdatedAt { get; set; }
 
     public AppEntity Entity { get; set; } = null!;
+
+    public AppFieldDataType FieldDataType { get; set; } = null!;
 }
