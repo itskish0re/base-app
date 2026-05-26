@@ -1,11 +1,5 @@
-import {
-  createAsyncThunk,
-  createSelector,
-  createSlice,
-  type PayloadAction,
-} from '@reduxjs/toolkit';
+import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { MENU_LOAD_STATUS, type MenuLoadStatus } from '@/constants/menuLoadStatus';
-import { fetchNavigationMenus } from '@/service/api/functions/access';
 import { clearAuth } from '@/store/authSlice';
 import { partitionNavigationMenus } from '@/lib/navigationTree';
 import type { NavigationMenu } from '@/types/access';
@@ -40,22 +34,25 @@ export function findMenuForPath(
     });
 }
 
-export const fetchMenus = createAsyncThunk(
-  'menu/fetchMenus',
-  async (_, { rejectWithValue }) => {
-    try {
-      return await fetchNavigationMenus();
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'Failed to load menus';
-      return rejectWithValue(message);
-    }
-  },
-);
-
 const menuSlice = createSlice({
   name: 'menu',
   initialState,
   reducers: {
+    setMenusLoading(state) {
+      state.status = MENU_LOAD_STATUS.loading;
+      state.error = null;
+    },
+    setMenusSucceeded(state, action: PayloadAction<NavigationMenu[]>) {
+      state.status = MENU_LOAD_STATUS.succeeded;
+      state.menus = action.payload;
+      state.error = null;
+      state.currentMenu =
+        findMenuForPath(action.payload, window.location.pathname) ?? null;
+    },
+    setMenusFailed(state, action: PayloadAction<string>) {
+      state.status = MENU_LOAD_STATUS.failed;
+      state.error = action.payload;
+    },
     setCurrentMenuFromPath(state, action: PayloadAction<string>) {
       state.currentMenu = findMenuForPath(state.menus, action.payload) ?? null;
     },
@@ -65,26 +62,18 @@ const menuSlice = createSlice({
     resetMenuState: () => initialState,
   },
   extraReducers: (builder) => {
-    builder
-      .addCase(fetchMenus.pending, (state) => {
-        state.status = MENU_LOAD_STATUS.loading;
-        state.error = null;
-      })
-      .addCase(fetchMenus.fulfilled, (state, action) => {
-        state.status = MENU_LOAD_STATUS.succeeded;
-        state.menus = action.payload.menus;
-        state.currentMenu =
-          findMenuForPath(action.payload.menus, window.location.pathname) ?? null;
-      })
-      .addCase(fetchMenus.rejected, (state, action) => {
-        state.status = MENU_LOAD_STATUS.failed;
-        state.error = (action.payload as string) ?? action.error.message ?? 'Failed to load menus';
-      })
-      .addCase(clearAuth, () => initialState);
+    builder.addCase(clearAuth, () => initialState);
   },
 });
 
-export const { setCurrentMenuFromPath, setCurrentMenu, resetMenuState } = menuSlice.actions;
+export const {
+  setMenusLoading,
+  setMenusSucceeded,
+  setMenusFailed,
+  setCurrentMenuFromPath,
+  setCurrentMenu,
+  resetMenuState,
+} = menuSlice.actions;
 export const menuReducer = menuSlice.reducer;
 
 const selectMenuState = (state: { menu: MenuState }) => state.menu;
@@ -100,7 +89,7 @@ export const selectCurrentMenuCode = createSelector(
 
 export const selectCurrentMenuTitle = createSelector(
   selectCurrentMenu,
-  (_menu) => _menu?.displayName ?? 'Billing',
+  (menu) => menu?.displayName ?? 'Billing',
 );
 
 export const selectMenuLoadStatus = createSelector(selectMenuState, (menu) => menu.status);

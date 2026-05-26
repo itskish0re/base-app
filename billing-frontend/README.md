@@ -30,6 +30,15 @@ pnpm dev
 
 Open [http://localhost:5173](http://localhost:5173). Unauthenticated users are sent to `/login`.
 
+### Environment variables
+
+| Variable | Description |
+|----------|-------------|
+| `VITE_API_BASE_URL` | API base URL; leave empty in dev to use the Vite proxy |
+| `VITE_ENABLE_QUERY_DEVTOOLS` | `true` to show [TanStack Query Devtools](https://tanstack.com/query/latest/docs/framework/react/devtools); use `false` for production |
+
+`.env` lives in this folder next to `package.json`. Restart `pnpm dev` after changes.
+
 ## Auth flow
 
 1. `POST /api/auth/login` → stores access + refresh tokens (Redux + `localStorage`).
@@ -72,7 +81,7 @@ Re-apply the Claude theme from [tweakcn](https://tweakcn.com/editor/theme?theme=
 | **`store/screens/`** | One slice file per screen (`nameBoardsSlice.ts`, …). | Grid filter, selection, draft UI state for that screen. |
 | **`hooks/useScreenSlice.ts`** | Injects/removes a screen reducer on mount/unmount. | Top of each page in `pages/…/index.tsx`. |
 | **`hooks/`** | Shared hooks (`useMenuBootstrap`, `useScreenSlice`, …). | Used by 2+ pages / shell. |
-| **`store/menuSlice.ts`** | Sidebar menus + `currentMenu` (always mounted). | Navigation data, header title, `menuCode` for screen API. |
+| **`store/menuSlice.ts`** | Sidebar menus + `currentMenu` (hydrated from query). | UI state; fetch via `navigationQueryOptions`. |
 | **`lib/`** | Pure helpers (JWT, utils, navigation tree). | Non-React utilities. |
 | **`types/`** | Entity DTOs (`nameBoard.ts`, `truck.ts`, …), `common.ts`, barrel `index.ts`. | API request/response shapes. |
 
@@ -144,3 +153,5 @@ export function NameBoardsPage() {
 Add a new screen: create `store/screens/<name>Slice.ts`, register in `store/screens/registry.ts` and `store/screenKeys.ts`, call `useScreenSlice` in the page `index.tsx`.
 
 Use **TanStack Query** for server/list data; use **screen slices** for UI-only state (filters, selection, panel open, draft form).
+
+Navigation menus: `service/query/access.ts` → `navigationQueryOptions()` → `useMenuBootstrap` dispatches into `menuSlice`.

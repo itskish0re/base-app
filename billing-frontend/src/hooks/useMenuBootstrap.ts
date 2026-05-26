@@ -1,27 +1,58 @@
 import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useRouterState } from '@tanstack/react-router';
+import { navigationQueryOptions } from '@/service/query/access';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { MENU_LOAD_STATUS } from '@/constants/menuLoadStatus';
-import { fetchMenus, setCurrentMenuFromPath } from '@/store/menuSlice';
+import {
+  setCurrentMenuFromPath,
+  setMenusFailed,
+  setMenusLoading,
+  setMenusSucceeded,
+} from '@/store/menuSlice';
+
+function getErrorMessage(error: unknown): string {
+  return error instanceof Error ? error.message : 'Failed to load menus';
+}
 
 /**
- * Loads navigation menus into Redux when authenticated and keeps currentMenu in sync with the URL.
+ * Fetches navigation via service/query, hydrates menu slice, and syncs currentMenu to the URL.
  */
 export function useMenuBootstrap(): void {
   const dispatch = useAppDispatch();
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const isAuthenticated = useAppSelector((s) => s.auth.isAuthenticated);
-  const status = useAppSelector((s) => s.menu.status);
+
+  const navigationQuery = useQuery(
+    navigationQueryOptions({ enabled: isAuthenticated }),
+  );
 
   useEffect(() => {
     if (!isAuthenticated) {
       return;
     }
 
-    if (status === MENU_LOAD_STATUS.idle || status === MENU_LOAD_STATUS.failed) {
-      void dispatch(fetchMenus());
+    if (navigationQuery.isPending) {
+      dispatch(setMenusLoading());
+      return;
     }
-  }, [dispatch, isAuthenticated, status]);
+
+    if (navigationQuery.isError) {
+      dispatch(setMenusFailed(getErrorMessage(navigationQuery.error)));
+      return;
+    }
+
+    if (navigationQuery.isSuccess && navigationQuery.data) {
+      dispatch(setMenusSucceeded(navigationQuery.data.menus));
+    }
+  }, [
+    dispatch,
+    isAuthenticated,
+    navigationQuery.isPending,
+    navigationQuery.isError,
+    navigationQuery.isSuccess,
+    navigationQuery.data,
+    navigationQuery.error,
+  ]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -29,5 +60,5 @@ export function useMenuBootstrap(): void {
     }
 
     dispatch(setCurrentMenuFromPath(pathname));
-  }, [dispatch, isAuthenticated, pathname, status]);
+  }, [dispatch, isAuthenticated, pathname]);
 }
