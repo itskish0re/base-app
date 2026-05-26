@@ -1,6 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
-export function PlaceholderPage({
+export function PagePlaceholder({
   title,
   description,
 }: {
@@ -15,7 +15,7 @@ export function PlaceholderPage({
       </CardHeader>
       <CardContent>
         <p className="text-sm text-muted-foreground">
-          This screen is a placeholder. Master grid and forms will be implemented here.
+          This screen is a placeholder. Grid and form will be added in this page folder.
         </p>
       </CardContent>
     </Card>

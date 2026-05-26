@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { LoginPage } from '@/features/auth/LoginPage';
+import { LoginPage } from '@/pages/login';
 import { DASHBOARD_ROUTE } from '@/lib/routes';
 import { store } from '@/store/store';
 

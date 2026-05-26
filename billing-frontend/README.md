@@ -50,14 +50,49 @@ pnpm dlx shadcn@latest add table dialog
 
 Re-apply the Claude theme from [tweakcn](https://tweakcn.com/editor/theme?theme=claude) via **Code** export into `src/index.css` if you regenerate variables.
 
-## Project layout
+## Project layout (`src/`)
+
+| Folder / file | Purpose | Put new code here when… |
+|---------------|---------|-------------------------|
+| **`main.tsx`** | App entry: TanStack Router + root mount. | Rarely touched. |
+| **`routeTree.gen.ts`** | Generated routes (do not edit). | — |
+| **`index.css`** | Global / theme CSS. | Theme tokens only. |
+| **`app/`** | Global providers (`Providers.tsx`: Redux + React Query). | New global provider. |
+| **`routes/`** | URLs, guards, redirects only — import pages from `pages/`. | New route or `beforeLoad` auth. |
+| **`pages/`** | **One folder per screen** with `index.tsx` as the page entry. Add `table.tsx`, `form.tsx`, etc. for that screen only. | All screen UI for a menu/route. |
+| **`components/ui/`** | shadcn primitives (Button, Input, Sidebar…). | `pnpm dlx shadcn add …` |
+| **`components/derived/`** | **Reusable composed UI** (data table, entity form, page placeholder…). | Building blocks used across multiple pages. |
+| **`components/app/`** | App shell: sidebar, header, nav links. | Layout chrome, not page content. |
+| **`api/`** | HTTP client, queries, mutations. | Backend integration. |
+| **`store/`** | Redux session state (auth). | Client state outside React Query. |
+| **`hooks/`** | Shared hooks (`usePageMenuTitle`, …). | Used by 2+ pages. |
+| **`lib/`** | Pure helpers (routes, JWT, utils). | Non-React utilities. |
+| **`types/`** | Shared TS types (`AuthTokens`, …). | Cross-cutting types only. |
+
+### Example: name boards screen
 
 ```
-src/
-  api/           # fetch client + refresh, auth, navigation
-  components/ui/ # shadcn-style primitives (Base UI)
-  components/app/# shell, sidebar
-  features/auth/ # login page
-  routes/        # TanStack Router file routes
-  store/         # Redux auth slice
+pages/masters/name-boards/
+  index.tsx    # composes table + form; exports NameBoardsPage
+  table.tsx    # grid for this screen (later)
+  form.tsx     # create/edit form (later)
+
+components/derived/
+  data-table.tsx   # generic table wrapper (later)
+  entity-form.tsx  # generic form wrapper (later)
 ```
+
+Login already follows the pattern: `pages/login/index.tsx` + `pages/login/form.tsx`.
+
+### How layers connect
+
+```
+routes/.../name-boards.tsx  →  pages/masters/name-boards/index.tsx
+routes/_authenticated.tsx   →  components/app/AppShell
+pages/.../table.tsx         →  components/derived/data-table (when added)
+```
+
+- **`routes/`** = wiring only.
+- **`pages/<screen>/`** = screen-specific UI; colocate `table.tsx` / `form.tsx` here.
+- **`components/derived/`** = shared complex widgets; not tied to one screen.
+- **`components/ui/`** = low-level shadcn only; no billing domain.

@@ -1,15 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { PlaceholderPage } from '@/features/pages/PlaceholderPage';
+import { MenusPage } from '@/pages/admin/menus';
 
 export const Route = createFileRoute('/_authenticated/admin/menus')({
-  component: MenusAdminPage,
+  component: MenusPage,
 });
-
-function MenusAdminPage() {
-  return (
-    <PlaceholderPage
-      title="Menus"
-      description="Configure sidebar menus and role visibility."
-    />
-  );
-}

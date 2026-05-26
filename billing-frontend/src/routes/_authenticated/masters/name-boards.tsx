@@ -1,15 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router';
-import { PlaceholderPage } from '@/features/pages/PlaceholderPage';
+import { NameBoardsPage } from '@/pages/masters/name-boards';
 
 export const Route = createFileRoute('/_authenticated/masters/name-boards')({
   component: NameBoardsPage,
 });
-
-function NameBoardsPage() {
-  return (
-    <PlaceholderPage
-      title="Name Board"
-      description="Manage name boards used to group trucks and billing context."
-    />
-  );
-}
