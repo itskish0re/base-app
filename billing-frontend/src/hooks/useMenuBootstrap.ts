@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useRouterState } from '@tanstack/react-router';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { MENU_LOAD_STATUS } from '@/constants/menuLoadStatus';
 import { fetchMenus, setCurrentMenuFromPath } from '@/store/menuSlice';
 
 /**
@@ -17,7 +18,7 @@ export function useMenuBootstrap(): void {
       return;
     }
 
-    if (status === 'idle' || status === 'failed') {
+    if (status === MENU_LOAD_STATUS.idle || status === MENU_LOAD_STATUS.failed) {
       void dispatch(fetchMenus());
     }
   }, [dispatch, isAuthenticated, status]);

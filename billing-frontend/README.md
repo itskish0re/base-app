@@ -57,20 +57,24 @@ Re-apply the Claude theme from [tweakcn](https://tweakcn.com/editor/theme?theme=
 | **`main.tsx`** | App entry: TanStack Router + root mount. | Rarely touched. |
 | **`routeTree.gen.ts`** | Generated routes (do not edit). | — |
 | **`index.css`** | Global / theme CSS. | Theme tokens only. |
-| **`app/`** | Global providers (`Providers.tsx`: Redux + React Query). | New global provider. |
+| **`providers/`** | Global providers (`providers.tsx`: Redux + React Query). | New global provider. |
 | **`routes/`** | URLs, guards, redirects only — import pages from `pages/`. | New route or `beforeLoad` auth. |
 | **`pages/`** | **One folder per screen** with `index.tsx` as the page entry. Add `table.tsx`, `form.tsx`, etc. for that screen only. | All screen UI for a menu/route. |
 | **`components/ui/`** | shadcn primitives (Button, Input, Sidebar…). | `pnpm dlx shadcn add …` |
 | **`components/derived/`** | **Reusable composed UI** (data table, entity form, page placeholder…). | Building blocks used across multiple pages. |
 | **`components/app/`** | App shell: sidebar, header, nav links. | Layout chrome, not page content. |
-| **`api/`** | HTTP client, queries, mutations. | Backend integration. |
+| **`config/endpoints.ts`** | API controller names + `endpoints.*` path builders. | New backend route. |
+| **`constants/`** | Enums and shared constants (`queryKeys`, `MENU_GROUPS`, routes). | App-wide fixed values. |
+| **`service/api/`** | Axios `client`, `tokens`, `functions/` (raw HTTP per entity). | Low-level API calls. |
+| **`service/query/`** | TanStack `queryOptions` per entity + `index.ts`. | Server read/cache. |
+| **`service/mutation/`** | TanStack `mutationOptions` per entity + `index.ts`. | Server writes. |
 | **`store/`** | Redux: `auth` (always mounted) + **dynamic screen slices** (mounted per route). | Client state outside React Query. |
 | **`store/screens/`** | One slice file per screen (`nameBoardsSlice.ts`, …). | Grid filter, selection, draft UI state for that screen. |
 | **`hooks/useScreenSlice.ts`** | Injects/removes a screen reducer on mount/unmount. | Top of each page in `pages/…/index.tsx`. |
 | **`hooks/`** | Shared hooks (`useMenuBootstrap`, `useScreenSlice`, …). | Used by 2+ pages / shell. |
 | **`store/menuSlice.ts`** | Sidebar menus + `currentMenu` (always mounted). | Navigation data, header title, `menuCode` for screen API. |
-| **`lib/`** | Pure helpers (routes, JWT, utils). | Non-React utilities. |
-| **`types/`** | Shared TS types (`AuthTokens`, …). | Cross-cutting types only. |
+| **`lib/`** | Pure helpers (JWT, utils, navigation tree). | Non-React utilities. |
+| **`types/`** | Entity DTOs (`nameBoard.ts`, `truck.ts`, …), `common.ts`, barrel `index.ts`. | API request/response shapes. |
 
 ### Example: name boards screen
 
@@ -86,6 +90,15 @@ components/derived/
 ```
 
 Login already follows the pattern: `pages/login/index.tsx` + `pages/login/form.tsx`.
+
+### API call flow
+
+```
+config/endpoints.ts          →  /api/name-boards/create
+service/api/functions/       →  createNameBoards(body) uses api + endpoints
+service/mutation/nameBoards  →  createNameBoardsMutationOptions for useMutation
+service/query/nameBoards     →  listNameBoardsQueryOptions for useQuery
+```
 
 ### How layers connect
 

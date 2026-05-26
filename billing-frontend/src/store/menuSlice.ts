@@ -4,12 +4,11 @@ import {
   createSlice,
   type PayloadAction,
 } from '@reduxjs/toolkit';
-import { fetchNavigationMenus } from '@/api/navigation';
+import { MENU_LOAD_STATUS, type MenuLoadStatus } from '@/constants/menuLoadStatus';
+import { fetchNavigationMenus } from '@/service/api/functions/access';
 import { clearAuth } from '@/store/authSlice';
 import { partitionNavigationMenus } from '@/lib/navigationTree';
-import type { NavigationMenu } from '@/types/auth';
-
-export type MenuLoadStatus = 'idle' | 'loading' | 'succeeded' | 'failed';
+import type { NavigationMenu } from '@/types/access';
 
 export interface MenuState {
   menus: NavigationMenu[];
@@ -21,7 +20,7 @@ export interface MenuState {
 const initialState: MenuState = {
   menus: [],
   currentMenu: null,
-  status: 'idle',
+  status: MENU_LOAD_STATUS.idle,
   error: null,
 };
 
@@ -68,17 +67,17 @@ const menuSlice = createSlice({
   extraReducers: (builder) => {
     builder
       .addCase(fetchMenus.pending, (state) => {
-        state.status = 'loading';
+        state.status = MENU_LOAD_STATUS.loading;
         state.error = null;
       })
       .addCase(fetchMenus.fulfilled, (state, action) => {
-        state.status = 'succeeded';
+        state.status = MENU_LOAD_STATUS.succeeded;
         state.menus = action.payload.menus;
         state.currentMenu =
           findMenuForPath(action.payload.menus, window.location.pathname) ?? null;
       })
       .addCase(fetchMenus.rejected, (state, action) => {
-        state.status = 'failed';
+        state.status = MENU_LOAD_STATUS.failed;
         state.error = (action.payload as string) ?? action.error.message ?? 'Failed to load menus';
       })
       .addCase(clearAuth, () => initialState);
@@ -108,7 +107,7 @@ export const selectMenuLoadStatus = createSelector(selectMenuState, (menu) => me
 
 export const selectMenusLoading = createSelector(
   selectMenuLoadStatus,
-  (status) => status === 'loading' || status === 'idle',
+  (status) => status === MENU_LOAD_STATUS.loading || status === MENU_LOAD_STATUS.idle,
 );
 
 export const selectMenusError = createSelector(selectMenuState, (menu) => menu.error);

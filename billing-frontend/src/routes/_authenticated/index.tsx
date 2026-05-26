@@ -1,5 +1,5 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
-import { DASHBOARD_ROUTE } from '@/lib/routes';
+import { DASHBOARD_ROUTE } from '@/constants/routes';
 
 export const Route = createFileRoute('/_authenticated/')({
   beforeLoad: () => {

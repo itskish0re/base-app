@@ -1,4 +1,5 @@
-import type { NavigationMenu } from '@/types/auth';
+import { MENU_GROUP_ORDER, MENU_GROUPS, type MenuGroup } from '@/constants/menuGroups';
+import type { NavigationMenu } from '@/types/access';
 
 export type NavigationMenuNode = NavigationMenu & {
   children: NavigationMenuNode[];
@@ -15,22 +16,20 @@ export type NavigationSections = {
   config: NavigationSection;
 };
 
-const GROUP_ORDER = ['main', 'secondary', 'config'] as const;
-
-function normalizeMenuGroup(menuGroup: string | undefined | null): (typeof GROUP_ORDER)[number] {
+function normalizeMenuGroup(menuGroup: string | undefined | null): MenuGroup {
   const value = menuGroup?.trim().toLowerCase();
-  if (value === 'secondary') {
-    return 'secondary';
+  if (value === MENU_GROUPS.secondary) {
+    return MENU_GROUPS.secondary;
   }
 
-  if (value === 'config' || value === 'projects') {
-    return 'config';
+  if (value === MENU_GROUPS.config || value === 'projects') {
+    return MENU_GROUPS.config;
   }
 
-  return 'main';
+  return MENU_GROUPS.main;
 }
 
-function emptySection(menuGroup: (typeof GROUP_ORDER)[number]): NavigationSection {
+function emptySection(menuGroup: MenuGroup): NavigationSection {
   return { menuGroup, menus: [] };
 }
 
@@ -45,12 +44,12 @@ export function partitionNavigationMenus(menus: NavigationMenu[]): NavigationSec
   }
 
   const sections: NavigationSections = {
-    main: emptySection('main'),
-    secondary: emptySection('secondary'),
-    config: emptySection('config'),
+    main: emptySection(MENU_GROUPS.main),
+    secondary: emptySection(MENU_GROUPS.secondary),
+    config: emptySection(MENU_GROUPS.config),
   };
 
-  for (const key of GROUP_ORDER) {
+  for (const key of MENU_GROUP_ORDER) {
     sections[key] = {
       menuGroup: key,
       menus: grouped.get(key) ?? [],

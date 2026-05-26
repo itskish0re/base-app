@@ -9,7 +9,7 @@ import {
 import { MenuNavLink } from '@/components/app/menu-nav-link';
 import { menuTooltip } from '@/lib/navigationTree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
-import type { NavigationMenu } from '@/types/auth';
+import type { NavigationMenu } from '@/types/access';
 
 const SECTION_LABEL = 'Secondary';
 

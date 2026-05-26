@@ -2,14 +2,14 @@ import { useMutation } from '@tanstack/react-query';
 import { useForm } from '@tanstack/react-form';
 import { useNavigate } from '@tanstack/react-router';
 import { useState } from 'react';
-import { ApiError } from '@/api/client';
-import { loginMutationOptions } from '@/api/mutations/auth';
+import { DASHBOARD_ROUTE } from '@/constants/routes';
+import { loginMutationOptions } from '@/service/mutation/auth';
+import { ApiError } from '@/service/api/client';
 import { Button } from '@/components/ui/button';
 import { CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppDispatch } from '@/store/hooks';
-import { DASHBOARD_ROUTE } from '@/lib/routes';
 import { setTokens } from '@/store/authSlice';
 
 export function LoginForm() {

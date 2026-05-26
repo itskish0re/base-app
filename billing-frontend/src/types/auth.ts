@@ -5,23 +5,11 @@ export interface AuthTokens {
   refreshTokenExpiresAt: string;
 }
 
-export interface NavigationMenu {
-  menuId: number;
-  menuCode: string;
-  displayName: string;
-  routePath: string;
-  icon: string | null;
-  parentMenuId: number | null;
-  sortOrder: number;
-  /** Shown on the menu button when the sidebar is collapsed (defaults to displayName). */
-  badge: string | null;
-  tooltip: string | null;
-  /** Whether a parent menu with children starts expanded. */
-  defaultExpanded: boolean;
-  /** Sidebar section: main | secondary | config */
-  menuGroup: string;
+export interface LoginRequest {
+  email: string;
+  password: string;
 }
 
-export interface NavigationResponse {
-  menus: NavigationMenu[];
+export interface RefreshTokenRequest {
+  refreshToken: string;
 }

@@ -4,10 +4,11 @@ import axios, {
   type AxiosError,
   type InternalAxiosRequestConfig,
 } from 'axios';
+import { endpoints } from '@/config/endpoints';
 import { store } from '@/store/store';
 import { clearAuth, setTokens } from '@/store/authSlice';
 import type { AuthTokens } from '@/types/auth';
-import { isAccessTokenExpired, normalizeAuthTokens } from '@/api/tokens';
+import { isAccessTokenExpired, normalizeAuthTokens } from '@/service/api/tokens';
 
 export class ApiError extends Error {
   constructor(
@@ -26,7 +27,6 @@ function getApiBase(): string {
     return configured;
   }
 
-  // Dev: same-origin /api is proxied by Vite (see vite.config.ts).
   return '';
 }
 
@@ -60,7 +60,7 @@ async function refreshAccessToken(): Promise<boolean> {
 
   try {
     const { data } = await api.post<AuthTokens>(
-      '/api/auth/refresh',
+      endpoints.auth.refresh(),
       { refreshToken },
       { skipAuthRetry: true },
     );
@@ -95,15 +95,11 @@ function toApiError(error: AxiosError): ApiError {
 
 api.interceptors.request.use(async (config) => {
   if (config.skipAuthRetry) {
-    // Expired bearer on login/refresh can make JWT middleware reject the call.
     setAuthorizationHeader(config, null);
     return config;
   }
 
-  if (
-    store.getState().auth.refreshToken &&
-    isAccessTokenExpired()
-  ) {
+  if (store.getState().auth.refreshToken && isAccessTokenExpired()) {
     await ensureRefreshed();
   }
 
@@ -120,11 +116,7 @@ api.interceptors.response.use(
 
     const { config, response } = error;
 
-    if (
-      response?.status === 401 &&
-      !config.skipAuthRetry &&
-      !config._retry
-    ) {
+    if (response?.status === 401 && !config.skipAuthRetry && !config._retry) {
       config._retry = true;
       const refreshed = await ensureRefreshed();
 

@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
-import { ApiError } from '@/api/client';
+import { ApiError } from '@/service/api/client';
 import { store } from '@/store/store';
 import { clearAuth } from '@/store/authSlice';
 

@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { ChevronsUpDown, LogOut } from 'lucide-react';
-import { revokeMutationOptions } from '@/api/mutations/auth';
+import { revokeMutationOptions } from '@/service/mutation/auth';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import {
   DropdownMenu,

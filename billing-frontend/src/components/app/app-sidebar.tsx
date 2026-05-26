@@ -1,10 +1,8 @@
 import { Command } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useAppSelector } from '@/store/hooks';
-import {
-  selectMenuLoadStatus,
-  selectMenuSections,
-} from '@/store/menuSlice';
+import { MENU_LOAD_STATUS } from '@/constants/menuLoadStatus';
+import { selectMenuLoadStatus, selectMenuSections } from '@/store/menuSlice';
 import { NavConfig } from '@/components/app/nav-config';
 import { NavMain } from '@/components/app/nav-main';
 import { NavSecondary } from '@/components/app/nav-secondary';
@@ -20,13 +18,14 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { buildNavigationTree } from '@/lib/navigationTree';
-import { DASHBOARD_ROUTE } from '@/lib/routes';
+import { DASHBOARD_ROUTE } from '@/constants/routes';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const sections = useAppSelector(selectMenuSections);
   const status = useAppSelector(selectMenuLoadStatus);
-  const isLoading = status === 'idle' || status === 'loading';
-  const isError = status === 'failed';
+  const isLoading =
+    status === MENU_LOAD_STATUS.idle || status === MENU_LOAD_STATUS.loading;
+  const isError = status === MENU_LOAD_STATUS.failed;
 
   return (
     <Sidebar variant="inset" collapsible="offcanvas" {...props}>

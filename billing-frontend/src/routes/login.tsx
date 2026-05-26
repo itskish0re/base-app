@@ -1,6 +1,6 @@
 import { createFileRoute, redirect } from '@tanstack/react-router';
 import { LoginPage } from '@/pages/login';
-import { DASHBOARD_ROUTE } from '@/lib/routes';
+import { DASHBOARD_ROUTE } from '@/constants/routes';
 import { store } from '@/store/store';
 
 export const Route = createFileRoute('/login')({
