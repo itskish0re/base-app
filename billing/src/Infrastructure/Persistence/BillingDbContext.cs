@@ -1,5 +1,6 @@
 using System.Data;
 using Application.Abstractions.Data;
+using Domain.Access;
 using Domain.Masters;
 using Domain.Registry;
 using Microsoft.EntityFrameworkCore;
@@ -20,13 +21,17 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
 
     public DbSet<AppEntityField> AppEntityFields => Set<AppEntityField>();
 
-    public DbSet<AppEntityDependency> AppEntityDependencies => Set<AppEntityDependency>();
-
     public DbSet<AppEntityScreen> AppEntityScreens => Set<AppEntityScreen>();
 
     public DbSet<AppEntityScreenColumn> AppEntityScreenColumns => Set<AppEntityScreenColumn>();
 
     public DbSet<AppEntityScreenField> AppEntityScreenFields => Set<AppEntityScreenField>();
+
+    public DbSet<AppMenu> AppMenus => Set<AppMenu>();
+
+    public DbSet<AppRole> AppRoles => Set<AppRole>();
+
+    public DbSet<AppRoleMenu> AppRoleMenus => Set<AppRoleMenu>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

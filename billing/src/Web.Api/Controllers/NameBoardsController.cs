@@ -1,12 +1,6 @@
 using Web.Api.Authorization;
 using Web.Api.Extensions;
-using Application.Masters;
-using Application.Masters.Create;
-using Application.Masters.Delete;
-using Application.Masters.GetById;
-using Application.Masters.List;
-using Application.Masters.Toggle;
-using Application.Masters.Update;
+using Application.Masters.NameBoard;
 using SharedKernel;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -41,6 +35,24 @@ public sealed class NameBoardsController(ISender sender) : ControllerBase
     {
         Result<NameBoardResponse> result = await sender.Send(
             new GetNameBoardByIdQuery(id),
+            cancellationToken);
+
+        return ToActionResult(result);
+    }
+
+    [HttpPost("lookup")]
+    [EndpointAccess("name-boards.lookup")]
+    public async Task<IActionResult> Lookup(
+        [FromBody] LookupNameBoardsRequest request,
+        CancellationToken cancellationToken)
+    {
+        IReadOnlyList<NameBoardLookupFieldMapping> fields = request.Fields ?? [];
+
+        Result<NameBoardLookupResponse> result = await sender.Send(
+            new LookupNameBoardsQuery(
+                request.Value.Trim(),
+                request.Label.Trim(),
+                fields),
             cancellationToken);
 
         return ToActionResult(result);
@@ -134,28 +146,3 @@ public sealed class NameBoardsController(ISender sender) : ControllerBase
                 _ => StatusCodes.Status400BadRequest,
             });
 }
-
-public sealed record BatchCreateNameBoardsRequest(IReadOnlyList<CreateNameBoardItemRequest> Items);
-
-public sealed record CreateNameBoardItemRequest(
-    string Name,
-    string Code,
-    string OwnerName,
-    string? OwnerPhone);
-
-public sealed record BatchUpdateNameBoardsRequest(IReadOnlyList<UpdateNameBoardItemRequest> Items);
-
-public sealed record UpdateNameBoardItemRequest(
-    int NameBoardId,
-    string Name,
-    string Code,
-    string OwnerName,
-    string? OwnerPhone,
-    bool IsEnabled = true,
-    bool IsActive = true);
-
-public sealed record BatchDeleteNameBoardsRequest(IReadOnlyList<int> Ids);
-
-public sealed record BatchToggleNameBoardsRequest(IReadOnlyList<ToggleNameBoardItemRequest> Items);
-
-public sealed record ToggleNameBoardItemRequest(int NameBoardId, bool IsEnabled);

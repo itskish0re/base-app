@@ -16,6 +16,9 @@ artifacts/
 ## Docker / local
 .containers/
 
+## Reference / sample projects (local only)
+sample/
+
 ## Graphify cache (regenerate locally)
 graphify-out/cache/
 

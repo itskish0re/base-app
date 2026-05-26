@@ -1,0 +1,80 @@
+using Application.Abstractions.Authentication;
+using Application.Abstractions.Data;
+using Application.Abstractions.Messaging;
+using Domain.Masters;
+using FluentValidation;
+using SharedKernel;
+
+namespace Application.Masters.NameBoard;
+
+public sealed record BatchToggleNameBoardsCommand(IReadOnlyList<ToggleNameBoardItem> Items)
+    : ICommand<BatchToggleNameBoardsResponse>;
+
+internal sealed class BatchToggleNameBoardsCommandHandler(
+    INameBoardRepository nameBoardRepository,
+    IUnitOfWork unitOfWork,
+    IUserContext userContext,
+    IDateTimeProvider dateTimeProvider) : ICommandHandler<BatchToggleNameBoardsCommand, BatchToggleNameBoardsResponse>
+{
+    public async Task<Result<BatchToggleNameBoardsResponse>> Handle(
+        BatchToggleNameBoardsCommand request,
+        CancellationToken cancellationToken)
+    {
+        var updated = new List<NameBoardResponse>();
+        var failures = new List<BatchNameBoardItemFailure>();
+        var idsInBatch = new HashSet<int>();
+        DateTime utcNow = dateTimeProvider.UtcNow;
+
+        for (int index = 0; index < request.Items.Count; index++)
+        {
+            ToggleNameBoardItem item = request.Items[index];
+
+            if (!idsInBatch.Add(item.NameBoardId))
+            {
+                failures.Add(new BatchNameBoardItemFailure(
+                    index,
+                    "NameBoard.DuplicateId",
+                    "Duplicate nameBoardId in request batch."));
+                continue;
+            }
+
+            Domain.Masters.NameBoard? entity = await nameBoardRepository.GetByIdAsync(item.NameBoardId, cancellationToken);
+
+            if (entity is null)
+            {
+                failures.Add(new BatchNameBoardItemFailure(
+                    index,
+                    NameBoardErrors.NotFound.Code,
+                    NameBoardErrors.NotFound.Description));
+                continue;
+            }
+
+            entity.IsEnabled = item.IsEnabled;
+            entity.UpdatedAt = utcNow;
+            entity.UpdatedBy = userContext.UserId;
+
+            updated.Add(entity.ToResponse());
+        }
+
+        if (updated.Count > 0)
+        {
+            await unitOfWork.SaveChangesAsync(cancellationToken);
+        }
+
+        return new BatchToggleNameBoardsResponse(updated, failures);
+    }
+}
+
+internal sealed class BatchToggleNameBoardsCommandValidator : AbstractValidator<BatchToggleNameBoardsCommand>
+{
+    public BatchToggleNameBoardsCommandValidator()
+    {
+        RuleFor(x => x.Items).NotEmpty().WithMessage("At least one item is required.");
+        RuleFor(x => x.Items.Count).LessThanOrEqualTo(100);
+
+        RuleForEach(x => x.Items).ChildRules(item =>
+        {
+            item.RuleFor(x => x.NameBoardId).GreaterThan(0);
+        });
+    }
+}

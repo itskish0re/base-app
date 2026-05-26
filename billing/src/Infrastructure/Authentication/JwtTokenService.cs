@@ -1,5 +1,5 @@
-using System.Security.Claims;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using Application.Abstractions.Authentication;
@@ -14,9 +14,9 @@ internal sealed class JwtTokenService(IOptions<JwtSettings> jwtOptions) : IJwtTo
     {
         var claims = new List<Claim>
         {
-            new(ClaimTypes.NameIdentifier, user.UserId.ToString()),
+            new(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
             new(JwtRegisteredClaimNames.Email, user.Email),
-            new("role_id", user.RoleId.ToString()),
+            new(BillingClaimTypes.RoleId, user.RoleId.ToString(), ClaimValueTypes.Integer32),
             new(ClaimTypes.Role, user.RoleCode),
         };
 

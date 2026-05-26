@@ -46,5 +46,18 @@ internal sealed class NameBoardRepository(BillingDbContext context) : INameBoard
         return new NameBoardListResult(paging.Data.ToList(), paging.Count);
     }
 
+    public async Task<IReadOnlyList<NameBoard>> ListForLookupAsync(CancellationToken cancellationToken = default) =>
+        await context.NameBoards
+            .AsNoTracking()
+            .Where(x => !x.IsDeleted && x.IsEnabled && x.IsActive)
+            .OrderBy(x => x.Name)
+            .ThenBy(x => x.NameBoardId)
+            .ToListAsync(cancellationToken);
+
+    public async Task<bool> HasActiveTrucksAsync(int nameBoardId, CancellationToken cancellationToken = default) =>
+        await context.Trucks.AnyAsync(
+            x => x.NameBoardId == nameBoardId && !x.IsDeleted,
+            cancellationToken);
+
     public void Add(NameBoard nameBoard) => context.NameBoards.Add(nameBoard);
 }

@@ -7,4 +7,8 @@ public sealed record NavigationMenu(
     string RoutePath,
     string? Icon,
     int? ParentMenuId,
-    int SortOrder);
+    int SortOrder,
+    string? Badge,
+    string? Tooltip,
+    bool DefaultExpanded,
+    string MenuGroup);

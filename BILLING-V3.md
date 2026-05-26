@@ -39,7 +39,7 @@ Earlier work lived in `billing_v2/` (SQL + functions only) and `old/` (first .NE
 - **UI screen metadata** (`app_entity_screen*`) for React grid/form per menu
 - **Master** tables (EF Core, rich domain when added) with standard audit + soft delete
 - **Transaction** tables (optional Dapper) added per feature
-- React frontend later; API exposes navigation + screen config
+- React frontend in `billing-frontend/` (shadcn + TanStack + Redux); API exposes navigation + screen config
 
 ## 4. Non-goals (v3 initial scope)
 
@@ -75,8 +75,11 @@ Earlier work lived in `billing_v2/` (SQL + functions only) and `old/` (first .NE
 
 ```
 base-app/
-├── BILLING-V3.md      ← this file
-└── dbdiagram.dbml     ← canonical schema (DBML)
+├── BILLING-V3.md         ← this file
+├── dbdiagram.dbml        ← canonical schema (DBML)
+├── billing/              ← .NET Web API
+├── billing-frontend/     ← React + Vite UI
+└── sample/               ← reference only (gitignored)
 ```
 
 **Solution (next):** scaffold from Clean Architecture template + reference project:
@@ -127,7 +130,7 @@ Open **`dbdiagram.dbml`** for the full diagram, enums, indexes, and table groups
 |-------|--------|---------|
 | **auth** | `app_role`, `app_user`, `refresh_token` | Login, JWT, refresh rotation |
 | **access_control** | `app_menu`, `app_role_menu`, `app_endpoint`, `app_role_endpoint` | Sidebar + API authorization |
-| **app_entity_registry** | `app_entity`, `app_entity_field`, `app_entity_dependency` | API/Gridify contract, delete guards |
+| **app_entity_registry** | `app_entity`, `app_entity_field` | API/Gridify contract; delete guards in command handlers |
 | **app_entity_ui** | `app_entity_screen`, `app_entity_screen_column`, `app_entity_screen_field` | Per-menu grid + form layout |
 
 ### v3 vs v2 schema (important if migrating data)

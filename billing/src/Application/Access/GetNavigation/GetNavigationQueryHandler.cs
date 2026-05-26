@@ -19,7 +19,18 @@ internal sealed class GetNavigationQueryHandler(
         IReadOnlyList<NavigationMenu> menus = await menuRepository.GetNavigationForRoleAsync(roleId, cancellationToken);
 
         var dtos = menus
-            .Select(m => new NavigationMenuDto(m.MenuId, m.MenuCode, m.DisplayName, m.RoutePath, m.Icon, m.ParentMenuId, m.SortOrder))
+            .Select(m => new NavigationMenuDto(
+                m.MenuId,
+                m.MenuCode,
+                m.DisplayName,
+                m.RoutePath,
+                m.Icon,
+                m.ParentMenuId,
+                m.SortOrder,
+                m.Badge,
+                m.Tooltip,
+                m.DefaultExpanded,
+                m.MenuGroup))
             .ToList();
 
         return new NavigationResponse(dtos);

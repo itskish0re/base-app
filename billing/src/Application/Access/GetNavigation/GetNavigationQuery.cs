@@ -13,4 +13,8 @@ public sealed record NavigationMenuDto(
     string RoutePath,
     string? Icon,
     int? ParentMenuId,
-    int SortOrder);
+    int SortOrder,
+    string? Badge,
+    string? Tooltip,
+    bool DefaultExpanded,
+    string MenuGroup);

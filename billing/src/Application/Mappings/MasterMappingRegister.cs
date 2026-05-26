@@ -1,4 +1,6 @@
-using Application.Masters;
+using Application.Masters.Driver;
+using Application.Masters.NameBoard;
+using Application.Masters.Truck;
 using Domain.Masters;
 using Mapster;
 
@@ -11,7 +13,7 @@ public sealed class MasterMappingRegister : IRegister
 {
     public void Register(TypeAdapterConfig config)
     {
-        config.NewConfig<NameBoard, NameBoardResponse>();
+        config.NewConfig<Domain.Masters.NameBoard, NameBoardResponse>();
 
         config.NewConfig<Truck, TruckResponse>()
             .Map(dest => dest.NameBoardId, src => src.NameBoardId)

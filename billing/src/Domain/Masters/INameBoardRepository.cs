@@ -8,6 +8,10 @@ public interface INameBoardRepository
 
     Task<NameBoardListResult> ListAsync(NameBoardListCriteria criteria, CancellationToken cancellationToken = default);
 
+    Task<IReadOnlyList<NameBoard>> ListForLookupAsync(CancellationToken cancellationToken = default);
+
+    Task<bool> HasActiveTrucksAsync(int nameBoardId, CancellationToken cancellationToken = default);
+
     void Add(NameBoard nameBoard);
 }
 

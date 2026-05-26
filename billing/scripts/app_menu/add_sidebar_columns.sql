@@ -1,0 +1,8 @@
+-- DEPRECATED: use EF Core migration AddAppMenuSidebarColumns instead.
+-- dotnet ef database update --project src/Infrastructure/Infrastructure.csproj --startup-project src/Web.Api/Web.Api.csproj
+--
+-- Kept for manual emergency apply only:
+-- ALTER TABLE app_menu
+--     ADD COLUMN IF NOT EXISTS badge varchar(32),
+--     ADD COLUMN IF NOT EXISTS tooltip varchar(256),
+--     ADD COLUMN IF NOT EXISTS default_expanded boolean NOT NULL DEFAULT true;

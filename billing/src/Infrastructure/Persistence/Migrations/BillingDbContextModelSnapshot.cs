@@ -23,6 +23,182 @@ namespace Infrastructure.Persistence.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Domain.Access.AppMenu", b =>
+                {
+                    b.Property<int>("MenuId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("menu_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("MenuId"));
+
+                    b.Property<string>("Badge")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("badge");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("DefaultExpanded")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("default_expanded");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("Icon")
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("icon");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<string>("MenuCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("menu_code");
+
+                    b.Property<string>("MenuGroup")
+                        .IsRequired()
+                        .ValueGeneratedOnAdd()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasDefaultValue("main")
+                        .HasColumnName("menu_group");
+
+                    b.Property<int?>("ParentMenuId")
+                        .HasColumnType("integer")
+                        .HasColumnName("parent_menu_id");
+
+                    b.Property<string>("RoutePath")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("route_path");
+
+                    b.Property<int>("SortOrder")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasDefaultValue(0)
+                        .HasColumnName("sort_order");
+
+                    b.Property<string>("Tooltip")
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("tooltip");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("MenuId")
+                        .HasName("pk_app_menu");
+
+                    b.HasIndex("MenuCode")
+                        .IsUnique()
+                        .HasDatabaseName("ix_app_menu_menu_code");
+
+                    b.HasIndex("ParentMenuId")
+                        .HasDatabaseName("ix_app_menu_parent_menu_id");
+
+                    b.HasIndex("RoutePath")
+                        .IsUnique()
+                        .HasDatabaseName("ix_app_menu_route_path");
+
+                    b.ToTable("app_menu", "public");
+                });
+
+            modelBuilder.Entity("Domain.Access.AppRole", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("RoleId"));
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("display_name");
+
+                    b.Property<string>("RoleCode")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("role_code");
+
+                    b.HasKey("RoleId")
+                        .HasName("pk_app_role");
+
+                    b.ToTable("app_role", "public");
+                });
+
+            modelBuilder.Entity("Domain.Access.AppRoleMenu", b =>
+                {
+                    b.Property<int>("RoleId")
+                        .HasColumnType("integer")
+                        .HasColumnName("role_id");
+
+                    b.Property<int>("MenuId")
+                        .HasColumnType("integer")
+                        .HasColumnName("menu_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<bool>("IsDisplayed")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_displayed");
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_enabled");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("RoleId", "MenuId")
+                        .HasName("pk_app_role_menu");
+
+                    b.ToTable("app_role_menu", "public");
+                });
+
             modelBuilder.Entity("Domain.Masters.Driver", b =>
                 {
                     b.Property<int>("DriverId")
@@ -318,46 +494,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("app_entity", "public");
                 });
 
-            modelBuilder.Entity("Domain.Registry.AppEntityDependency", b =>
-                {
-                    b.Property<int>("EntityDependencyId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("entity_dependency_id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("EntityDependencyId"));
-
-                    b.Property<int>("ChildEntityId")
-                        .HasColumnType("integer")
-                        .HasColumnName("child_entity_id");
-
-                    b.Property<string>("ChildFkColumn")
-                        .IsRequired()
-                        .HasMaxLength(128)
-                        .HasColumnType("character varying(128)")
-                        .HasColumnName("child_fk_column");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("created_at");
-
-                    b.Property<int>("ParentEntityId")
-                        .HasColumnType("integer")
-                        .HasColumnName("parent_entity_id");
-
-                    b.HasKey("EntityDependencyId")
-                        .HasName("pk_app_entity_dependency");
-
-                    b.HasIndex("ChildEntityId")
-                        .HasDatabaseName("ix_app_entity_dependency_child_entity_id");
-
-                    b.HasIndex("ParentEntityId", "ChildEntityId")
-                        .IsUnique()
-                        .HasDatabaseName("ix_app_entity_dependency_parent_entity_id_child_entity_id");
-
-                    b.ToTable("app_entity_dependency", "public");
-                });
-
             modelBuilder.Entity("Domain.Registry.AppEntityField", b =>
                 {
                     b.Property<int>("EntityFieldId")
@@ -636,6 +772,15 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("app_entity_screen_field", "public");
                 });
 
+            modelBuilder.Entity("Domain.Access.AppMenu", b =>
+                {
+                    b.HasOne("Domain.Access.AppMenu", null)
+                        .WithMany()
+                        .HasForeignKey("ParentMenuId")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .HasConstraintName("fk_app_menu_app_menu_parent_menu_id");
+                });
+
             modelBuilder.Entity("Domain.Masters.Driver", b =>
                 {
                     b.HasOne("Domain.Masters.Truck", "Truck")
@@ -658,27 +803,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasConstraintName("fk_truck_name_board_name_board_id");
 
                     b.Navigation("NameBoard");
-                });
-
-            modelBuilder.Entity("Domain.Registry.AppEntityDependency", b =>
-                {
-                    b.HasOne("Domain.Registry.AppEntity", "ChildEntity")
-                        .WithMany()
-                        .HasForeignKey("ChildEntityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_app_entity_dependency_app_entity_child_entity_id");
-
-                    b.HasOne("Domain.Registry.AppEntity", "ParentEntity")
-                        .WithMany()
-                        .HasForeignKey("ParentEntityId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired()
-                        .HasConstraintName("fk_app_entity_dependency_app_entity_parent_entity_id");
-
-                    b.Navigation("ChildEntity");
-
-                    b.Navigation("ParentEntity");
                 });
 
             modelBuilder.Entity("Domain.Registry.AppEntityField", b =>

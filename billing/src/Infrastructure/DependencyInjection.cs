@@ -1,6 +1,8 @@
 using System.Text;
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
+using Application.Abstractions.Lookup;
+using Application.Abstractions.Registry;
 using SharedKernel;
 using Domain.Access;
 using Domain.Auth;
@@ -8,9 +10,12 @@ using Domain.Masters;
 using Infrastructure.Authentication;
 using Infrastructure.Data;
 using Infrastructure.Persistence;
+using Infrastructure.Lookup;
 using Infrastructure.Repositories;
 using Infrastructure.Repositories.Dapper;
 using Infrastructure.Time;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -51,6 +56,10 @@ public static class DependencyInjection
         services.AddScoped<IMenuRepository, MenuRepository>();
         services.AddScoped<IEndpointAccessRepository, EndpointAccessRepository>();
         services.AddScoped<INameBoardRepository, NameBoardRepository>();
+        services.AddScoped<ITruckRepository, TruckRepository>();
+        services.AddScoped<IDriverRepository, DriverRepository>();
+        services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
+        services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();
 
         services.AddDbContext<BillingDbContext>(options =>
             options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
@@ -60,6 +69,8 @@ public static class DependencyInjection
         services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
             .AddJwtBearer(options =>
             {
+                // Keep JWT claim names as issued (role_id, sub, etc.) for UserContext lookup.
+                options.MapInboundClaims = false;
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuer = true,
@@ -70,7 +81,8 @@ public static class DependencyInjection
                     ValidAudience = configuration[$"{JwtSettings.SectionName}:Audience"],
                     IssuerSigningKey = new SymmetricSecurityKey(
                         Encoding.UTF8.GetBytes(configuration[$"{JwtSettings.SectionName}:SigningKey"]!)),
-                    RoleClaimType = System.Security.Claims.ClaimTypes.Role,
+                    NameClaimType = JwtRegisteredClaimNames.Sub,
+                    RoleClaimType = ClaimTypes.Role,
                 };
             });
 
