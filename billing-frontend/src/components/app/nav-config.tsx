@@ -6,7 +6,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { MenuNavLink } from '@/components/app/menu-nav-link';
-import { menuTooltip } from '@/lib/navigation-tree';
+import { menuTooltip } from '@/lib/navigationTree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
 import { cn } from '@/lib/utils';
 import type { NavigationMenu } from '@/types/auth';

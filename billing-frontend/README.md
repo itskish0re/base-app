@@ -96,3 +96,12 @@ pages/.../table.tsx         →  components/derived/data-table (when added)
 - **`pages/<screen>/`** = screen-specific UI; colocate `table.tsx` / `form.tsx` here.
 - **`components/derived/`** = shared complex widgets; not tied to one screen.
 - **`components/ui/`** = low-level shadcn only; no billing domain.
+
+### File naming (outside `routes/`)
+
+| Kind | Filename | Export name inside file |
+|------|----------|-------------------------|
+| Folders | `kebab-case` | — |
+| React component modules (`.tsx`) | `kebab-case` | `PascalCase` (e.g. `app-shell.tsx` → `AppShell`) |
+| Hooks, utils, store, API (`.ts`) | `camelCase` | `camelCase` / `PascalCase` as appropriate |
+| `routes/` | unchanged (TanStack file routes) | — |

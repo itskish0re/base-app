@@ -17,7 +17,7 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import { menuTooltip, type NavigationMenuNode } from '@/lib/navigation-tree';
+import { menuTooltip, type NavigationMenuNode } from '@/lib/navigationTree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
 
 function isRouteActive(pathname: string, routePath: string): boolean {

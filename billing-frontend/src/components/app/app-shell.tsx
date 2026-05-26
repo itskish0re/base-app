@@ -2,7 +2,7 @@ import { Outlet } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { usePageMenuTitle } from '@/hooks/use-page-menu-title';
+import { usePageMenuTitle } from '@/hooks/usePageMenuTitle';
 
 export function AppShell() {
   const pageTitle = usePageMenuTitle();

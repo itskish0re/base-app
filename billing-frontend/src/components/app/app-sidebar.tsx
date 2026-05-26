@@ -16,7 +16,7 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
-import { buildNavigationTree, partitionNavigationMenus } from '@/lib/navigation-tree';
+import { buildNavigationTree, partitionNavigationMenus } from '@/lib/navigationTree';
 import { DASHBOARD_ROUTE } from '@/lib/routes';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
