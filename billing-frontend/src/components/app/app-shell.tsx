@@ -2,10 +2,13 @@ import { Outlet } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
-import { usePageMenuTitle } from '@/hooks/usePageMenuTitle';
+import { useMenuBootstrap } from '@/hooks/useMenuBootstrap';
+import { useAppSelector } from '@/store/hooks';
+import { selectCurrentMenuTitle } from '@/store/menuSlice';
 
 export function AppShell() {
-  const pageTitle = usePageMenuTitle();
+  useMenuBootstrap();
+  const pageTitle = useAppSelector(selectCurrentMenuTitle);
 
   return (
     <SidebarProvider>

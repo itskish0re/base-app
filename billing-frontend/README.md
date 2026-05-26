@@ -64,8 +64,11 @@ Re-apply the Claude theme from [tweakcn](https://tweakcn.com/editor/theme?theme=
 | **`components/derived/`** | **Reusable composed UI** (data table, entity form, page placeholder…). | Building blocks used across multiple pages. |
 | **`components/app/`** | App shell: sidebar, header, nav links. | Layout chrome, not page content. |
 | **`api/`** | HTTP client, queries, mutations. | Backend integration. |
-| **`store/`** | Redux session state (auth). | Client state outside React Query. |
-| **`hooks/`** | Shared hooks (`usePageMenuTitle`, …). | Used by 2+ pages. |
+| **`store/`** | Redux: `auth` (always mounted) + **dynamic screen slices** (mounted per route). | Client state outside React Query. |
+| **`store/screens/`** | One slice file per screen (`nameBoardsSlice.ts`, …). | Grid filter, selection, draft UI state for that screen. |
+| **`hooks/useScreenSlice.ts`** | Injects/removes a screen reducer on mount/unmount. | Top of each page in `pages/…/index.tsx`. |
+| **`hooks/`** | Shared hooks (`useMenuBootstrap`, `useScreenSlice`, …). | Used by 2+ pages / shell. |
+| **`store/menuSlice.ts`** | Sidebar menus + `currentMenu` (always mounted). | Navigation data, header title, `menuCode` for screen API. |
 | **`lib/`** | Pure helpers (routes, JWT, utils). | Non-React utilities. |
 | **`types/`** | Shared TS types (`AuthTokens`, …). | Cross-cutting types only. |
 
@@ -105,3 +108,26 @@ pages/.../table.tsx         →  components/derived/data-table (when added)
 | React component modules (`.tsx`) | `kebab-case` | `PascalCase` (e.g. `app-shell.tsx` → `AppShell`) |
 | Hooks, utils, store, API (`.ts`) | `camelCase` | `camelCase` / `PascalCase` as appropriate |
 | `routes/` | unchanged (TanStack file routes) | — |
+
+### Per-screen Redux (memory only while active)
+
+`auth` stays in the store permanently. Each screen slice is **injected when the page mounts** and **removed on unmount** (state is discarded).
+
+```tsx
+// pages/masters/name-boards/index.tsx
+import { useScreenSlice, useScreenSelector } from '@/hooks/useScreenSlice';
+import { SCREEN_KEYS } from '@/store/screenKeys';
+import { nameBoardsScreenActions } from '@/store/screens/nameBoardsSlice';
+
+export function NameBoardsPage() {
+  useScreenSlice(SCREEN_KEYS.nameBoards);
+
+  const filter = useScreenSelector(SCREEN_KEYS.nameBoards, (s) => s.filter);
+  const dispatch = useAppDispatch();
+  // dispatch(nameBoardsScreenActions.setFilter('acme'));
+}
+```
+
+Add a new screen: create `store/screens/<name>Slice.ts`, register in `store/screens/registry.ts` and `store/screenKeys.ts`, call `useScreenSlice` in the page `index.tsx`.
+
+Use **TanStack Query** for server/list data; use **screen slices** for UI-only state (filters, selection, panel open, draft form).
