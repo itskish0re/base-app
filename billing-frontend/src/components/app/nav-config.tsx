@@ -8,11 +8,18 @@ import {
 import { MenuNavLink } from '@/components/app/menu-nav-link';
 import { menuTooltip } from '@/lib/navigation-tree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
+import { cn } from '@/lib/utils';
 import type { NavigationMenu } from '@/types/auth';
 
 const SECTION_LABEL = 'Config';
 
-export function NavConfig({ items }: { items: NavigationMenu[] }) {
+export function NavConfig({
+  items,
+  className,
+}: {
+  items: NavigationMenu[];
+  className?: string;
+}) {
   const roots = items
     .filter((m) => m.parentMenuId === null)
     .sort((a, b) => a.sortOrder - b.sortOrder);
@@ -22,7 +29,7 @@ export function NavConfig({ items }: { items: NavigationMenu[] }) {
   }
 
   return (
-    <SidebarGroup className="group-data-[collapsible=icon]:hidden">
+    <SidebarGroup className={cn('group-data-[collapsible=icon]:hidden', className)}>
       <SidebarGroupLabel>{SECTION_LABEL}</SidebarGroupLabel>
       <SidebarMenu>
         {roots.map((item) => {

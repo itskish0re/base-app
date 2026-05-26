@@ -6,6 +6,7 @@ import { NavConfig } from '@/components/app/nav-config';
 import { NavMain } from '@/components/app/nav-main';
 import { NavSecondary } from '@/components/app/nav-secondary';
 import { NavUser } from '@/components/app/nav-user';
+import { SidebarNavSkeleton } from '@/components/app/sidebar-nav-skeleton';
 import {
   Sidebar,
   SidebarContent,
@@ -16,6 +17,7 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { buildNavigationTree, partitionNavigationMenus } from '@/lib/navigation-tree';
+import { DASHBOARD_ROUTE } from '@/lib/routes';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data, isLoading, isError } = useQuery(navigationQueryOptions());
@@ -24,12 +26,12 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     : partitionNavigationMenus([]);
 
   return (
-    <Sidebar variant="inset" {...props}>
+    <Sidebar variant="inset" collapsible="offcanvas" {...props}>
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
-              <Link to="/">
+              <Link to={DASHBOARD_ROUTE}>
                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                   <Command className="size-4" />
                 </div>
@@ -44,13 +46,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
 
       <SidebarContent>
-        <NavMain
-          items={buildNavigationTree(sections.main.menus)}
-          isLoading={isLoading}
-          isError={isError}
-        />
-        <NavConfig items={sections.config.menus} />
-        <NavSecondary items={sections.secondary.menus} className="mt-auto" />
+        {isLoading ? (
+          <SidebarNavSkeleton />
+        ) : (
+          <>
+            <NavMain
+              items={buildNavigationTree(sections.main.menus)}
+              isError={isError}
+            />
+            <NavSecondary items={sections.secondary.menus} />
+            <NavConfig items={sections.config.menus} className="mt-auto" />
+          </>
+        )}
       </SidebarContent>
 
       <SidebarFooter>

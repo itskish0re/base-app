@@ -2,8 +2,11 @@ import { Outlet } from '@tanstack/react-router';
 import { AppSidebar } from '@/components/app/app-sidebar';
 import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
+import { usePageMenuTitle } from '@/hooks/use-page-menu-title';
 
 export function AppShell() {
+  const pageTitle = usePageMenuTitle();
+
   return (
     <SidebarProvider>
       <AppSidebar />
@@ -15,7 +18,7 @@ export function AppShell() {
               orientation="vertical"
               className="mr-2 data-[orientation=vertical]:h-4"
             />
-            <span className="text-sm font-medium text-muted-foreground">Billing</span>
+            <span className="text-sm font-medium">{pageTitle}</span>
           </div>
         </header>
         <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

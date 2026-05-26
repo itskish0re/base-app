@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppDispatch } from '@/store/hooks';
+import { DASHBOARD_ROUTE } from '@/lib/routes';
 import { setTokens } from '@/store/authSlice';
 
 export function LoginPage() {
@@ -20,7 +21,7 @@ export function LoginPage() {
     ...loginMutationOptions,
     onSuccess: (tokens) => {
       dispatch(setTokens(tokens));
-      void navigate({ to: '/' });
+      void navigate({ to: DASHBOARD_ROUTE });
     },
   });
 

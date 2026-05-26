@@ -21,10 +21,6 @@ import { menuTooltip, type NavigationMenuNode } from '@/lib/navigation-tree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
 
 function isRouteActive(pathname: string, routePath: string): boolean {
-  if (routePath === '/') {
-    return pathname === '/';
-  }
-
   return pathname === routePath || pathname.startsWith(`${routePath}/`);
 }
 
@@ -96,28 +92,25 @@ const SECTION_LABEL = 'Main';
 
 export function NavMain({
   items,
-  isLoading,
   isError,
 }: {
   items: NavigationMenuNode[];
-  isLoading?: boolean;
   isError?: boolean;
 }) {
-  if (!isLoading && !isError && items.length === 0) {
+  if (!isError && items.length === 0) {
     return null;
   }
 
+  const showLabel = items.length > 0;
+
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>{SECTION_LABEL}</SidebarGroupLabel>
+      {showLabel ? <SidebarGroupLabel>{SECTION_LABEL}</SidebarGroupLabel> : null}
       <SidebarMenu>
-        {isLoading && (
-          <p className="px-2 py-1.5 text-sm text-muted-foreground">Loading menus…</p>
-        )}
         {isError && (
           <p className="px-2 py-1.5 text-sm text-destructive">Could not load navigation.</p>
         )}
-        {!isLoading && !isError && items.map((item) => (
+        {!isError && items.map((item) => (
           <NavMainItem key={item.menuId} item={item} />
         ))}
       </SidebarMenu>

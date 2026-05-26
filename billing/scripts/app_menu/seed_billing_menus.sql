@@ -2,13 +2,13 @@
 -- Groups: secondary (name board, truck, driver), config (menus screen).
 -- Run after drop_group_label.sql / migration DropAppMenuGroupLabel.
 
--- Retire legacy demo entries (dashboard, invoices, customers, settings).
+-- Retire legacy demo entries (invoices, customers, settings).
 UPDATE app_menu
 SET is_active = false,
     updated_at = NOW()
-WHERE menu_code IN ('dashboard', 'invoices', 'customers', 'settings');
+WHERE menu_code IN ('invoices', 'customers', 'settings');
 
--- Menu administration screen (config group).
+-- Dashboard (main group) at /main/dashboard; app redirects / -> /main/dashboard.
 INSERT INTO app_menu (
     menu_code,
     display_name,
@@ -24,16 +24,16 @@ INSERT INTO app_menu (
     created_at,
     updated_at)
 VALUES (
-    'menus',
-    'Menus',
-    '/admin/menus',
-    'settings',
+    'dashboard',
+    'Dashboard',
+    '/main/dashboard',
+    'dashboard',
     NULL,
     10,
     NULL,
-    'Manage sidebar menus and role access',
+    'Billing overview',
     true,
-    'config',
+    'main',
     true,
     NOW(),
     NOW())
@@ -49,12 +49,50 @@ SET display_name = EXCLUDED.display_name,
     is_active = true,
     updated_at = NOW();
 
--- Deactivate old menu_admin code if it still exists as a separate row.
+-- Menu administration screen (config group). Reuse legacy menu_admin row when present.
 UPDATE app_menu
-SET is_active = false,
+SET menu_code = 'menus',
+    display_name = 'Menus',
+    route_path = '/admin/menus',
+    icon = 'settings',
+    parent_menu_id = NULL,
+    sort_order = 10,
+    tooltip = 'Manage sidebar menus and role access',
+    default_expanded = true,
+    menu_group = 'config',
+    is_active = true,
     updated_at = NOW()
-WHERE menu_code = 'menu_admin'
-  AND menu_code <> 'menus';
+WHERE menu_code IN ('menu_admin', 'menus');
+
+INSERT INTO app_menu (
+    menu_code,
+    display_name,
+    route_path,
+    icon,
+    parent_menu_id,
+    sort_order,
+    badge,
+    tooltip,
+    default_expanded,
+    menu_group,
+    is_active,
+    created_at,
+    updated_at)
+SELECT
+    'menus',
+    'Menus',
+    '/admin/menus',
+    'settings',
+    NULL,
+    10,
+    NULL,
+    'Manage sidebar menus and role access',
+    true,
+    'config',
+    true,
+    NOW(),
+    NOW()
+WHERE NOT EXISTS (SELECT 1 FROM app_menu WHERE menu_code = 'menus');
 
 -- Master screens (secondary group).
 INSERT INTO app_menu (
@@ -135,7 +173,7 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('menus', 'name_boards', 'trucks', 'drivers')
+INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menus', 'name_boards', 'trucks', 'drivers')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE
