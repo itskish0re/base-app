@@ -1,15 +1,9 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { MENU_LOAD_STATUS, type MenuLoadStatus } from '@/constants/menuLoadStatus';
-import { clearAuth } from '@/store/authSlice';
+import { MENU_LOAD_STATUS } from '@/constants/menu';
+import { clearAuth } from '@/store/global/authSlice';
 import { partitionNavigationMenus } from '@/lib/navigationTree';
 import type { NavigationMenu } from '@/types/access';
-
-export interface MenuState {
-  menus: NavigationMenu[];
-  currentMenu: NavigationMenu | null;
-  status: MenuLoadStatus;
-  error: string | null;
-}
+import type { MenuState } from '@/types/store/global/menu';
 
 const initialState: MenuState = {
   menus: [],

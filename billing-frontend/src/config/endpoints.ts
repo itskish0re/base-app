@@ -1,16 +1,4 @@
-/** API controller route segments (match ASP.NET [Route("api/{controller}")]). */
-export const API_CONTROLLERS = {
-  auth: 'auth',
-  access: 'access',
-  nameBoards: 'name-boards',
-  trucks: 'trucks',
-  drivers: 'drivers',
-  menus: 'menus',
-  screens: 'screens',
-  health: 'health',
-} as const;
-
-export type ApiController = (typeof API_CONTROLLERS)[keyof typeof API_CONTROLLERS];
+import { API_CONTROLLERS, type ApiController } from '@/constants/apiControllers';
 
 const API_PREFIX = '/api';
 

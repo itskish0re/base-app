@@ -12,7 +12,7 @@ import type {
   ListMenusParams,
   MenuDto,
   PagedMenusResponse,
-} from '@/types/menu';
+} from '@/types/entity';
 
 export type { ListMenusParams };
 

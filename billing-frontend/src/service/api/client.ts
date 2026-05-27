@@ -6,7 +6,7 @@ import axios, {
 } from 'axios';
 import { endpoints } from '@/config/endpoints';
 import { store } from '@/store/store';
-import { clearAuth, setTokens } from '@/store/authSlice';
+import { clearAuth, setTokens } from '@/store/global/authSlice';
 import type { AuthTokens } from '@/types/auth';
 import { isAccessTokenExpired, normalizeAuthTokens } from '@/service/api/tokens';
 

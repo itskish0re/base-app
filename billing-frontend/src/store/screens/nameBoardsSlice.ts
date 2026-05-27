@@ -1,12 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { SCREEN_KEYS } from '@/store/screenKeys';
-
-export interface NameBoardsScreenState {
-  filter: string;
-  page: number;
-  pageSize: number;
-  selectedId: number | null;
-}
+import { SCREEN_KEYS } from '@/constants/screenKeys';
+import type { NameBoardsScreenState } from '@/types/store/screens/nameBoards';
 
 const initialState: NameBoardsScreenState = {
   filter: '',

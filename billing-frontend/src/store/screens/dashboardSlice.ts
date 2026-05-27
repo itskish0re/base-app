@@ -1,8 +1,6 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { SCREEN_KEYS } from '@/store/screenKeys';
-
-/** Extend when dashboard widgets need client state. */
-export type DashboardScreenState = Record<string, never>;
+import { SCREEN_KEYS } from '@/constants/screenKeys';
+import type { DashboardScreenState } from '@/types/store/screens/dashboard';
 
 const initialState: DashboardScreenState = {};
 

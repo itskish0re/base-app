@@ -1,10 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { SCREEN_KEYS } from '@/store/screenKeys';
-
-export interface MenusScreenState {
-  filter: string;
-  selectedMenuId: number | null;
-}
+import { SCREEN_KEYS } from '@/constants/screenKeys';
+import type { MenusScreenState } from '@/types/store/screens/menus';
 
 const initialState: MenusScreenState = {
   filter: '',

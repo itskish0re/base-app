@@ -14,7 +14,7 @@ import type {
   NameBoardDto,
   NameBoardLookupResponse,
   PagedNameBoardsResponse,
-} from '@/types/nameBoard';
+} from '@/types/entity';
 
 export async function listNameBoards(
   params?: ListQueryParams,

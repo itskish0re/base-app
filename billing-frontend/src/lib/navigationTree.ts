@@ -1,4 +1,4 @@
-import { MENU_GROUP_ORDER, MENU_GROUPS, type MenuGroup } from '@/constants/menuGroups';
+import { MENU_GROUP_ORDER, MENU_GROUPS, type MenuGroup } from '@/constants/menu';
 import type { NavigationMenu } from '@/types/access';
 
 export type NavigationMenuNode = NavigationMenu & {

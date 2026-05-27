@@ -1,5 +1,5 @@
 import type { ListQueryParams } from '@/types/common';
-import type { ListMenusParams } from '@/types/menu';
+import type { ListMenusParams } from '@/types/entity';
 
 export const queryKeys = {
   access: {

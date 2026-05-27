@@ -1,7 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 import { queryKeys } from '@/constants/queryKeys';
 import { getMenuById, listMenus } from '@/service/api/functions/menus';
-import type { ListMenusParams } from '@/types/menu';
+import type { ListMenusParams } from '@/types/entity';
 
 export function listMenusQueryOptions(params?: ListMenusParams) {
   return queryOptions({

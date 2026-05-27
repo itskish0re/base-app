@@ -14,7 +14,7 @@ import type {
   DriverLookupResponse,
   LookupDriversRequest,
   PagedDriversResponse,
-} from '@/types/driver';
+} from '@/types/entity';
 
 export async function listDrivers(params?: ListQueryParams): Promise<PagedDriversResponse> {
   const { data } = await api.get<PagedDriversResponse>(endpoints.drivers.list(), { params });

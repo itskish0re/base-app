@@ -8,7 +8,7 @@ import {
   setMenusFailed,
   setMenusLoading,
   setMenusSucceeded,
-} from '@/store/menuSlice';
+} from '@/store/global/menuSlice';
 
 function getErrorMessage(error: unknown): string {
   return error instanceof Error ? error.message : 'Failed to load menus';

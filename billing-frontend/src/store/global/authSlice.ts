@@ -6,14 +6,8 @@ import {
   loadRefreshToken,
   saveTokens,
 } from '@/lib/storage';
+import type { AuthState } from '@/types/store/global/auth';
 import type { AuthTokens } from '@/types/auth';
-
-export interface AuthState {
-  accessToken: string | null;
-  refreshToken: string | null;
-  accessTokenExpiresAt: string | null;
-  isAuthenticated: boolean;
-}
 
 const initialState: AuthState = {
   accessToken: loadAccessToken(),

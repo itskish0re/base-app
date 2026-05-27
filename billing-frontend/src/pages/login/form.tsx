@@ -10,7 +10,7 @@ import { CardContent, CardDescription, CardHeader, CardTitle } from '@/component
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAppDispatch } from '@/store/hooks';
-import { setTokens } from '@/store/authSlice';
+import { setTokens } from '@/store/global/authSlice';
 
 export function LoginForm() {
   const dispatch = useAppDispatch();

@@ -4,7 +4,7 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { useMenuBootstrap } from '@/hooks/useMenuBootstrap';
 import { useAppSelector } from '@/store/hooks';
-import { selectCurrentMenuTitle } from '@/store/menuSlice';
+import { selectCurrentMenuTitle } from '@/store/global/menuSlice';
 
 export function AppShell() {
   useMenuBootstrap();

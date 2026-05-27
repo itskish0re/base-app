@@ -1,18 +1,11 @@
 import type { Reducer } from '@reduxjs/toolkit';
-import { SCREEN_KEYS, type ScreenKey } from '@/store/screenKeys';
-import { dashboardScreenReducer, type DashboardScreenState } from '@/store/screens/dashboardSlice';
-import { driversScreenReducer, type DriversScreenState } from '@/store/screens/driversSlice';
-import { menusScreenReducer, type MenusScreenState } from '@/store/screens/menusSlice';
-import { nameBoardsScreenReducer, type NameBoardsScreenState } from '@/store/screens/nameBoardsSlice';
-import { trucksScreenReducer, type TrucksScreenState } from '@/store/screens/trucksSlice';
-
-export interface ScreenStateByKey {
-  [SCREEN_KEYS.dashboard]: DashboardScreenState;
-  [SCREEN_KEYS.nameBoards]: NameBoardsScreenState;
-  [SCREEN_KEYS.trucks]: TrucksScreenState;
-  [SCREEN_KEYS.drivers]: DriversScreenState;
-  [SCREEN_KEYS.menus]: MenusScreenState;
-}
+import { SCREEN_KEYS, type ScreenKey } from '@/constants/screenKeys';
+import { dashboardScreenReducer } from '@/store/screens/dashboardSlice';
+import { driversScreenReducer } from '@/store/screens/driversSlice';
+import { menusScreenReducer } from '@/store/screens/menusSlice';
+import { nameBoardsScreenReducer } from '@/store/screens/nameBoardsSlice';
+import { trucksScreenReducer } from '@/store/screens/trucksSlice';
+import type { ScreenStateByKey } from '@/types/store/screens';
 
 export const screenReducerRegistry: { [K in ScreenKey]: Reducer<ScreenStateByKey[K]> } = {
   [SCREEN_KEYS.dashboard]: dashboardScreenReducer,

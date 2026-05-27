@@ -1,12 +1,13 @@
 import { useEffect } from 'react';
+import type { ScreenKey } from '@/constants/screenKeys';
 import { useAppSelector } from '@/store/hooks';
 import {
   injectScreenReducer,
   removeScreenReducer,
-  type RootState,
 } from '@/store/store';
-import { screenReducerRegistry, type ScreenStateByKey } from '@/store/screens/registry';
-import type { ScreenKey } from '@/store/screenKeys';
+import { screenReducerRegistry } from '@/store/screens/registry';
+import type { ScreenStateByKey } from '@/types/store/screens';
+import type { RootState } from '@/types/store/root';
 
 /**
  * Mounts a screen's Redux slice while the page is mounted; removes it on unmount

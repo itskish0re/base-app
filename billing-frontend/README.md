@@ -72,18 +72,19 @@ Re-apply the Claude theme from [tweakcn](https://tweakcn.com/editor/theme?theme=
 | **`components/ui/`** | shadcn primitives (Button, Input, Sidebar…). | `pnpm dlx shadcn add …` |
 | **`components/derived/`** | **Reusable composed UI** (data table, entity form, page placeholder…). | Building blocks used across multiple pages. |
 | **`components/app/`** | App shell: sidebar, header, nav links. | Layout chrome, not page content. |
-| **`config/endpoints.ts`** | API controller names + `endpoints.*` path builders. | New backend route. |
-| **`constants/`** | Enums and shared constants (`queryKeys`, `MENU_GROUPS`, routes). | App-wide fixed values. |
+| **`constants/apiControllers.ts`** | ASP.NET controller segment names (`API_CONTROLLERS`). | New backend controller. |
+| **`config/endpoints.ts`** | `endpoints.*` path builders (uses `API_CONTROLLERS`). | New backend route/action. |
+| **`constants/`** | Shared constants (`apiControllers`, `menu`, `queryKeys`, `screenKeys`, routes). | App-wide fixed values. |
 | **`service/api/`** | Axios `client`, `tokens`, `functions/` (raw HTTP per entity). | Low-level API calls. |
 | **`service/query/`** | TanStack `queryOptions` per entity + `index.ts`. | Server read/cache. |
 | **`service/mutation/`** | TanStack `mutationOptions` per entity + `index.ts`. | Server writes. |
-| **`store/`** | Redux: `auth` (always mounted) + **dynamic screen slices** (mounted per route). | Client state outside React Query. |
+| **`store/global/`** | Always-mounted slices: `authSlice`, `menuSlice`. | Session + sidebar menu UI state. |
 | **`store/screens/`** | One slice file per screen (`nameBoardsSlice.ts`, …). | Grid filter, selection, draft UI state for that screen. |
+| **`constants/screenKeys.ts`** | `SCREEN_KEYS` reducer names for dynamic screen slices. | New screen registration. |
 | **`hooks/useScreenSlice.ts`** | Injects/removes a screen reducer on mount/unmount. | Top of each page in `pages/…/index.tsx`. |
 | **`hooks/`** | Shared hooks (`useMenuBootstrap`, `useScreenSlice`, …). | Used by 2+ pages / shell. |
-| **`store/menuSlice.ts`** | Sidebar menus + `currentMenu` (hydrated from query). | UI state; fetch via `navigationQueryOptions`. |
 | **`lib/`** | Pure helpers (JWT, utils, navigation tree). | Non-React utilities. |
-| **`types/`** | Entity DTOs (`nameBoard.ts`, `truck.ts`, …), `common.ts`, barrel `index.ts`. | API request/response shapes. |
+| **`types/`** | `common.ts`, `auth.ts`, `access.ts`; **`types/entity/`** — entity DTOs; **`types/store/`** — Redux state types. | API + store shapes. |
 
 ### Example: name boards screen
 
@@ -138,7 +139,7 @@ pages/.../table.tsx         →  components/derived/data-table (when added)
 ```tsx
 // pages/masters/name-boards/index.tsx
 import { useScreenSlice, useScreenSelector } from '@/hooks/useScreenSlice';
-import { SCREEN_KEYS } from '@/store/screenKeys';
+import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { nameBoardsScreenActions } from '@/store/screens/nameBoardsSlice';
 
 export function NameBoardsPage() {
@@ -150,7 +151,7 @@ export function NameBoardsPage() {
 }
 ```
 
-Add a new screen: create `store/screens/<name>Slice.ts`, register in `store/screens/registry.ts` and `store/screenKeys.ts`, call `useScreenSlice` in the page `index.tsx`.
+Add a new screen: add `SCREEN_KEYS` + `types/store/screens/<name>.ts`, create `store/screens/<name>Slice.ts`, register in `store/screens/registry.ts`, call `useScreenSlice` in the page `index.tsx`.
 
 Use **TanStack Query** for server/list data; use **screen slices** for UI-only state (filters, selection, panel open, draft form).
 

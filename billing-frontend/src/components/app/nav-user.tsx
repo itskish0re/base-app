@@ -19,7 +19,7 @@ import {
 } from '@/components/ui/sidebar';
 import { parseJwtClaims, userDisplayFromClaims } from '@/lib/jwt';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
-import { clearAuth } from '@/store/authSlice';
+import { clearAuth } from '@/store/global/authSlice';
 
 function initials(name: string): string {
   const parts = name.trim().split(/\s+/).filter(Boolean);

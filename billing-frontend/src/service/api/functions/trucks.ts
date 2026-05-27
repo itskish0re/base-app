@@ -14,7 +14,7 @@ import type {
   PagedTrucksResponse,
   TruckDto,
   TruckLookupResponse,
-} from '@/types/truck';
+} from '@/types/entity';
 
 export async function listTrucks(params?: ListQueryParams): Promise<PagedTrucksResponse> {
   const { data } = await api.get<PagedTrucksResponse>(endpoints.trucks.list(), { params });

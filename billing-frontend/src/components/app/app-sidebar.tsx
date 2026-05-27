@@ -1,8 +1,8 @@
 import { Command } from 'lucide-react';
 import { Link } from '@tanstack/react-router';
 import { useAppSelector } from '@/store/hooks';
-import { MENU_LOAD_STATUS } from '@/constants/menuLoadStatus';
-import { selectMenuLoadStatus, selectMenuSections } from '@/store/menuSlice';
+import { MENU_LOAD_STATUS } from '@/constants/menu';
+import { selectMenuLoadStatus, selectMenuSections } from '@/store/global/menuSlice';
 import { NavConfig } from '@/components/app/nav-config';
 import { NavMain } from '@/components/app/nav-main';
 import { NavSecondary } from '@/components/app/nav-secondary';

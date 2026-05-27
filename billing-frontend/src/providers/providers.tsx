@@ -4,7 +4,7 @@ import { Provider } from 'react-redux';
 import { QueryDevtools } from '@/providers/query-devtools';
 import { ApiError } from '@/service/api/client';
 import { store } from '@/store/store';
-import { clearAuth } from '@/store/authSlice';
+import { clearAuth } from '@/store/global/authSlice';
 
 const queryClient = new QueryClient({
   defaultOptions: {

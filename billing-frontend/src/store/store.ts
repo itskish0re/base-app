@@ -1,11 +1,10 @@
 import { configureStore, type Reducer } from '@reduxjs/toolkit';
-import type { AuthState } from '@/store/authSlice';
-import { authReducer } from '@/store/authSlice';
-import type { MenuState } from '@/store/menuSlice';
-import { menuReducer } from '@/store/menuSlice';
+import type { ScreenKey } from '@/constants/screenKeys';
+import { authReducer } from '@/store/global/authSlice';
+import { menuReducer } from '@/store/global/menuSlice';
 import { createReducerManager } from '@/store/reducerManager';
-import type { ScreenStateByKey } from '@/store/screens/registry';
-import type { ScreenKey } from '@/store/screenKeys';
+import type { ScreenStateByKey } from '@/types/store/screens';
+import type { RootState } from '@/types/store/root';
 
 const staticReducers = {
   auth: authReducer,
@@ -37,10 +36,5 @@ export function removeScreenReducer(key: ScreenKey): void {
   reducerManager.remove(key);
 }
 
-/** Auth is always present; screen slices exist only while their page is mounted. */
-export type RootState = {
-  auth: AuthState;
-  menu: MenuState;
-} & Partial<ScreenStateByKey>;
-
+export type { RootState };
 export type AppDispatch = typeof store.dispatch;

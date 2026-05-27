@@ -1,11 +1,6 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { SCREEN_KEYS } from '@/store/screenKeys';
-
-export interface DriversScreenState {
-  filter: string;
-  page: number;
-  selectedId: number | null;
-}
+import { SCREEN_KEYS } from '@/constants/screenKeys';
+import type { DriversScreenState } from '@/types/store/screens/drivers';
 
 const initialState: DriversScreenState = {
   filter: '',
