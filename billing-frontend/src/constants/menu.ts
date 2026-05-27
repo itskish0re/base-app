@@ -1,3 +1,14 @@
+/** Sidebar menu codes (match `app_menu.menu_code`, singular). */
+export const MENU_CODES = {
+  dashboard: 'dashboard',
+  nameBoard: 'name_board',
+  truck: 'truck',
+  driver: 'driver',
+  menu: 'menu',
+} as const;
+
+export type MenuCode = (typeof MENU_CODES)[keyof typeof MENU_CODES];
+
 /** Sidebar section keys (match `app_menu.menu_group`). */
 export const MENU_GROUPS = {
   main: 'main',

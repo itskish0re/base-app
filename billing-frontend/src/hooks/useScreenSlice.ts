@@ -1,11 +1,14 @@
-import { useEffect } from 'react';
+import { useLayoutEffect } from 'react';
 import type { ScreenKey } from '@/constants/screenKeys';
 import { useAppSelector } from '@/store/hooks';
+import { screenReducerRegistry } from '@/store/screens/registry';
+import { screenMountActionsByKey } from '@/store/screens/screenMountActions';
 import {
   injectScreenReducer,
+  isScreenReducerMounted,
   removeScreenReducer,
+  store,
 } from '@/store/store';
-import { screenReducerRegistry } from '@/store/screens/registry';
 import type { ScreenStateByKey } from '@/types/store/screens';
 import type { RootState } from '@/types/store/root';
 
@@ -14,8 +17,11 @@ import type { RootState } from '@/types/store/root';
  * so inactive screens do not keep state in memory.
  */
 export function useScreenSlice<K extends ScreenKey>(screenKey: K): void {
-  useEffect(() => {
-    injectScreenReducer(screenKey, screenReducerRegistry[screenKey]);
+  useLayoutEffect(() => {
+    if (!isScreenReducerMounted(screenKey)) {
+      injectScreenReducer(screenKey, screenReducerRegistry[screenKey]);
+      store.dispatch(screenMountActionsByKey[screenKey]());
+    }
 
     return () => {
       removeScreenReducer(screenKey);

@@ -1,15 +1,18 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
+import { createScreenMetadataReducers } from '@/store/screens/screenMetadataReducers';
 import type { DriversScreenState } from '@/types/store/screens/drivers';
+import { createInitialScreenMetadataState } from '@/types/store/screen';
 
 const initialState: DriversScreenState = {
   filter: '',
   page: 1,
   selectedId: null,
+  metadata: createInitialScreenMetadataState(),
 };
 
 const driversSlice = createSlice({
-  name: SCREEN_KEYS.drivers,
+  name: SCREEN_KEYS.driver,
   initialState,
   reducers: {
     setFilter(state, action: PayloadAction<string>) {
@@ -23,6 +26,7 @@ const driversSlice = createSlice({
       state.selectedId = action.payload;
     },
     resetScreenState: () => initialState,
+    ...createScreenMetadataReducers(),
   },
 });
 

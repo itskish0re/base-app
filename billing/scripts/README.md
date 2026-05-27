@@ -28,6 +28,12 @@ psql "$CONN" -f scripts/app_menu/drop_group_label.sql
 psql "$CONN" -f scripts/app_menu/seed_billing_menus.sql
 ```
 
+Existing databases that still use plural `menu_code` / `route_path` values:
+
+```bash
+psql "$CONN" -f scripts/app_menu/migrate_menu_codes_to_singular.sql
+```
+
 ### 2. Entity registry (types → entity → fields)
 
 ```bash
@@ -40,7 +46,7 @@ psql "$CONN" -f scripts/app_entity_field/driver.sql
 
 ### 3. UI screen layout (screen → columns → form fields)
 
-Requires steps 1–2. Links `name_boards` / `trucks` / `drivers` menus to grid + form metadata.
+Requires steps 1–2. Links `name_board` / `truck` / `driver` menus to grid + form metadata.
 
 ```bash
 psql "$CONN" -f scripts/app_entity_screen/insert.sql
@@ -95,9 +101,9 @@ psql "$CONN" -f scripts/app_entity_registry/migrate_field_data_type_and_componen
 After steps 1–3, verify:
 
 ```http
-GET /api/screens/by-menu/name_boards
-GET /api/screens/by-menu/trucks
-GET /api/screens/by-menu/drivers
+GET /api/screens/by-menu/name_board  → `{ screen, entities: [{ entity, entityFields, columns, formFields }] }`
+GET /api/screens/by-menu/truck
+GET /api/screens/by-menu/driver
 ```
 
 Endpoint code: `screens.get-by-menu` (seeded in `app_endpoint/auth_access.sql`, granted in `app_role_endpoint/auth_access.sql`).

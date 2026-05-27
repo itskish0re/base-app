@@ -1,16 +1,21 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
+import {
+  createScreenMetadataReducers,
+} from '@/store/screens/screenMetadataReducers';
 import type { NameBoardsScreenState } from '@/types/store/screens/nameBoards';
+import { createInitialScreenMetadataState } from '@/types/store/screen';
 
 const initialState: NameBoardsScreenState = {
   filter: '',
   page: 1,
   pageSize: 20,
   selectedId: null,
+  metadata: createInitialScreenMetadataState(),
 };
 
 const nameBoardsSlice = createSlice({
-  name: SCREEN_KEYS.nameBoards,
+  name: SCREEN_KEYS.nameBoard,
   initialState,
   reducers: {
     setFilter(state, action: PayloadAction<string>) {
@@ -28,6 +33,7 @@ const nameBoardsSlice = createSlice({
       state.selectedId = action.payload;
     },
     resetScreenState: () => initialState,
+    ...createScreenMetadataReducers(),
   },
 });
 

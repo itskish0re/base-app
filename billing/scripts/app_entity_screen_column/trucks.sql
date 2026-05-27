@@ -41,7 +41,7 @@ CROSS JOIN (
         ('is_active', 'Active', true, 40, 100, NULL::int, false, 'center', 'boolean')
 ) AS v(field_name, display_label, is_visible, display_order, column_width, min_width, is_pinned, align, column_component)
 INNER JOIN app_entity_field f ON f.entity_id = e.entity_id AND f.field_name = v.field_name
-WHERE m.menu_code = 'trucks'
+WHERE m.menu_code = 'truck'
 ON CONFLICT (entity_screen_id, entity_field_id) DO UPDATE
 SET
     display_label = EXCLUDED.display_label,

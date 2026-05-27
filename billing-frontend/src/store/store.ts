@@ -13,6 +13,10 @@ const staticReducers = {
 
 const reducerManager = createReducerManager(staticReducers);
 
+export function isScreenReducerMounted(key: ScreenKey): boolean {
+  return key in reducerManager.getReducerMap();
+}
+
 export const store = configureStore({
   reducer: (state, action) => reducerManager.reduce(state, action),
   middleware: (getDefaultMiddleware) =>

@@ -1,20 +1,24 @@
 namespace Application.Registry.Screen;
 
 public sealed record ScreenMetadataResponse(
-    ScreenSummaryDto Screen,
-    EntitySummaryDto Entity,
-    IReadOnlyList<EntityFieldDto> EntityFields,
-    IReadOnlyList<ScreenColumnDto> Columns,
-    IReadOnlyList<ScreenFormFieldDto> FormFields);
+    ScreenMetadataDto Screen,
+    IReadOnlyList<EntityScreenMetadataDto> Entities);
 
-public sealed record ScreenSummaryDto(
+/// <summary>One entity bound to a screen with its grid columns, form fields, and field registry.</summary>
+public sealed record EntityScreenMetadataDto(
+    EntityMetadataDto Entity,
+    IReadOnlyList<EntityFieldMetadataDto> EntityFields,
+    IReadOnlyList<ScreenColumnMetadataDto> Columns,
+    IReadOnlyList<ScreenFormFieldMetadataDto> FormFields);
+
+public sealed record ScreenMetadataDto(
     int EntityScreenId,
     int MenuId,
     string MenuCode,
     string? Description,
     bool IsActive);
 
-public sealed record EntitySummaryDto(
+public sealed record EntityMetadataDto(
     int EntityId,
     string EntityName,
     string EntityKind,
@@ -23,7 +27,7 @@ public sealed record EntitySummaryDto(
     string DisplayName,
     string? Description);
 
-public sealed record EntityFieldDto(
+public sealed record EntityFieldMetadataDto(
     int EntityFieldId,
     string FieldName,
     string DataType,
@@ -37,7 +41,7 @@ public sealed record EntityFieldDto(
     string? ValidationRegex,
     string? DefaultValue);
 
-public sealed record ScreenColumnDto(
+public sealed record ScreenColumnMetadataDto(
     int EntityScreenColumnId,
     int EntityFieldId,
     string FieldName,
@@ -53,7 +57,7 @@ public sealed record ScreenColumnDto(
     bool? AllowSort,
     bool IsActive);
 
-public sealed record ScreenFormFieldDto(
+public sealed record ScreenFormFieldMetadataDto(
     int EntityScreenFieldId,
     int EntityFieldId,
     string FieldName,

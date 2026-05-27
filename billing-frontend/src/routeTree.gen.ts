@@ -12,11 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
-import { Route as AuthenticatedMastersTrucksRouteImport } from './routes/_authenticated/masters/trucks'
-import { Route as AuthenticatedMastersNameBoardsRouteImport } from './routes/_authenticated/masters/name-boards'
-import { Route as AuthenticatedMastersDriversRouteImport } from './routes/_authenticated/masters/drivers'
+import { Route as AuthenticatedMastersTruckRouteImport } from './routes/_authenticated/masters/truck'
+import { Route as AuthenticatedMastersNameBoardRouteImport } from './routes/_authenticated/masters/name-board'
+import { Route as AuthenticatedMastersDriverRouteImport } from './routes/_authenticated/masters/driver'
 import { Route as AuthenticatedMainDashboardRouteImport } from './routes/_authenticated/main/dashboard'
-import { Route as AuthenticatedAdminMenusRouteImport } from './routes/_authenticated/admin/menus'
+import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin/menu'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -32,22 +32,22 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedMastersTrucksRoute =
-  AuthenticatedMastersTrucksRouteImport.update({
-    id: '/masters/trucks',
-    path: '/masters/trucks',
+const AuthenticatedMastersTruckRoute =
+  AuthenticatedMastersTruckRouteImport.update({
+    id: '/masters/truck',
+    path: '/masters/truck',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedMastersNameBoardsRoute =
-  AuthenticatedMastersNameBoardsRouteImport.update({
-    id: '/masters/name-boards',
-    path: '/masters/name-boards',
+const AuthenticatedMastersNameBoardRoute =
+  AuthenticatedMastersNameBoardRouteImport.update({
+    id: '/masters/name-board',
+    path: '/masters/name-board',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedMastersDriversRoute =
-  AuthenticatedMastersDriversRouteImport.update({
-    id: '/masters/drivers',
-    path: '/masters/drivers',
+const AuthenticatedMastersDriverRoute =
+  AuthenticatedMastersDriverRouteImport.update({
+    id: '/masters/driver',
+    path: '/masters/driver',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedMainDashboardRoute =
@@ -56,70 +56,70 @@ const AuthenticatedMainDashboardRoute =
     path: '/main/dashboard',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedAdminMenusRoute = AuthenticatedAdminMenusRouteImport.update({
-  id: '/admin/menus',
-  path: '/admin/menus',
+const AuthenticatedAdminMenuRoute = AuthenticatedAdminMenuRouteImport.update({
+  id: '/admin/menu',
+  path: '/admin/menu',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof AuthenticatedIndexRoute
   '/login': typeof LoginRoute
-  '/admin/menus': typeof AuthenticatedAdminMenusRoute
+  '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/masters/drivers': typeof AuthenticatedMastersDriversRoute
-  '/masters/name-boards': typeof AuthenticatedMastersNameBoardsRoute
-  '/masters/trucks': typeof AuthenticatedMastersTrucksRoute
+  '/masters/driver': typeof AuthenticatedMastersDriverRoute
+  '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/': typeof AuthenticatedIndexRoute
-  '/admin/menus': typeof AuthenticatedAdminMenusRoute
+  '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/masters/drivers': typeof AuthenticatedMastersDriversRoute
-  '/masters/name-boards': typeof AuthenticatedMastersNameBoardsRoute
-  '/masters/trucks': typeof AuthenticatedMastersTrucksRoute
+  '/masters/driver': typeof AuthenticatedMastersDriverRoute
+  '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/_authenticated': typeof AuthenticatedRouteWithChildren
   '/login': typeof LoginRoute
   '/_authenticated/': typeof AuthenticatedIndexRoute
-  '/_authenticated/admin/menus': typeof AuthenticatedAdminMenusRoute
+  '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/_authenticated/masters/drivers': typeof AuthenticatedMastersDriversRoute
-  '/_authenticated/masters/name-boards': typeof AuthenticatedMastersNameBoardsRoute
-  '/_authenticated/masters/trucks': typeof AuthenticatedMastersTrucksRoute
+  '/_authenticated/masters/driver': typeof AuthenticatedMastersDriverRoute
+  '/_authenticated/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/_authenticated/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/login'
-    | '/admin/menus'
+    | '/admin/menu'
     | '/main/dashboard'
-    | '/masters/drivers'
-    | '/masters/name-boards'
-    | '/masters/trucks'
+    | '/masters/driver'
+    | '/masters/name-board'
+    | '/masters/truck'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/'
-    | '/admin/menus'
+    | '/admin/menu'
     | '/main/dashboard'
-    | '/masters/drivers'
-    | '/masters/name-boards'
-    | '/masters/trucks'
+    | '/masters/driver'
+    | '/masters/name-board'
+    | '/masters/truck'
   id:
     | '__root__'
     | '/_authenticated'
     | '/login'
     | '/_authenticated/'
-    | '/_authenticated/admin/menus'
+    | '/_authenticated/admin/menu'
     | '/_authenticated/main/dashboard'
-    | '/_authenticated/masters/drivers'
-    | '/_authenticated/masters/name-boards'
-    | '/_authenticated/masters/trucks'
+    | '/_authenticated/masters/driver'
+    | '/_authenticated/masters/name-board'
+    | '/_authenticated/masters/truck'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -150,25 +150,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/masters/trucks': {
-      id: '/_authenticated/masters/trucks'
-      path: '/masters/trucks'
-      fullPath: '/masters/trucks'
-      preLoaderRoute: typeof AuthenticatedMastersTrucksRouteImport
+    '/_authenticated/masters/truck': {
+      id: '/_authenticated/masters/truck'
+      path: '/masters/truck'
+      fullPath: '/masters/truck'
+      preLoaderRoute: typeof AuthenticatedMastersTruckRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/masters/name-boards': {
-      id: '/_authenticated/masters/name-boards'
-      path: '/masters/name-boards'
-      fullPath: '/masters/name-boards'
-      preLoaderRoute: typeof AuthenticatedMastersNameBoardsRouteImport
+    '/_authenticated/masters/name-board': {
+      id: '/_authenticated/masters/name-board'
+      path: '/masters/name-board'
+      fullPath: '/masters/name-board'
+      preLoaderRoute: typeof AuthenticatedMastersNameBoardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/masters/drivers': {
-      id: '/_authenticated/masters/drivers'
-      path: '/masters/drivers'
-      fullPath: '/masters/drivers'
-      preLoaderRoute: typeof AuthenticatedMastersDriversRouteImport
+    '/_authenticated/masters/driver': {
+      id: '/_authenticated/masters/driver'
+      path: '/masters/driver'
+      fullPath: '/masters/driver'
+      preLoaderRoute: typeof AuthenticatedMastersDriverRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/main/dashboard': {
@@ -178,11 +178,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMainDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/admin/menus': {
-      id: '/_authenticated/admin/menus'
-      path: '/admin/menus'
-      fullPath: '/admin/menus'
-      preLoaderRoute: typeof AuthenticatedAdminMenusRouteImport
+    '/_authenticated/admin/menu': {
+      id: '/_authenticated/admin/menu'
+      path: '/admin/menu'
+      fullPath: '/admin/menu'
+      preLoaderRoute: typeof AuthenticatedAdminMenuRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
   }
@@ -190,20 +190,20 @@ declare module '@tanstack/react-router' {
 
 interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
-  AuthenticatedAdminMenusRoute: typeof AuthenticatedAdminMenusRoute
+  AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedMainDashboardRoute: typeof AuthenticatedMainDashboardRoute
-  AuthenticatedMastersDriversRoute: typeof AuthenticatedMastersDriversRoute
-  AuthenticatedMastersNameBoardsRoute: typeof AuthenticatedMastersNameBoardsRoute
-  AuthenticatedMastersTrucksRoute: typeof AuthenticatedMastersTrucksRoute
+  AuthenticatedMastersDriverRoute: typeof AuthenticatedMastersDriverRoute
+  AuthenticatedMastersNameBoardRoute: typeof AuthenticatedMastersNameBoardRoute
+  AuthenticatedMastersTruckRoute: typeof AuthenticatedMastersTruckRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
-  AuthenticatedAdminMenusRoute: AuthenticatedAdminMenusRoute,
+  AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedMainDashboardRoute: AuthenticatedMainDashboardRoute,
-  AuthenticatedMastersDriversRoute: AuthenticatedMastersDriversRoute,
-  AuthenticatedMastersNameBoardsRoute: AuthenticatedMastersNameBoardsRoute,
-  AuthenticatedMastersTrucksRoute: AuthenticatedMastersTrucksRoute,
+  AuthenticatedMastersDriverRoute: AuthenticatedMastersDriverRoute,
+  AuthenticatedMastersNameBoardRoute: AuthenticatedMastersNameBoardRoute,
+  AuthenticatedMastersTruckRoute: AuthenticatedMastersTruckRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

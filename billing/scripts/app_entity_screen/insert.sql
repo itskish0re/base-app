@@ -16,9 +16,9 @@ SELECT
     NOW()
 FROM (
     VALUES
-        ('name_board', 'name_boards', 'Name board master: grid + form'),
-        ('truck', 'trucks', 'Truck master: grid + form'),
-        ('driver', 'drivers', 'Driver master: grid + form')
+        ('name_board', 'name_board', 'Name board master: grid + form'),
+        ('truck', 'truck', 'Truck master: grid + form'),
+        ('driver', 'driver', 'Driver master: grid + form')
 ) AS v(entity_name, menu_code, description)
 INNER JOIN app_entity e ON e.entity_name = v.entity_name
 INNER JOIN app_menu m ON m.menu_code = v.menu_code AND m.is_active = true

@@ -113,7 +113,7 @@ service/query/nameBoards     →  listNameBoardsQueryOptions for useQuery
 ### How layers connect
 
 ```
-routes/.../name-boards.tsx  →  pages/masters/name-boards/index.tsx
+routes/.../name-board.tsx  →  pages/masters/name-boards/index.tsx
 routes/_authenticated.tsx   →  components/app/AppShell
 pages/.../table.tsx         →  components/derived/data-table (when added)
 ```
@@ -143,15 +143,16 @@ import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { nameBoardsScreenActions } from '@/store/screens/nameBoardsSlice';
 
 export function NameBoardsPage() {
-  useScreenSlice(SCREEN_KEYS.nameBoards);
+  useScreenSlice(SCREEN_KEYS.nameBoard);
+  useScreenMetadata(SCREEN_KEYS.nameBoard);
 
-  const filter = useScreenSelector(SCREEN_KEYS.nameBoards, (s) => s.filter);
+  const filter = useScreenSelector(SCREEN_KEYS.nameBoard, (s) => s.filter);
   const dispatch = useAppDispatch();
   // dispatch(nameBoardsScreenActions.setFilter('acme'));
 }
 ```
 
-Add a new screen: add `SCREEN_KEYS` + `types/store/screens/<name>.ts`, create `store/screens/<name>Slice.ts`, register in `store/screens/registry.ts`, call `useScreenSlice` in the page `index.tsx`.
+Add a new master screen: add `SCREEN_KEYS` + `types/store/screens/<name>.ts` (include `metadata`), create `store/screens/<name>Slice.ts` with `createScreenMetadataReducers()`, register in `registry.ts` and `screenMetadataActionsByKey`, then in the page call `useScreenSlice` and `useScreenMetadata` separately.
 
 Use **TanStack Query** for server/list data; use **screen slices** for UI-only state (filters, selection, panel open, draft form).
 

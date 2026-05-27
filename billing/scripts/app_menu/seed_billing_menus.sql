@@ -51,9 +51,9 @@ SET display_name = EXCLUDED.display_name,
 
 -- Menu administration screen (config group). Reuse legacy menu_admin row when present.
 UPDATE app_menu
-SET menu_code = 'menus',
+SET menu_code = 'menu',
     display_name = 'Menus',
-    route_path = '/admin/menus',
+    route_path = '/admin/menu',
     icon = 'settings',
     parent_menu_id = NULL,
     sort_order = 10,
@@ -62,7 +62,7 @@ SET menu_code = 'menus',
     menu_group = 'config',
     is_active = true,
     updated_at = NOW()
-WHERE menu_code IN ('menu_admin', 'menus');
+WHERE menu_code IN ('menu_admin', 'menus', 'menu');
 
 INSERT INTO app_menu (
     menu_code,
@@ -79,9 +79,9 @@ INSERT INTO app_menu (
     created_at,
     updated_at)
 SELECT
-    'menus',
+    'menu',
     'Menus',
-    '/admin/menus',
+    '/admin/menu',
     'settings',
     NULL,
     10,
@@ -92,7 +92,7 @@ SELECT
     true,
     NOW(),
     NOW()
-WHERE NOT EXISTS (SELECT 1 FROM app_menu WHERE menu_code = 'menus');
+WHERE NOT EXISTS (SELECT 1 FROM app_menu WHERE menu_code = 'menu');
 
 -- Master screens (secondary group).
 INSERT INTO app_menu (
@@ -111,9 +111,9 @@ INSERT INTO app_menu (
     updated_at)
 VALUES
     (
-        'name_boards',
+        'name_board',
         'Name Board',
-        '/masters/name-boards',
+        '/masters/name-board',
         'nameboard',
         NULL,
         10,
@@ -125,9 +125,9 @@ VALUES
         NOW(),
         NOW()),
     (
-        'trucks',
+        'truck',
         'Truck',
-        '/masters/trucks',
+        '/masters/truck',
         'truck',
         NULL,
         20,
@@ -139,9 +139,9 @@ VALUES
         NOW(),
         NOW()),
     (
-        'drivers',
+        'driver',
         'Driver',
-        '/masters/drivers',
+        '/masters/driver',
         'driver',
         NULL,
         30,
@@ -173,7 +173,7 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menus', 'name_boards', 'trucks', 'drivers')
+INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'driver')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE

@@ -25,6 +25,11 @@ export type {
 } from '@/types/store';
 
 export type {
+  ScreenMetadataLoadStatus,
+  ScreenMetadataState,
+} from '@/types/store/screen';
+
+export type {
   BatchCreateDriversRequest,
   BatchCreateDriversResponse,
   BatchCreateMenusRequest,
@@ -68,8 +73,9 @@ export type {
   DriverDto,
   DriverLookupFieldMapping,
   DriverLookupResponse,
-  EntityFieldDto,
-  EntitySummaryDto,
+  EntityFieldMetadataDto,
+  EntityMetadataDto,
+  EntityScreenMetadataDto,
   ListMenusParams,
   LookupDriversRequest,
   LookupNameBoardsRequest,
@@ -82,10 +88,10 @@ export type {
   PagedMenusResponse,
   PagedNameBoardsResponse,
   PagedTrucksResponse,
-  ScreenColumnDto,
-  ScreenFormFieldDto,
+  ScreenColumnMetadataDto,
+  ScreenFormFieldMetadataDto,
+  ScreenMetadataDto,
   ScreenMetadataResponse,
-  ScreenSummaryDto,
   ToggleDriverItemRequest,
   ToggleMenuItemRequest,
   ToggleNameBoardItemRequest,

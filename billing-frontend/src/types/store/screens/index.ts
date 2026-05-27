@@ -13,8 +13,8 @@ export type { TrucksScreenState } from './trucks';
 
 export interface ScreenStateByKey {
   [SCREEN_KEYS.dashboard]: DashboardScreenState;
-  [SCREEN_KEYS.nameBoards]: NameBoardsScreenState;
-  [SCREEN_KEYS.trucks]: TrucksScreenState;
-  [SCREEN_KEYS.drivers]: DriversScreenState;
-  [SCREEN_KEYS.menus]: MenusScreenState;
+  [SCREEN_KEYS.nameBoard]: NameBoardsScreenState;
+  [SCREEN_KEYS.truck]: TrucksScreenState;
+  [SCREEN_KEYS.driver]: DriversScreenState;
+  [SCREEN_KEYS.menu]: MenusScreenState;
 }

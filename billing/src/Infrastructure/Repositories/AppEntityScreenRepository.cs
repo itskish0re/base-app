@@ -42,10 +42,10 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
             return null;
         }
 
-        var entity = await context.AppEntities
+        EntityMetadataDto? entity = await context.AppEntities
             .AsNoTracking()
             .Where(e => e.EntityId == screen.EntityId)
-            .Select(e => new EntitySummaryDto(
+            .Select(e => new EntityMetadataDto(
                 e.EntityId,
                 e.EntityName,
                 e.EntityKind,
@@ -60,11 +60,11 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
             return null;
         }
 
-        Task<List<EntityFieldDto>> entityFieldsTask = context.AppEntityFields
+        List<EntityFieldMetadataDto> entityFields = await context.AppEntityFields
             .AsNoTracking()
             .Where(f => f.EntityId == screen.EntityId)
             .OrderBy(f => f.FieldName)
-            .Select(f => new EntityFieldDto(
+            .Select(f => new EntityFieldMetadataDto(
                 f.EntityFieldId,
                 f.FieldName,
                 f.FieldDataType.TypeCode,
@@ -79,12 +79,12 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 f.DefaultValue))
             .ToListAsync(cancellationToken);
 
-        Task<List<ScreenColumnDto>> columnsTask = context.AppEntityScreenColumns
+        List<ScreenColumnMetadataDto> columns = await context.AppEntityScreenColumns
             .AsNoTracking()
             .Where(c => c.EntityScreenId == screen.EntityScreenId && c.IsActive)
             .OrderBy(c => c.DisplayOrder)
             .ThenBy(c => c.EntityScreenColumnId)
-            .Select(c => new ScreenColumnDto(
+            .Select(c => new ScreenColumnMetadataDto(
                 c.EntityScreenColumnId,
                 c.EntityFieldId,
                 c.EntityField.FieldName,
@@ -101,12 +101,12 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 c.IsActive))
             .ToListAsync(cancellationToken);
 
-        Task<List<ScreenFormFieldDto>> formFieldsTask = context.AppEntityScreenFields
+        List<ScreenFormFieldMetadataDto> formFields = await context.AppEntityScreenFields
             .AsNoTracking()
             .Where(f => f.EntityScreenId == screen.EntityScreenId && f.IsActive)
             .OrderBy(f => f.DisplayOrder)
             .ThenBy(f => f.EntityScreenFieldId)
-            .Select(f => new ScreenFormFieldDto(
+            .Select(f => new ScreenFormFieldMetadataDto(
                 f.EntityScreenFieldId,
                 f.EntityFieldId,
                 f.EntityField.FieldName,
@@ -119,18 +119,15 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 f.IsActive))
             .ToListAsync(cancellationToken);
 
-        await Task.WhenAll(entityFieldsTask, columnsTask, formFieldsTask);
+        var entityBundle = new EntityScreenMetadataDto(entity, entityFields, columns, formFields);
 
         return new ScreenMetadataResponse(
-            new ScreenSummaryDto(
+            new ScreenMetadataDto(
                 screen.EntityScreenId,
                 screen.MenuId,
                 menu.MenuCode,
                 screen.Description,
                 screen.IsActive),
-            entity,
-            await entityFieldsTask,
-            await columnsTask,
-            await formFieldsTask);
+            [entityBundle]);
     }
 }

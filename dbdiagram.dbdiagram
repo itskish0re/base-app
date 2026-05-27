@@ -27,8 +27,8 @@
       {
         "name": "app_menu",
         "schemaName": "public",
-        "x": 1058.478515625,
-        "y": 416
+        "x": 16,
+        "y": 32
       },
       {
         "name": "app_role_menu",
@@ -51,20 +51,20 @@
       {
         "name": "app_entity",
         "schemaName": "public",
-        "x": 1058.478515625,
-        "y": 1028
+        "x": 16,
+        "y": 624
       },
       {
         "name": "app_entity_field",
         "schemaName": "public",
-        "x": 1729.88916015625,
-        "y": 777
+        "x": 640,
+        "y": 400
       },
       {
         "name": "app_entity_screen",
         "schemaName": "public",
-        "x": 1729.88916015625,
-        "y": 1335
+        "x": 640,
+        "y": 32
       },
       {
         "name": "app_entity_screen_column",

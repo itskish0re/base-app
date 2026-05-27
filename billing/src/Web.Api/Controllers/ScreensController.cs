@@ -21,8 +21,8 @@ public sealed class ScreensController(ISender sender) : ControllerBase
             new GetScreenByMenuCodeQuery(menuCode),
             cancellationToken);
 
-        return result.Match<IActionResult>(
-            Ok,
+        return result.Match<ScreenMetadataResponse, IActionResult>(
+            value => Ok(value),
             failure => Problem(
                 title: failure.Error.Code,
                 detail: failure.Error.Description,

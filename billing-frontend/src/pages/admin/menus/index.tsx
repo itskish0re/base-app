@@ -3,7 +3,7 @@ import { useScreenSlice } from '@/hooks/useScreenSlice';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 
 export function MenusPage() {
-  useScreenSlice(SCREEN_KEYS.menus);
+  useScreenSlice(SCREEN_KEYS.menu);
   return (
     <PagePlaceholder
       title="Menus"

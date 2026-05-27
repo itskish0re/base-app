@@ -57,12 +57,13 @@ export type {
 } from './nameBoard';
 
 export type {
-  EntityFieldDto,
-  EntitySummaryDto,
-  ScreenColumnDto,
-  ScreenFormFieldDto,
+  EntityFieldMetadataDto,
+  EntityMetadataDto,
+  EntityScreenMetadataDto,
+  ScreenColumnMetadataDto,
+  ScreenFormFieldMetadataDto,
+  ScreenMetadataDto,
   ScreenMetadataResponse,
-  ScreenSummaryDto,
 } from './screen';
 
 export type {

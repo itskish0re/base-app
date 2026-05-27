@@ -9,8 +9,8 @@ import type { ScreenStateByKey } from '@/types/store/screens';
 
 export const screenReducerRegistry: { [K in ScreenKey]: Reducer<ScreenStateByKey[K]> } = {
   [SCREEN_KEYS.dashboard]: dashboardScreenReducer,
-  [SCREEN_KEYS.nameBoards]: nameBoardsScreenReducer,
-  [SCREEN_KEYS.trucks]: trucksScreenReducer,
-  [SCREEN_KEYS.drivers]: driversScreenReducer,
-  [SCREEN_KEYS.menus]: menusScreenReducer,
+  [SCREEN_KEYS.nameBoard]: nameBoardsScreenReducer,
+  [SCREEN_KEYS.truck]: trucksScreenReducer,
+  [SCREEN_KEYS.driver]: driversScreenReducer,
+  [SCREEN_KEYS.menu]: menusScreenReducer,
 };

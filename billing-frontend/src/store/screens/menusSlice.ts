@@ -8,7 +8,7 @@ const initialState: MenusScreenState = {
 };
 
 const menusSlice = createSlice({
-  name: SCREEN_KEYS.menus,
+  name: SCREEN_KEYS.menu,
   initialState,
   reducers: {
     setFilter(state, action: PayloadAction<string>) {

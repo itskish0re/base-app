@@ -1,12 +1,17 @@
 export interface ScreenMetadataResponse {
-  screen: ScreenSummaryDto;
-  entity: EntitySummaryDto;
-  entityFields: EntityFieldDto[];
-  columns: ScreenColumnDto[];
-  formFields: ScreenFormFieldDto[];
+  screen: ScreenMetadataDto;
+  entities: EntityScreenMetadataDto[];
 }
 
-export interface ScreenSummaryDto {
+/** One entity on a screen with its fields, grid columns, and form layout. */
+export interface EntityScreenMetadataDto {
+  entity: EntityMetadataDto;
+  entityFields: EntityFieldMetadataDto[];
+  columns: ScreenColumnMetadataDto[];
+  formFields: ScreenFormFieldMetadataDto[];
+}
+
+export interface ScreenMetadataDto {
   entityScreenId: number;
   menuId: number;
   menuCode: string;
@@ -14,7 +19,7 @@ export interface ScreenSummaryDto {
   isActive: boolean;
 }
 
-export interface EntitySummaryDto {
+export interface EntityMetadataDto {
   entityId: number;
   entityName: string;
   entityKind: string;
@@ -24,7 +29,7 @@ export interface EntitySummaryDto {
   description: string | null;
 }
 
-export interface EntityFieldDto {
+export interface EntityFieldMetadataDto {
   entityFieldId: number;
   fieldName: string;
   dataType: string;
@@ -39,7 +44,7 @@ export interface EntityFieldDto {
   defaultValue: string | null;
 }
 
-export interface ScreenColumnDto {
+export interface ScreenColumnMetadataDto {
   entityScreenColumnId: number;
   entityFieldId: number;
   fieldName: string;
@@ -56,7 +61,7 @@ export interface ScreenColumnDto {
   isActive: boolean;
 }
 
-export interface ScreenFormFieldDto {
+export interface ScreenFormFieldMetadataDto {
   entityScreenFieldId: number;
   entityFieldId: number;
   fieldName: string;
