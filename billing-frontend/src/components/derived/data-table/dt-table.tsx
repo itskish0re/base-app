@@ -7,6 +7,13 @@ import {
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useEffect, useMemo } from 'react';
 import { DtColumnFilters } from '@/components/derived/data-table/dt-column-filters';
+import {
+  actionsColumnStyle,
+  computeDataTableLayout,
+  dataColumnStyle,
+  DT_STICKY_ACTIONS_CELL_CLASS,
+  DT_STICKY_ACTIONS_HEAD_CLASS,
+} from '@/components/derived/data-table/dt-column-layout';
 import { DataTableProvider } from '@/components/derived/data-table/dt-provider';
 import { DtErrors } from '@/components/derived/data-table/dt-errors';
 import { DtHeader } from '@/components/derived/data-table/dt-header';
@@ -26,14 +33,6 @@ import {
 } from '@/components/derived/data-table/dt-utils';
 import { useDataTable } from '@/components/derived/data-table/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from '@/components/ui/table';
 import { cn } from '@/lib/utils';
 
 function cellAlignClass(align: DataTableColumnDef['align']): string {
@@ -152,6 +151,16 @@ function DataTableView<TRow extends object>({
     [visibleColumns, actionsColumn, rowId, mutations],
   );
 
+  const layout = useMemo(
+    () =>
+      computeDataTableLayout(
+        visibleColumns,
+        Boolean(actionsColumn),
+        actionsColumn?.widthPercent,
+      ),
+    [visibleColumns, actionsColumn],
+  );
+
   const table = useReactTable({
     data: displayRows,
     columns: tanstackColumns,
@@ -174,10 +183,17 @@ function DataTableView<TRow extends object>({
       ) : null}
       <DtToolbar searchPlaceholder={searchPlaceholder} />
 
-      <div className="rounded-md border">
-        <Table>
-          <TableHeader>
-            <TableRow>
+      <div className="relative w-full overflow-x-auto rounded-md border">
+        <table
+          className="caption-bottom text-sm"
+          style={{
+            width: `${layout.tableWidthPercent}%`,
+            minWidth: `${layout.tableWidthPercent}%`,
+            tableLayout: 'fixed',
+          }}
+        >
+          <thead className="[&_tr]:border-b">
+            <tr className="border-b">
               {table.getHeaderGroups()[0]?.headers.map((header) => {
                 const columnDef = (
                   header.column.columnDef.meta as { columnDef?: DataTableColumnDef } | undefined
@@ -187,16 +203,21 @@ function DataTableView<TRow extends object>({
                 const isActions = (header.column.columnDef.meta as { isActions?: boolean })?.isActions;
 
                 return (
-                  <TableHead
+                  <th
                     key={header.id}
                     className={cn(
+                      'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
                       cellAlignClass(align),
                       sortable && !isActions && 'cursor-pointer select-none',
+                      isActions && DT_STICKY_ACTIONS_HEAD_CLASS,
                     )}
-                    style={{
-                      width: columnDef?.width ?? undefined,
-                      minWidth: columnDef?.minWidth ?? undefined,
-                    }}
+                    style={
+                      isActions
+                        ? actionsColumnStyle(layout)
+                        : columnDef
+                          ? dataColumnStyle(layout, columnDef.id)
+                          : undefined
+                    }
                     onClick={() => {
                       if (!columnDef || isActions) {
                         return;
@@ -217,54 +238,75 @@ function DataTableView<TRow extends object>({
                         ) : null}
                       </span>
                     )}
-                  </TableHead>
+                  </th>
                 );
               })}
-            </TableRow>
+            </tr>
             {showColumnSearch ? (
               <DtColumnFilters
+                layout={layout}
                 visibleColumns={visibleColumns}
                 hasActionsColumn={hasActionsColumn}
               />
             ) : null}
-          </TableHeader>
-          <TableBody>
+          </thead>
+          <tbody className="[&_tr:last-child]:border-0">
             {isLoading ? (
               Array.from({ length: 5 }).map((_, index) => (
-                <TableRow key={`skeleton-${index}`}>
+                <tr key={`skeleton-${index}`} className="border-b">
                   {tanstackColumns.map((column) => (
-                    <TableCell key={column.id}>
+                    <td key={column.id} className="p-2 align-middle">
                       <Skeleton className="h-4 w-full" />
-                    </TableCell>
+                    </td>
                   ))}
-                </TableRow>
+                </tr>
               ))
             ) : table.getRowModel().rows.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={tanstackColumns.length} className="h-24 text-center">
+              <tr className="border-b">
+                <td colSpan={tanstackColumns.length} className="h-24 p-2 text-center align-middle">
                   {emptyMessage}
-                </TableCell>
-              </TableRow>
+                </td>
+              </tr>
             ) : (
               table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} data-state={row.getIsSelected() ? 'selected' : undefined}>
+                <tr
+                  key={row.id}
+                  className="group border-b transition-colors hover:bg-muted/50"
+                  data-state={row.getIsSelected() ? 'selected' : undefined}
+                >
                   {row.getVisibleCells().map((cell) => {
                     const columnDef = (
                       cell.column.columnDef.meta as { columnDef?: DataTableColumnDef } | undefined
                     )?.columnDef;
                     const align = columnDef?.align ?? 'left';
+                    const isActions = (cell.column.columnDef.meta as { isActions?: boolean })
+                      ?.isActions;
 
                     return (
-                      <TableCell key={cell.id} className={cellAlignClass(align)}>
+                      <td
+                        key={cell.id}
+                        className={cn(
+                          'p-2 align-middle whitespace-nowrap',
+                          cellAlignClass(align),
+                          isActions && DT_STICKY_ACTIONS_CELL_CLASS,
+                        )}
+                        style={
+                          isActions
+                            ? actionsColumnStyle(layout)
+                            : columnDef
+                              ? dataColumnStyle(layout, columnDef.id)
+                              : undefined
+                        }
+                      >
                         {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </TableCell>
+                      </td>
                     );
                   })}
-                </TableRow>
+                </tr>
               ))
             )}
-          </TableBody>
-        </Table>
+          </tbody>
+        </table>
       </div>
 
       <div className="pt-3">

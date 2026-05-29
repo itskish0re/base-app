@@ -79,8 +79,8 @@ export interface DataTableColumnDef {
   fieldName: string;
   header: string;
   dataType: string;
-  width?: number | null;
-  minWidth?: number | null;
+  /** Share of grid base width (100); columns may sum above 100 for horizontal scroll. */
+  widthPercent: number | null;
   isPinned?: boolean;
   align?: 'left' | 'center' | 'right';
   sortable: boolean;
@@ -106,8 +106,7 @@ export function mapScreenColumnsToDataTableColumns(
       fieldName: column.fieldName,
       header: column.displayLabel ?? column.fieldName,
       dataType: column.dataType,
-      width: column.columnWidth,
-      minWidth: column.minWidth,
+      widthPercent: column.columnWidthPercent,
       isPinned: column.isPinned,
       align: normalizeColumnAlign(column.align),
       sortable: column.allowSort ?? false,
@@ -153,9 +152,8 @@ export type DataTableActionsColumnRenderProps<TRow> = {
 
 export interface DataTableActionsColumnDef<TRow> {
   header?: string;
-  width?: number;
-  minWidth?: number;
-  pinned?: 'right';
+  /** Share of grid base width (100); defaults to 12. */
+  widthPercent?: number;
   render: (props: DataTableActionsColumnRenderProps<TRow>) => ReactNode;
 }
 

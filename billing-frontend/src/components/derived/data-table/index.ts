@@ -9,6 +9,12 @@ export { DtToolbar, type DtToolbarProps } from '@/components/derived/data-table/
 export { DtToolbarOptions } from '@/components/derived/data-table/dt-toolbar-options';
 export { DtToolbarSearch, type DtToolbarSearchProps } from '@/components/derived/data-table/dt-toolbar-search';
 export {
+  computeDataTableLayout,
+  DT_ACTIONS_COLUMN_WIDTH_PERCENT,
+  DT_GRID_BASE_WIDTH_PERCENT,
+  type DataTableLayout,
+} from '@/components/derived/data-table/dt-column-layout';
+export {
   applyColumnFilters,
   formatDataTableCellValue,
   getVisibleDataTableColumns,

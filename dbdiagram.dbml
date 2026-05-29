@@ -233,8 +233,7 @@ Table app_entity_screen_column {
   display_label varchar
   is_visible boolean [not null, default: true]
   display_order int [not null, default: 0]
-  column_width int
-  min_width int
+  column_width_percent int [note: 'Share of grid base width 100; sum may exceed 100 for horizontal scroll']
   is_pinned boolean [not null, default: false]
   align app_entity_column_align [not null, default: 'left']
   column_component varchar [note: 'Grid cell renderer e.g. text, badge, currency']

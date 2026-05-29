@@ -14,9 +14,8 @@ public sealed class AppEntityScreenColumn
 
     public int DisplayOrder { get; set; }
 
-    public int? ColumnWidth { get; set; }
-
-    public int? MinWidth { get; set; }
+    /// <summary>Share of the grid base width (100). Sum across columns may exceed 100 for horizontal scroll.</summary>
+    public int? ColumnWidthPercent { get; set; }
 
     public bool IsPinned { get; set; }
 
