@@ -9,7 +9,7 @@ import { useDataTableController } from '@/components/derived/data-table/hooks';
 
 type DataTableProviderProps<TRow extends object> = Omit<
   DataTableProps<TRow>,
-  'columns' | 'rowId' | 'actionsColumn' | 'emptyMessage' | 'title' | 'headerActions' | 'searchPlaceholder'
+  'columns' | 'rowId' | 'renderActionsColumn' | 'emptyMessage' | 'title' | 'headerActions' | 'searchPlaceholder'
 > & {
   children: ReactNode;
 };

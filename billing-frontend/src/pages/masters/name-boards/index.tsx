@@ -43,6 +43,10 @@ export function NameBoardsPage() {
     );
   }
 
+  if (!metadataReady) {
+    return <p className="text-sm text-muted-foreground">Loading screen…</p>;
+  }
+
   return (
     <DataTable<NameBoardDto>
       title="Name Board"
@@ -54,6 +58,7 @@ export function NameBoardsPage() {
       value={table}
       onChange={onTableChange}
       queryOptions={listNameBoardsQueryOptions}
+      enabled={metadataReady}
       mutations={{
         create: () => createNameBoardsMutationOptions,
         update: () => updateNameBoardsMutationOptions,
@@ -62,22 +67,18 @@ export function NameBoardsPage() {
       }}
       columns={columns}
       rowId={(row) => row.nameBoardId}
-      enabled={metadataReady && columns.length > 0}
       searchPlaceholder="Search name boards…"
-      actionsColumn={{
-        header: 'Actions',
-        render: ({ rowId, mutations }) => (
-          <Button
-            type="button"
-            variant="ghost"
-            size="sm"
-            disabled={mutations.delete?.isPending}
-            onClick={() => mutations.delete?.mutate({ ids: [rowId] })}
-          >
-            Delete
-          </Button>
-        ),
-      }}
+      renderActionsColumn={({ rowId, mutations }) => (
+        <Button
+          type="button"
+          variant="ghost"
+          size="sm"
+          disabled={mutations.delete?.isPending}
+          onClick={() => mutations.delete?.mutate({ ids: [rowId] })}
+        >
+          Delete
+        </Button>
+      )}
     />
   );
 }

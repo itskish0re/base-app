@@ -23,20 +23,20 @@ function cellAlignClass(align: DataTableColumnDef['align']): string {
 
 type DtColumnFiltersProps = {
   layout: DataTableLayout;
-  visibleColumns: DataTableColumnDef[];
-  hasActionsColumn: boolean;
+  visibleDataColumns: DataTableColumnDef[];
+  showActionsColumn: boolean;
 };
 
 export function DtColumnFilters({
   layout,
-  visibleColumns,
-  hasActionsColumn,
+  visibleDataColumns,
+  showActionsColumn,
 }: DtColumnFiltersProps) {
   const { columnFilters, setColumnFilter } = useDataTable();
 
   return (
     <tr className="border-b bg-muted/30 hover:bg-muted/30">
-      {visibleColumns.map((column) => (
+      {visibleDataColumns.map((column) => (
         <th
           key={`filter-${column.id}`}
           className={cn('py-2 font-normal', cellAlignClass(column.align))}
@@ -51,7 +51,7 @@ export function DtColumnFilters({
           />
         </th>
       ))}
-      {hasActionsColumn ? (
+      {showActionsColumn ? (
         <th
           className={cn('py-2 font-normal', DT_STICKY_ACTIONS_HEAD_CLASS)}
           style={actionsColumnStyle(layout)}

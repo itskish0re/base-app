@@ -10,14 +10,19 @@ export { DtToolbarOptions } from '@/components/derived/data-table/dt-toolbar-opt
 export { DtToolbarSearch, type DtToolbarSearchProps } from '@/components/derived/data-table/dt-toolbar-search';
 export {
   computeDataTableLayout,
-  DT_ACTIONS_COLUMN_WIDTH_PERCENT,
+  DT_DEFAULT_ACTIONS_COLUMN_WIDTH_PERCENT,
   DT_GRID_BASE_WIDTH_PERCENT,
+  getActionsColumnWidthPercent,
   type DataTableLayout,
 } from '@/components/derived/data-table/dt-column-layout';
 export {
   applyColumnFilters,
+  buildInitialColumnVisibility,
   formatDataTableCellValue,
+  getToggleableDataTableColumns,
   getVisibleDataTableColumns,
+  inactiveDataTableRowClassName,
+  isInactiveDataTableRow,
 } from '@/components/derived/data-table/dt-utils';
 export {
   createDataTableStore,
@@ -27,12 +32,22 @@ export {
   type DataTableUiState,
 } from '@/components/derived/data-table/dt-store';
 export {
+  DT_COLUMN_COMPONENT_ACTIONS,
+  DT_FIELD_IS_ACTIVE,
+  DT_FIELD_IS_ENABLED,
+} from '@/components/derived/data-table/dt-constants';
+export {
   DT_FILTER_DEBOUNCE_MS,
   createInitialDataTableState,
   dataTableStateToListQueryParams,
+  defaultColumnVisibleInGrid,
   getPrimaryEntityColumns,
+  isActionsColumn,
+  isDisplayableGridColumn,
+  mapScreenColumnToDataTableColumn,
   mapScreenColumnsToDataTableColumns,
-  type DataTableActionsColumnDef,
+  partitionDataTableColumns,
+  type DataTableActionsColumnRender,
   type DataTableActionsColumnRenderProps,
   type DataTableColumnDef,
   type DataTableFilterState,

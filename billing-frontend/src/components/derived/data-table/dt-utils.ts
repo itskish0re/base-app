@@ -1,4 +1,8 @@
-import type { DataTableColumnDef } from '@/components/derived/data-table/dt-types';
+import {
+  defaultColumnVisibleInGrid,
+  isDisplayableGridColumn,
+  type DataTableColumnDef,
+} from '@/components/derived/data-table/dt-types';
 
 export function formatDataTableCellValue(value: unknown): string {
   if (value === null || value === undefined) {
@@ -15,14 +19,34 @@ export function formatDataTableCellValue(value: unknown): string {
 export function buildInitialColumnVisibility(
   columns: DataTableColumnDef[],
 ): Record<string, boolean> {
-  return Object.fromEntries(columns.map((column) => [column.id, column.visible]));
+  return Object.fromEntries(
+    columns.map((column) => [column.id, defaultColumnVisibleInGrid(column)]),
+  );
+}
+
+/** Data columns the user can toggle in the column picker. */
+export function getToggleableDataTableColumns(
+  columns: DataTableColumnDef[],
+): DataTableColumnDef[] {
+  return columns.filter(isDisplayableGridColumn);
 }
 
 export function getVisibleDataTableColumns(
   columns: DataTableColumnDef[],
   columnVisibility: Record<string, boolean>,
 ): DataTableColumnDef[] {
-  return columns.filter((column) => columnVisibility[column.id] !== false);
+  return columns.filter(
+    (column) => isDisplayableGridColumn(column) && columnVisibility[column.id] !== false,
+  );
+}
+
+/** Soft-delete / inactive rows (`is_active` on entity DTOs). */
+export function isInactiveDataTableRow(row: { isActive?: boolean }): boolean {
+  return row.isActive === false;
+}
+
+export function inactiveDataTableRowClassName(row: { isActive?: boolean }): string | undefined {
+  return isInactiveDataTableRow(row) ? 'opacity-60 text-muted-foreground' : undefined;
 }
 
 export function applyColumnFilters<TRow extends object>(

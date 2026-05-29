@@ -39,7 +39,8 @@ CROSS JOIN (
         ('created_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
         ('updated_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
         ('created_by', 'integer', false, false, true, false, false, NULL::int, NULL::int),
-        ('updated_by', 'integer', false, false, true, false, false, NULL::int, NULL::int)
+        ('updated_by', 'integer', false, false, true, false, false, NULL::int, NULL::int),
+        ('_actions', 'text', false, false, false, false, false, NULL::int, NULL::int)
 ) AS v(field_name, type_code, filterable, sortable, selectable, writable, is_required, min_length, max_length)
 INNER JOIN app_field_data_type t ON t.type_code = v.type_code
 WHERE e.entity_name = 'truck'

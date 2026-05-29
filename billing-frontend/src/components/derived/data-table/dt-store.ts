@@ -1,5 +1,6 @@
 import { createStore, type StoreApi } from 'zustand';
 import { useStore } from 'zustand';
+import { defaultColumnVisibleInGrid } from '@/components/derived/data-table/dt-types';
 import {
   type DataTableColumnDef,
   type DataTableMutationsHandle,
@@ -154,7 +155,7 @@ export function createDataTableStore<TRow>(
 
       for (const column of columns) {
         if (!(column.id in columnVisibility)) {
-          columnVisibility[column.id] = column.visible;
+          columnVisibility[column.id] = defaultColumnVisibleInGrid(column);
         }
       }
 

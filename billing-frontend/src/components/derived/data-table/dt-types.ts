@@ -1,5 +1,6 @@
 import type { UseMutationOptions, UseMutationResult, UseQueryOptions } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
+import { DT_COLUMN_COMPONENT_ACTIONS } from '@/components/derived/data-table/dt-constants';
 import type { ListQueryParams, PagedResponse } from '@/types/common';
 import type {
   EntityScreenMetadataDto,
@@ -95,24 +96,62 @@ export function getPrimaryEntityColumns(
   return entities[0]?.columns ?? [];
 }
 
+export function isActionsColumn(column: DataTableColumnDef): boolean {
+  return column.columnComponent === DT_COLUMN_COMPONENT_ACTIONS;
+}
+
+export function mapScreenColumnToDataTableColumn(
+  column: ScreenColumnMetadataDto,
+): DataTableColumnDef {
+  return {
+    id: String(column.entityScreenColumnId),
+    fieldName: column.fieldName,
+    header: column.displayLabel ?? column.fieldName,
+    dataType: column.dataType,
+    widthPercent: column.columnWidthPercent,
+    isPinned: column.isPinned,
+    align: normalizeColumnAlign(column.align),
+    sortable: column.allowSort ?? false,
+    visible: column.isVisible,
+    columnComponent: column.columnComponent,
+  };
+}
+
+/** All active screen columns (including actions); used for layout and column picker. */
 export function mapScreenColumnsToDataTableColumns(
   columns: ScreenColumnMetadataDto[],
 ): DataTableColumnDef[] {
   return [...columns]
     .sort((a, b) => a.displayOrder - b.displayOrder)
-    .filter((column) => column.isActive && column.isVisible)
-    .map((column) => ({
-      id: String(column.entityScreenColumnId),
-      fieldName: column.fieldName,
-      header: column.displayLabel ?? column.fieldName,
-      dataType: column.dataType,
-      widthPercent: column.columnWidthPercent,
-      isPinned: column.isPinned,
-      align: normalizeColumnAlign(column.align),
-      sortable: column.allowSort ?? false,
-      visible: column.isVisible,
-      columnComponent: column.columnComponent,
-    }));
+    .filter((column) => column.isActive)
+    .map(mapScreenColumnToDataTableColumn);
+}
+
+export function partitionDataTableColumns(columns: DataTableColumnDef[]): {
+  dataColumns: DataTableColumnDef[];
+  actionsColumn: DataTableColumnDef | null;
+} {
+  const dataColumns: DataTableColumnDef[] = [];
+  let actionsColumn: DataTableColumnDef | null = null;
+
+  for (const column of columns) {
+    if (isActionsColumn(column)) {
+      actionsColumn = column;
+    } else {
+      dataColumns.push(column);
+    }
+  }
+
+  return { dataColumns, actionsColumn };
+}
+
+/** Grid + column-picker columns (`is_visible` on screen metadata). */
+export function isDisplayableGridColumn(column: DataTableColumnDef): boolean {
+  return !isActionsColumn(column) && column.visible;
+}
+
+export function defaultColumnVisibleInGrid(column: DataTableColumnDef): boolean {
+  return isDisplayableGridColumn(column);
 }
 
 function normalizeColumnAlign(align: string): 'left' | 'center' | 'right' {
@@ -150,12 +189,9 @@ export type DataTableActionsColumnRenderProps<TRow> = {
   mutations: DataTableMutationsHandle;
 };
 
-export interface DataTableActionsColumnDef<TRow> {
-  header?: string;
-  /** Share of grid base width (100); defaults to 12. */
-  widthPercent?: number;
-  render: (props: DataTableActionsColumnRenderProps<TRow>) => ReactNode;
-}
+export type DataTableActionsColumnRender<TRow> = (
+  props: DataTableActionsColumnRenderProps<TRow>,
+) => ReactNode;
 
 export interface DataTableProps<TRow> {
   /** Top bar: table name (left). */
@@ -174,8 +210,10 @@ export interface DataTableProps<TRow> {
   columns: DataTableColumnDef[];
   rowId: (row: TRow) => number;
 
-  actionsColumn?: DataTableActionsColumnDef<TRow>;
+  /** Row actions cell; required when metadata includes an `actions` column. */
+  renderActionsColumn?: DataTableActionsColumnRender<TRow>;
 
+  /** When false, list query is disabled; table structure still renders from `columns`. */
   enabled?: boolean;
   emptyMessage?: string;
   searchPlaceholder?: string;

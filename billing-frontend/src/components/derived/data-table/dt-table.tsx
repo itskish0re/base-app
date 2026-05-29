@@ -13,6 +13,7 @@ import {
   dataColumnStyle,
   DT_STICKY_ACTIONS_CELL_CLASS,
   DT_STICKY_ACTIONS_HEAD_CLASS,
+  getActionsColumnWidthPercent,
 } from '@/components/derived/data-table/dt-column-layout';
 import { DataTableProvider } from '@/components/derived/data-table/dt-provider';
 import { DtErrors } from '@/components/derived/data-table/dt-errors';
@@ -20,16 +21,17 @@ import { DtHeader } from '@/components/derived/data-table/dt-header';
 import { DtPagination } from '@/components/derived/data-table/dt-pagination';
 import { DtToolbar } from '@/components/derived/data-table/dt-toolbar';
 import {
-  type DataTableActionsColumnDef,
   type DataTableColumnDef,
   type DataTableMutationsHandle,
   type DataTableProps,
   type DataTableSortState,
+  partitionDataTableColumns,
 } from '@/components/derived/data-table/dt-types';
 import {
   applyColumnFilters,
   formatDataTableCellValue,
   getVisibleDataTableColumns,
+  inactiveDataTableRowClassName,
 } from '@/components/derived/data-table/dt-utils';
 import { useDataTable } from '@/components/derived/data-table/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -72,12 +74,13 @@ function SortIndicator({
 }
 
 function buildTanStackColumns<TRow extends object>(
-  columns: DataTableColumnDef[],
-  actionsColumn: DataTableActionsColumnDef<TRow> | undefined,
+  visibleDataColumns: DataTableColumnDef[],
   rowId: (row: TRow) => number,
   mutations: DataTableMutationsHandle,
+  renderActionsColumn: DataTableProps<TRow>['renderActionsColumn'],
+  actionsColumnMeta: DataTableColumnDef | null,
 ): ColumnDef<TRow>[] {
-  const dataColumns: ColumnDef<TRow>[] = columns.map((column) => ({
+  const dataColumns: ColumnDef<TRow>[] = visibleDataColumns.map((column) => ({
     id: column.id,
     accessorFn: (row) => row[column.fieldName as keyof TRow],
     header: column.header,
@@ -85,35 +88,41 @@ function buildTanStackColumns<TRow extends object>(
     meta: { columnDef: column },
   }));
 
-  if (!actionsColumn) {
+  if (!actionsColumnMeta || !renderActionsColumn) {
     return dataColumns;
   }
 
   return [
     ...dataColumns,
     {
-      id: '_actions',
-      header: actionsColumn.header ?? '',
+      id: actionsColumnMeta.id,
+      header: actionsColumnMeta.header,
       cell: ({ row }) =>
-        actionsColumn.render({
+        renderActionsColumn({
           row: row.original,
           rowId: rowId(row.original),
           mutations,
         }),
-      meta: { isActions: true },
+      meta: { isActions: true, columnDef: actionsColumnMeta },
     },
   ];
 }
 
 type DataTableViewProps<TRow extends object> = Pick<
   DataTableProps<TRow>,
-  'columns' | 'rowId' | 'actionsColumn' | 'emptyMessage' | 'title' | 'headerActions' | 'searchPlaceholder'
+  | 'columns'
+  | 'rowId'
+  | 'renderActionsColumn'
+  | 'emptyMessage'
+  | 'title'
+  | 'headerActions'
+  | 'searchPlaceholder'
 >;
 
 function DataTableView<TRow extends object>({
   columns,
   rowId,
-  actionsColumn,
+  renderActionsColumn,
   emptyMessage = 'No results.',
   title,
   headerActions,
@@ -136,29 +145,42 @@ function DataTableView<TRow extends object>({
     setColumns(columns);
   }, [columns, setColumns]);
 
-  const visibleColumns = useMemo(
-    () => getVisibleDataTableColumns(columns, columnVisibility),
-    [columns, columnVisibility],
+  const { dataColumns, actionsColumn: actionsColumnMeta } = useMemo(
+    () => partitionDataTableColumns(columns),
+    [columns],
+  );
+
+  const visibleDataColumns = useMemo(
+    () => getVisibleDataTableColumns(dataColumns, columnVisibility),
+    [dataColumns, columnVisibility],
   );
 
   const displayRows = useMemo(
-    () => applyColumnFilters(rows, visibleColumns, columnFilters),
-    [rows, visibleColumns, columnFilters],
+    () => applyColumnFilters(rows, visibleDataColumns, columnFilters),
+    [rows, visibleDataColumns, columnFilters],
   );
 
-  const tanstackColumns = useMemo(
-    () => buildTanStackColumns(visibleColumns, actionsColumn, rowId, mutations),
-    [visibleColumns, actionsColumn, rowId, mutations],
-  );
+  const showActionsColumn = Boolean(actionsColumnMeta && renderActionsColumn);
 
   const layout = useMemo(
     () =>
       computeDataTableLayout(
-        visibleColumns,
-        Boolean(actionsColumn),
-        actionsColumn?.widthPercent,
+        visibleDataColumns,
+        getActionsColumnWidthPercent(columns),
       ),
-    [visibleColumns, actionsColumn],
+    [visibleDataColumns, columns],
+  );
+
+  const tanstackColumns = useMemo(
+    () =>
+      buildTanStackColumns(
+        visibleDataColumns,
+        rowId,
+        mutations,
+        renderActionsColumn,
+        showActionsColumn ? actionsColumnMeta : null,
+      ),
+    [visibleDataColumns, rowId, mutations, renderActionsColumn, showActionsColumn, actionsColumnMeta],
   );
 
   const table = useReactTable({
@@ -171,7 +193,8 @@ function DataTableView<TRow extends object>({
   });
 
   const errorMessages = errorMessage ? [errorMessage] : [];
-  const hasActionsColumn = Boolean(actionsColumn);
+  const skeletonRowCount = 5;
+  const columnCount = visibleDataColumns.length + (showActionsColumn ? 1 : 0);
 
   return (
     <div className="space-y-0">
@@ -194,76 +217,73 @@ function DataTableView<TRow extends object>({
         >
           <thead className="[&_tr]:border-b">
             <tr className="border-b">
-              {table.getHeaderGroups()[0]?.headers.map((header) => {
-                const columnDef = (
-                  header.column.columnDef.meta as { columnDef?: DataTableColumnDef } | undefined
-                )?.columnDef;
-                const sortable = columnDef?.sortable ?? false;
-                const align = columnDef?.align ?? 'left';
-                const isActions = (header.column.columnDef.meta as { isActions?: boolean })?.isActions;
-
-                return (
-                  <th
-                    key={header.id}
-                    className={cn(
-                      'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
-                      cellAlignClass(align),
-                      sortable && !isActions && 'cursor-pointer select-none',
-                      isActions && DT_STICKY_ACTIONS_HEAD_CLASS,
-                    )}
-                    style={
-                      isActions
-                        ? actionsColumnStyle(layout)
-                        : columnDef
-                          ? dataColumnStyle(layout, columnDef.id)
-                          : undefined
-                    }
-                    onClick={() => {
-                      if (!columnDef || isActions) {
-                        return;
-                      }
-
-                      toggleSort(columnDef.fieldName, sortable);
-                    }}
-                  >
-                    {header.isPlaceholder ? null : (
-                      <span className="inline-flex items-center">
-                        {flexRender(header.column.columnDef.header, header.getContext())}
-                        {columnDef ? (
-                          <SortIndicator
-                            fieldName={columnDef.fieldName}
-                            sortable={sortable}
-                            sort={tableState.sort}
-                          />
-                        ) : null}
-                      </span>
-                    )}
-                  </th>
-                );
-              })}
+              {visibleDataColumns.map((column) => (
+                <th
+                  key={column.id}
+                  className={cn(
+                    'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
+                    cellAlignClass(column.align),
+                    column.sortable && 'cursor-pointer select-none',
+                  )}
+                  style={dataColumnStyle(layout, column.id)}
+                  onClick={() => toggleSort(column.fieldName, column.sortable)}
+                >
+                  <span className="inline-flex items-center">
+                    {column.header}
+                    <SortIndicator
+                      fieldName={column.fieldName}
+                      sortable={column.sortable}
+                      sort={tableState.sort}
+                    />
+                  </span>
+                </th>
+              ))}
+              {showActionsColumn && actionsColumnMeta ? (
+                <th
+                  className={cn(
+                    'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
+                    DT_STICKY_ACTIONS_HEAD_CLASS,
+                  )}
+                  style={actionsColumnStyle(layout)}
+                >
+                  {actionsColumnMeta.header}
+                </th>
+              ) : null}
             </tr>
             {showColumnSearch ? (
               <DtColumnFilters
                 layout={layout}
-                visibleColumns={visibleColumns}
-                hasActionsColumn={hasActionsColumn}
+                visibleDataColumns={visibleDataColumns}
+                showActionsColumn={showActionsColumn}
               />
             ) : null}
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
             {isLoading ? (
-              Array.from({ length: 5 }).map((_, index) => (
+              Array.from({ length: skeletonRowCount }).map((_, index) => (
                 <tr key={`skeleton-${index}`} className="border-b">
-                  {tanstackColumns.map((column) => (
-                    <td key={column.id} className="p-2 align-middle">
+                  {visibleDataColumns.map((column) => (
+                    <td
+                      key={`${index}-${column.id}`}
+                      className="p-2 align-middle"
+                      style={dataColumnStyle(layout, column.id)}
+                    >
                       <Skeleton className="h-4 w-full" />
                     </td>
                   ))}
+                  {showActionsColumn ? (
+                    <td
+                      className={cn('p-2 align-middle', DT_STICKY_ACTIONS_CELL_CLASS)}
+                      style={actionsColumnStyle(layout)}
+                    >
+                      <Skeleton className="h-4 w-full" />
+                    </td>
+                  ) : null}
                 </tr>
               ))
-            ) : table.getRowModel().rows.length === 0 ? (
+            ) : displayRows.length === 0 ? (
               <tr className="border-b">
-                <td colSpan={tanstackColumns.length} className="h-24 p-2 text-center align-middle">
+                <td colSpan={columnCount} className="h-24 p-2 text-center align-middle">
                   {emptyMessage}
                 </td>
               </tr>
@@ -271,7 +291,10 @@ function DataTableView<TRow extends object>({
               table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="group border-b transition-colors hover:bg-muted/50"
+                  className={cn(
+                    'group border-b transition-colors hover:bg-muted/50',
+                    inactiveDataTableRowClassName(row.original),
+                  )}
                   data-state={row.getIsSelected() ? 'selected' : undefined}
                 >
                   {row.getVisibleCells().map((cell) => {
@@ -320,7 +343,7 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
   const {
     columns,
     rowId,
-    actionsColumn,
+    renderActionsColumn,
     emptyMessage,
     title,
     headerActions,
@@ -333,7 +356,7 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
       <DataTableView
         columns={columns}
         rowId={rowId}
-        actionsColumn={actionsColumn}
+        renderActionsColumn={renderActionsColumn}
         emptyMessage={emptyMessage}
         title={title}
         headerActions={headerActions}

@@ -1,5 +1,7 @@
 import { Columns3, ListFilter } from 'lucide-react';
+import { useMemo } from 'react';
 import { useDataTable } from '@/components/derived/data-table/hooks';
+import { getToggleableDataTableColumns } from '@/components/derived/data-table/dt-utils';
 import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
@@ -22,7 +24,11 @@ export function DtToolbarOptions() {
     clearColumnFilters,
   } = useDataTable();
 
-  const visibleCount = columns.filter((column) => columnVisibility[column.id] !== false).length;
+  const toggleableColumns = useMemo(() => getToggleableDataTableColumns(columns), [columns]);
+
+  const visibleToggleableCount = toggleableColumns.filter(
+    (column) => columnVisibility[column.id] !== false,
+  ).length;
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -41,16 +47,16 @@ export function DtToolbarOptions() {
           <DropdownMenuContent align="start" className="w-52">
             <DropdownMenuLabel>Columns</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            {columns.length === 0 ? (
+            {toggleableColumns.length === 0 ? (
               <p className="px-2 py-1.5 text-sm text-muted-foreground">No columns</p>
             ) : (
-              columns.map((column) => (
+              toggleableColumns.map((column) => (
                 <DropdownMenuCheckboxItem
                   key={column.id}
                   checked={columnVisibility[column.id] !== false}
                   onCheckedChange={(checked) => {
                     const nextVisible = checked === true;
-                    if (visibleCount <= 1 && !nextVisible) {
+                    if (visibleToggleableCount <= 1 && !nextVisible) {
                       return;
                     }
                     setColumnVisibility(column.id, nextVisible);
