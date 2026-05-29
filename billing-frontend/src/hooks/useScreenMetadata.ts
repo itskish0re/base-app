@@ -8,12 +8,15 @@ import {
   screenMetadataActionsByKey,
   type ScreenKeyWithMetadata,
 } from '@/store/screens/screenMetadataActions';
+import { ensureScreenSliceMounted } from '@/hooks/useScreenSlice';
 import {
   SCREEN_METADATA_LOAD_STATUS,
   createInitialScreenMetadataState,
   type ScreenMetadataState,
 } from '@/types/store/screen';
 import type { ScreenStateByKey } from '@/types/store/screens';
+
+const FALLBACK_SCREEN_METADATA = createInitialScreenMetadataState();
 
 function resolveMenuCode(
   screenKey: ScreenKey,
@@ -46,13 +49,15 @@ export type UseScreenMetadataResult = {
 
 /**
  * Loads screen metadata from GET /api/screens/by-menu/{menuCode} into the screen slice.
- * Call {@link useScreenSlice} first (same render is fine — it mounts in useLayoutEffect).
+ * Call {@link useScreenSlice} first on the page (or rely on {@link ensureScreenSliceMounted} here).
  */
 export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
   screenKey: K,
   options: UseScreenMetadataOptions = {},
 ): UseScreenMetadataResult {
   const { menuCode: menuCodeOverride, enabled = true } = options;
+
+  ensureScreenSliceMounted(screenKey);
 
   const dispatch = useAppDispatch();
   const currentMenuCode = useAppSelector(selectCurrentMenuCode);
@@ -100,7 +105,7 @@ export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
 
   const metadata = useAppSelector((state) => {
     const slice = state[screenKey] as ScreenStateByKey[K] | undefined;
-    return slice?.metadata ?? createInitialScreenMetadataState();
+    return slice?.metadata ?? FALLBACK_SCREEN_METADATA;
   });
 
   return {

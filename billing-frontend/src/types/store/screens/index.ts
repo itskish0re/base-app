@@ -18,3 +18,9 @@ export interface ScreenStateByKey {
   [SCREEN_KEYS.driver]: DriversScreenState;
   [SCREEN_KEYS.menu]: MenusScreenState;
 }
+
+/** Screen keys whose slice includes `table` (data grid state). */
+export type ScreenKeyWithTable =
+  | typeof SCREEN_KEYS.nameBoard
+  | typeof SCREEN_KEYS.truck
+  | typeof SCREEN_KEYS.driver;
