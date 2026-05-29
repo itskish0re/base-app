@@ -1,6 +1,7 @@
 using Domain.Masters;
 using Gridify;
 using Gridify.EntityFramework;
+using Infrastructure.Gridify;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -27,9 +28,14 @@ internal sealed class DriverRepository(BillingDbContext context) : IDriverReposi
             .Include(x => x.Truck)
             .Where(x => !x.IsDeleted);
 
+        string? filter = GridifyListFilter.Normalize(criteria.Filter);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            query = query.ApplyFiltering(filter, MasterGridifyMappers.Driver);
+        }
+
         var gridifyQuery = new GridifyQuery
         {
-            Filter = criteria.Filter,
             OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy) ? "DriverId desc" : criteria.OrderBy,
             Page = criteria.Page,
             PageSize = criteria.PageSize,

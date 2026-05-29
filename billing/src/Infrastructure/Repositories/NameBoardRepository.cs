@@ -1,6 +1,7 @@
 using Domain.Masters;
 using Gridify;
 using Gridify.EntityFramework;
+using Infrastructure.Gridify;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -33,9 +34,14 @@ internal sealed class NameBoardRepository(BillingDbContext context) : INameBoard
             .AsNoTracking()
             .Where(x => !x.IsDeleted);
 
+        string? filter = GridifyListFilter.Normalize(criteria.Filter);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            query = query.ApplyFiltering(filter, MasterGridifyMappers.NameBoard);
+        }
+
         var gridifyQuery = new GridifyQuery
         {
-            Filter = criteria.Filter,
             OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy) ? "NameBoardId desc" : criteria.OrderBy,
             Page = criteria.Page,
             PageSize = criteria.PageSize,

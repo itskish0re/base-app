@@ -1,6 +1,7 @@
 using Domain.Masters;
 using Gridify;
 using Gridify.EntityFramework;
+using Infrastructure.Gridify;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 
@@ -40,9 +41,14 @@ internal sealed class TruckRepository(BillingDbContext context) : ITruckReposito
             .Include(x => x.NameBoard)
             .Where(x => !x.IsDeleted);
 
+        string? filter = GridifyListFilter.Normalize(criteria.Filter);
+        if (!string.IsNullOrWhiteSpace(filter))
+        {
+            query = query.ApplyFiltering(filter, MasterGridifyMappers.Truck);
+        }
+
         var gridifyQuery = new GridifyQuery
         {
-            Filter = criteria.Filter,
             OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy) ? "TruckId desc" : criteria.OrderBy,
             Page = criteria.Page,
             PageSize = criteria.PageSize,

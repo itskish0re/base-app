@@ -120,6 +120,8 @@ Restart the API (or wait for endpoint cache expiry) after changing `app_endpoint
 
 List supports Gridify: `filter`, `orderBy`, `page`, `pageSize`.
 
+Plain-text `filter` (e.g. `filter=smr`) is treated as a global search across name/code/owner fields (`search=*smr`). Advanced Gridify expressions still work (e.g. `code=*A-01`, `name=*Board`).
+
 **Create** body example (single or multiple via `items`):
 
 ```json
