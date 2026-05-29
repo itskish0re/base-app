@@ -39,7 +39,7 @@ export function DtColumnFilters({
       {visibleDataColumns.map((column) => (
         <th
           key={`filter-${column.id}`}
-          className={cn('py-2 font-normal', cellAlignClass(column.align))}
+          className={cn('py-2 px-2 font-normal', cellAlignClass(column.align))}
           style={dataColumnStyle(layout, column.id)}
         >
           <Input
@@ -53,7 +53,7 @@ export function DtColumnFilters({
       ))}
       {showActionsColumn ? (
         <th
-          className={cn('py-2 font-normal', DT_STICKY_ACTIONS_HEAD_CLASS)}
+          className={cn('py-2 px-2 font-normal', DT_STICKY_ACTIONS_HEAD_CLASS)}
           style={actionsColumnStyle(layout)}
         />
       ) : null}

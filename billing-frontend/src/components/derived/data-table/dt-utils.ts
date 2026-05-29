@@ -1,3 +1,4 @@
+import { getColumnCellSearchText } from '@/components/derived/data-table/column-cells/get-cell-search-text';
 import {
   defaultColumnVisibleInGrid,
   isDisplayableGridColumn,
@@ -65,7 +66,7 @@ export function applyColumnFilters<TRow extends object>(
   return rows.filter((row) =>
     activeFilters.every(({ column, value }) => {
       const cell = row[column.fieldName as keyof TRow];
-      return formatDataTableCellValue(cell).toLowerCase().includes(value.toLowerCase());
+      return getColumnCellSearchText(cell, column).toLowerCase().includes(value.toLowerCase());
     }),
   );
 }

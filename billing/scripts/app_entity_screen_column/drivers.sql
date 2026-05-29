@@ -34,7 +34,7 @@ INNER JOIN app_entity e ON e.entity_id = s.entity_id
 CROSS JOIN (
     VALUES
         ('name', 'Name', true, 10, 30, false, 'left', 'text'),
-        ('mobile', 'Mobile', true, 20, 25, false, 'left', 'text'),
+        ('mobile', 'Mobile', true, 20, 25, false, 'left', 'mobile'),
         ('truck_id', 'Truck', true, 30, 25, false, 'left', 'text'),
         ('is_enabled', 'Enabled', false, 40, 10, false, 'center', 'boolean'),
         ('is_active', 'Active', false, 50, 10, false, 'center', 'boolean'),

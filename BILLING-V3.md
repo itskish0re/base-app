@@ -1,9 +1,10 @@
 # Billing v3 — project blueprint
 
-**Single source of truth** for what we planned, decided, and built for billing v3.  
-**Canonical database diagram:** [`dbdiagram.dbml`](./dbdiagram.dbml) (import into [dbdiagram.io](https://dbdiagram.io)).
+**Single source of truth** for product goals, architecture, and schema.  
+**Hands-on implementation reference (DataTable, screen metadata, seeds):** [`docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md`](./docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md)  
+**Canonical database diagram:** [`dbdiagram.dbml`](./dbdiagram.dbml)
 
-**Last updated:** 2026-05-20
+**Last updated:** 2026-05-26
 
 ---
 
@@ -15,350 +16,212 @@ Billing v3 is a **single-organization billing / CRM foundation** with:
 - **.NET 10** Web API with **Clean Architecture** (Api → Application → Domain → Infrastructure)
 - **CQRS** (MediatR), **FluentValidation**, **Gridify** for list/filter/sort
 - **EF Core** for masters and platform/registry tables
-- **Dapper** (optional) for high-volume transaction I/O
-- **No PostgreSQL CRUD functions** (`fn_read`, `fn_upsert`, etc.) — all logic in C#
+- **Dapper** for auth and refresh tokens
+- **No PostgreSQL CRUD functions** — all logic in C#
+- **React** frontend (`billing-frontend/`) with screen-driven grids and forms
 
-Earlier work lived in `billing_v2/` (SQL + functions only) and `old/` (first .NET API calling PG routines). **v3 replaces that application approach** while reusing the same product ideas (auth, menus, entity registry, UI metadata).
-
----
-
-## 2. Evolution
-
-| Version | Location | Approach |
-|---------|----------|----------|
-| **v2** | `billing_v2/` | DDL + `functions.sql` + generic JSONB CRUD in PostgreSQL |
-| **v1 API** | `old/` | .NET called PG `fn_*`; Dapper for auth/menus |
-| **v3** | Repo root (`dbdiagram.dbml`) | .NET owns CRUD; EF + CQRS; solution TBD from Clean Architecture template |
+Earlier work lived in `billing_v2/` (SQL + functions) and `old/` (first .NET API). **v3 is the active codebase** under `billing/` and `billing-frontend/`.
 
 ---
 
-## 3. Goals
+## 2. Repository layout
 
-- Auth (JWT + refresh rotation), role-based **endpoint** and **menu** access
-- **Entity registry** (`app_entity`, `app_entity_field`, …) for API field whitelists and Gridify
-- **UI screen metadata** (`app_entity_screen*`) for React grid/form per menu
-- **Master** tables (EF Core, rich domain when added) with standard audit + soft delete
-- **Transaction** tables (optional Dapper) added per feature
-- React frontend in `billing-frontend/` (shadcn + TanStack + Redux); API exposes navigation + screen config
-
-## 4. Non-goals (v3 initial scope)
-
-- Multi-tenant / org isolation
-- `app_entity_rule` in DB (validation → **FluentValidation** in Application)
-- Generic PG CRUD routines
-- FluentMigrator (see §10) — **EF Core migrations** chosen instead
-- Full business masters (product, customer, …) — schema template only until defined
+```
+base-app/
+├── BILLING-V3.md                              ← this file (blueprint)
+├── docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md  ← built features, DataTable, naming (new chats)
+├── dbdiagram.dbml                             ← schema source of truth
+├── billing/                                   ← .NET API (Billing.sln)
+│   ├── src/{SharedKernel,Domain,Application,Infrastructure,Web.Api}
+│   ├── scripts/                               ← PostgreSQL seeds (per-table folders)
+│   └── README.md
+└── billing-frontend/                          ← React + Vite + shadcn + TanStack
+    └── README.md
+```
 
 ---
 
-## 5. Tech stack
+## 3. Tech stack
 
 | Concern | Choice |
 |---------|--------|
 | Runtime | .NET 10 |
 | API | ASP.NET Core Web API, Swagger |
-| CQRS | MediatR 14 |
-| Validation | FluentValidation 12 + `ValidationBehavior` pipeline |
-| Queries (lists) | Gridify.EntityFramework 2.19.x on `IQueryable` / read DTOs |
-| ORM (masters + platform) | EF Core 10 + Npgsql |
-| Hot-path SQL (optional) | Dapper 2.x |
-| Auth | JWT Bearer + refresh tokens (SHA-256 in DB) |
+| CQRS | MediatR |
+| Validation | FluentValidation + pipeline behavior |
+| Lists | Gridify.EntityFramework on `IQueryable` |
+| ORM | EF Core 10 + Npgsql (snake_case naming) |
+| Auth | JWT + refresh rotation (Dapper) |
 | DB | PostgreSQL (Neon) |
-| Schema docs | DBML → `dbdiagram.dbml` |
-| Migrations | **EF Core migrations** (you will drop tables and apply fresh) |
+| Migrations | EF Core (`Persistence/Migrations/`); auto-apply in **Development** |
+| Frontend | React 19, Vite, TanStack Router/Query/Table/Form, Redux Toolkit, Zustand (per DataTable), shadcn/ui |
 
 ---
 
-## 6. Architecture
-
-**Repository (current):** only documentation at repo root:
-
-```
-base-app/
-├── BILLING-V3.md         ← this file
-├── dbdiagram.dbml        ← canonical schema (DBML)
-├── billing/              ← .NET Web API
-├── billing-frontend/     ← React + Vite UI
-└── sample/               ← reference only (gitignored)
-```
-
-**Solution (next):** scaffold from Clean Architecture template + reference project:
-
-```
-<solution>/
-├── Billing.slnx
-└── src/
-    ├── Billing.Api/
-    ├── Billing.Application/
-    ├── Billing.Domain/
-    └── Billing.Infrastructure/
-```
-
-### Layer responsibilities
+## 4. Architecture (layers)
 
 | Layer | Responsibility |
 |-------|----------------|
-| **Api** | Controllers, `EndpointAccessMiddleware`, JWT, Swagger |
-| **Application** | Commands/queries, validators, orchestration |
-| **Domain** | Repository interfaces, thin models for auth/config; **future:** `AuditableEntity`, business aggregates |
-| **Infrastructure** | EF mappings, Dapper, external services |
+| **Web.Api** | Controllers, JWT, `EndpointAccessMiddleware`, Swagger |
+| **Application** | Commands/queries, validators, DTOs, `FieldNameConverter`, Gridify helpers |
+| **Domain** | Entities, repository interfaces (masters, registry, auth) |
+| **Infrastructure** | EF `BillingDbContext`, Dapper repos, Gridify mappers, migrations |
 
-### Persistence split (planned steady state)
+### Persistence split
 
-| Data | Persistence | Domain style |
-|------|-------------|--------------|
-| `app_user`, `refresh_token`, menus, endpoints | **Dapper** (today) | Records + repos (like today) |
-| `app_entity*` registry + UI metadata | **EF Core** | Domain types in `Domain.Registry`; EF maps same types from Infrastructure |
-| Business **masters** | **EF Core** | Rich domain entities (planned, clean-todo style) |
-| Business **transactions** | **EF or Dapper** per `persist_mode` on `app_entity` | Rich domain + repo |
+| Data | Persistence |
+|------|-------------|
+| Auth (`app_user`, `refresh_token`) | Dapper |
+| Menus / role-menu (admin) | EF |
+| Registry + UI metadata (`app_entity*`, `app_entity_screen*`) | EF |
+| Masters (`name_board`, `truck`, `driver`, …) | EF + domain repos |
 
 ### CQRS flow
 
-- **Command:** API → MediatR → FluentValidation → handler → repository / `DbContext` → save
-- **Query (list):** API → MediatR → Gridify on allowed fields from `app_entity_field` → projected DTO
-- **Query (single):** MediatR → EF or Dapper → DTO
+- **Command:** API → MediatR → validation → handler → repository / `SaveChanges`
+- **List query:** API → MediatR → Gridify on `IQueryable` → camelCase DTOs (Mapster)
+- **Screen config:** `GET /api/screens/by-menu/{menuCode}` → metadata with **camelCase** `fieldName` for the UI
 
 ---
 
-## 7. Database schema (`dbdiagram.dbml`)
+## 5. Database schema
 
-Open **`dbdiagram.dbml`** for the full diagram, enums, indexes, and table groups.
+Open **`dbdiagram.dbml`** for tables, indexes, and groups.
 
 ### Table groups
 
 | Group | Tables | Purpose |
 |-------|--------|---------|
-| **auth** | `app_role`, `app_user`, `refresh_token` | Login, JWT, refresh rotation |
-| **access_control** | `app_menu`, `app_role_menu`, `app_endpoint`, `app_role_endpoint` | Sidebar + API authorization |
-| **app_entity_registry** | `app_entity`, `app_entity_field` | API/Gridify contract; delete guards in command handlers |
-| **app_entity_ui** | `app_entity_screen`, `app_entity_screen_column`, `app_entity_screen_field` | Per-menu grid + form layout |
+| **auth** | `app_role`, `app_user`, `refresh_token` | Login, JWT |
+| **access_control** | `app_menu`, `app_role_menu`, `app_endpoint`, `app_role_endpoint` | Sidebar + API auth |
+| **app_entity_registry** | `app_entity`, `app_entity_field`, `app_field_data_type` | API/Gridify contract |
+| **app_entity_ui** | `app_entity_screen`, `app_entity_screen_column`, `app_entity_screen_field` | Per-menu grid + form |
 
-### v3 vs v2 schema (important if migrating data)
-
-| v2 | v3 |
-|----|-----|
-| `app_entity.read_source`, `pk_column`, `id_sql_type` | Removed — EF/Dapper map in code |
-| `app_entity_rule` | **Removed** — FluentValidation |
-| `app_entity_field.upsertable` | Renamed to **`writable`** |
-| — | `app_entity.persist_mode` (`ef_core` \| `dapper`) |
-| Screen column/field by `(entity_id, field_name)` | **`entity_field_id`** FK |
-
-### Standard columns on future business tables
-
-Every master / transaction table should include:
+### Standard columns on business tables
 
 `created_at`, `updated_at`, `created_by`, `updated_by`,  
 `is_enabled`, `is_active`, `is_deleted`, `deleted_at`
 
-(Register each table in `app_entity` + fields + screen config when the React UI is wired.)
+**UI rule:** `is_enabled` / `is_active` are **not grid columns** (`is_visible = false` on screen columns). They drive row actions (`isEnabled`) and inactive row styling (`isActive === false`).
+
+### Registry field names
+
+- **Database:** `app_entity_field.field_name` = **snake_case** (`owner_name`)
+- **Screen metadata API + list DTOs:** **camelCase** (`ownerName`) — converted in `AppEntityScreenRepository` via `FieldNameConverter`
 
 ---
 
-## 8. What is done
+## 6. What is implemented (2026-05-26)
 
-### Repository (this repo)
+### API (`billing/`)
 
-- **`BILLING-V3.md`** and **`dbdiagram.dbml`** at repo root
-- Prior code (`billing_v3/src`, `old/`, `billing_v2/`, etc.) removed — rebuild from template next
+- Clean Architecture solution + tests
+- Auth, navigation, menu admin, endpoint access middleware
+- EF migrations through platform + masters (name board, truck, driver)
+- **Masters:** Name boards, trucks, drivers — CRUD/list/batch/toggle/lookup
+- **Screen metadata:** `GET /api/screens/by-menu/{menuCode}`
+- Gridify list filters; global search normalized (`GridifyListFilter`)
+- `column_width_percent` on screen columns (replaced `column_width` / `min_width`)
+- Seed scripts under `billing/scripts/` — see `scripts/README.md`
 
-### Previously implemented (prototype, removed from repo)
+### Frontend (`billing-frontend/`)
 
-A working prototype existed under `billing_v3/src` (auth, menus, EF `DbContext`, CQRS). Use this blueprint when re-implementing on the template.
+- Auth, sidebar from `GET /api/access/navigation`, protected routes
+- **Per-screen Redux slices** (dynamic inject) + `useScreenSlice` / `useScreenMetadata`
+- **Shared `DataTable`** module — metadata-driven columns, width layout, actions column, column cells, skeleton loading
+- **Name Boards** master page wired end-to-end
+- Trucks / Drivers pages: slice + metadata hook; grid UI still placeholder
 
-### Implemented API surface
-
-| Area | Endpoints | Notes |
-|------|-----------|--------|
-| Health | `GET /api/health` | Smoke test |
-| Auth | `POST /api/auth/login`, `refresh`, `revoke` | BCrypt, JWT, refresh rotation |
-| Access | `GET /api/access/navigation` | Menus for logged-in user |
-| Menus (admin) | `GET /api/menus/admin/matrix`, `PUT .../roles/{id}/menus/{id}` | |
-| Anon | `GET /api/anon/landing` | Public endpoint demo |
-| Endpoint security | `[EndpointAccess("code")]` + middleware | DB-driven, cached |
-
-### Application
-
-- MediatR registration
-- `ValidationBehavior` + `LoginCommandValidator`
-- Auth / access / menu handlers (ported from `old/`)
-
-### Infrastructure
-
-- `BillingDbContext` + EF configurations for all `app_*` platform tables
-- `BillingDbContextFactory` for `dotnet ef`
-- Dapper: `UserRepository`, `RefreshTokenRepository`, `MenuRepository`, `EndpointAccessRepository`
-- JWT, BCrypt, refresh token crypto
-- Snake case naming (`EFCore.NamingConventions`)
-
-### Configuration
-
-- Connection string + JWT copied from **`old/src/Billing.Api/appsettings.json`** (Neon `billing` database)
-- User secrets id: `billing-v3-api-dev-secrets`
-
-### Not generated yet
-
-- EF migration files under `Persistence/Migrations/` (you will create after dropping tables)
-- Seed data script in v3 (adapt from `billing_v2/Insert.sql`)
-- Business master tables / handlers / Gridify list endpoints
-- Domain `BaseEntity` / `AuditableEntity` (decided pattern, not scaffolded)
-- React client
+Details: **[`docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md`](./docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md)**
 
 ---
 
-## 9. What is planned (backlog)
+## 7. DataTable & screen metadata (summary)
 
-### Immediate (you)
+Full detail in the implementation context doc. Short version:
 
-1. **Drop** existing tables on Neon `billing` database.
-2. **Create & apply** EF initial migration (see §10).
-3. **Seed** roles, admin user, menus, endpoints (from v2 insert script or manual).
-
-### Short term (next dev phase)
-
-- Scaffold **domain abstractions** (clean-todo style) for first master only:
-  - `AuditableEntity`, `IUnitOfWork`, optional `IDomainEvent`
-  - First master aggregate + repository + Create/Update/Delete/List commands
-- Gridify query handler pattern using `app_entity_field` whitelist
-- Screen config query: `fn_entity_screen_config` equivalent in C#
-- Port/adapt seeds to v3
-
-### Medium term
-
-- .NET API stable for React app
-- Transaction entities with `persist_mode = dapper` where needed
-- Architecture tests (layer dependency rules), like clean-todo test project
-
-### Next major step (your message)
-
-You will provide **two repositories**:
-
-1. **Clean Architecture template** — empty / starter structure  
-2. **Complete project** — full implementation using that template  
-
-We will **create a new solution from the template** aligned with this blueprint (stack, DBML, auth, registry, CQRS conventions)—not continue incrementally on the current `billing_v3/src` prototype if the template is the preferred base.
-
-**What we will need from those projects when you share them:**
-
-| Item | Use |
-|------|-----|
-| Template folder structure & naming | Target layout for v3 |
-| How Domain abstractions are defined | `BaseEntity`, events, UoW |
-| How Infrastructure registers EF/Dapper | DI patterns |
-| How Application wires MediatR + validation | Pipeline |
-| Reference app’s Todo (or similar) vertical slice | Copy patterns for masters |
-| Test / architecture projects (if any) | Optional guardrails |
+| Topic | Decision |
+|-------|----------|
+| Table state | Redux screen slice (`table`: page, sort, global filter, selection) |
+| Column visibility / filters | Zustand inside `DataTableProvider` |
+| Column widths | `column_width_percent`; fill remaining space equally when sum &lt; budget |
+| Actions | Metadata `column_component = 'actions'` + page `renderActionsColumn` |
+| Cells | `column_component` → `column-cells/*` (badge, mobile, vehicle_number, boolean, date, currency, text) |
+| Loading | Render full column headers from metadata; skeleton rows for data fetch |
 
 ---
 
-## 10. Database migrations
+## 8. Build & run
 
-**Your plan:** delete existing tables → apply schema from migrations.
-
-**Recommended tool:** EF Core migrations (already wired). **FluentMigrator was considered and not adopted** to avoid two schema owners.
-
-### Prerequisites
+### API
 
 ```bash
-dotnet tool install --global dotnet-ef
+cd billing
+dotnet build Billing.sln
+dotnet run --project src/Web.Api/Web.Api.csproj
 ```
 
-### Steps (fresh database)
+Development: Swagger at `/swagger`; migrations apply on startup.
+
+### Frontend
 
 ```bash
-# Run from solution root after template scaffold (paths may vary)
-
-dotnet ef migrations add InitialPlatformSchema \
-  --project Billing.Infrastructure/Billing.Infrastructure.csproj \
-  --startup-project Billing.Api/Billing.Api.csproj \
-  --output-dir Persistence/Migrations
-
-# Review generated migration SQL, then:
-dotnet ef database update \
-  --project Billing.Infrastructure/Billing.Infrastructure.csproj \
-  --startup-project Billing.Api/Billing.Api.csproj
+cd billing-frontend
+cp .env.example .env
+pnpm install
+pnpm dev
 ```
 
-`BillingDbContextFactory` reads `Billing.Api/appsettings.json` → `ConnectionStrings:DefaultConnection`.
+API proxy / `VITE_API_BASE_URL` — see `billing-frontend/README.md`.
 
-### After migrate
+### Seeds (after migrate)
 
-- Run seed SQL for roles, user, menus, endpoints.
-- Start API: `dotnet run --project src/Billing.Api/Billing.Api.csproj` (or per template layout)
-- Call `POST /api/auth/login` with seeded user.
-
----
-
-## 11. Domain design (decided, not all coded)
-
-Inspired by **clean-todo-api** Clean Architecture sample (external reference when provided):
-
-| Pattern | Use for billing v3? |
-|---------|---------------------|
-| `BaseEntity` + domain events | **Yes** — business masters/transactions only |
-| Rich entity methods + private setters | **Yes** — masters/transactions |
-| Repository interface in Domain | **Yes** — already used for auth |
-| `IUnitOfWork` | **Yes** — when one command uses multiple repos or EF + Dapper |
-| Same pattern for `app_user` | **No** — keep records + Dapper |
-| Rich aggregates for `app_entity*` registry | **No** — registry types live in `Domain.Registry`, mapped by EF (no separate Infrastructure DTOs) |
-
-Avoid **duplicate** models: either EF maps the domain entity, or map explicitly at the repository—do not maintain both `PlatformEntities` and rich domain for the same table without a rule.
+```bash
+# From billing/ — see scripts/README.md for full order
+psql "$CONN" -f scripts/app_menu/seed_billing_menus.sql
+psql "$CONN" -f scripts/app_entity/insert.sql
+# … entity fields, screens, columns, endpoints, role_endpoint
+```
 
 ---
 
-## 12. Key design decisions (log)
+## 9. Backlog (near term)
+
+- Wire **Trucks** and **Drivers** master pages to `DataTable` (copy Name Boards pattern)
+- Form UI from `app_entity_screen_field` metadata
+- Server-side per-column filters (optional; today client-side on loaded rows)
+- Additional masters / transactions per product roadmap
+- Architecture test coverage as solution grows
+
+---
+
+## 10. Key design decisions (log)
 
 | Date | Decision |
 |------|----------|
-| 2026-05 | v3 folder; DBML first; no PG CRUD functions |
-| 2026-05 | CQRS + FluentValidation + Gridify (not PG `fn_read`) |
-| 2026-05 | Split UI: `app_entity_screen_column` vs `app_entity_screen_field` |
-| 2026-05 | Do **not** merge `app_entity_field` with `app_entity_screen` (different cardinality) |
-| 2026-05 | Remove `app_entity_rule`; validate in FluentValidation |
-| 2026-05 | Repo trimmed to blueprint + DBML only; code removed pending template |
-| 2026-05 | EF Core for platform schema; Dapper for auth (for now) |
-| 2026-05 | FluentMigrator **not** used; EF migrations for DDL |
-| 2026-05 | Neon connection string reused from old API |
-| Next | Rebase on external Clean Architecture template + reference app |
+| 2026-05 | v3: .NET owns CRUD; no PG `fn_*` routines |
+| 2026-05 | CQRS + FluentValidation + Gridify |
+| 2026-05 | Split grid columns vs form fields (`app_entity_screen_column` / `_field`) |
+| 2026-05 | EF migrations (not FluentMigrator) |
+| 2026-05-26 | `column_width_percent` on screen columns; actions column in metadata |
+| 2026-05-26 | `is_enabled` / `is_active` hidden from grid; state-only on DTOs |
+| 2026-05-26 | camelCase `fieldName` in screen metadata API; snake_case in DB |
+| 2026-05-26 | Hybrid Redux (table) + Zustand (DataTable UI) on frontend |
+| 2026-05-26 | `column_component` registry for grid cell renderers |
 
 ---
 
-## 13. Build & run
+## 11. Documentation map
 
-No solution in this repo yet. After scaffolding from the Clean Architecture template:
-
-```bash
-dotnet build Billing.slnx
-dotnet run --project src/Billing.Api/Billing.Api.csproj
-```
-
----
-
-## 14. Files in this repository
-
-| Path | Role |
-|------|------|
-| `BILLING-V3.md` | Project blueprint (this file) |
-| `dbdiagram.dbml` | **Schema source of truth** |
+| Document | Use when |
+|----------|----------|
+| **BILLING-V3.md** (this file) | Goals, stack, schema groups, decisions |
+| **[docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md](./docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md)** | Continuing UI/API work, DataTable, seeds, file paths |
+| **dbdiagram.dbml** | Table/column definitions |
+| **billing/README.md** | API run, EF, endpoints |
+| **billing/scripts/README.md** | Seed order and SQL folders |
+| **billing-frontend/README.md** | Frontend layout and conventions |
 
 ---
 
-## 15. Checklist for template-based rebuild
-
-When the two new projects are provided, verify the generated solution includes:
-
-- [ ] Projects: Api, Application, Domain, Infrastructure (+ Tests optional)
-- [ ] MediatR + FluentValidation pipeline
-- [ ] EF Core + Npgsql + snake case naming
-- [ ] Gridify for queries
-- [ ] Dapper + connection factory for auth (or EF for auth if template prefers single ORM)
-- [ ] JWT + refresh token flow matching `dbdiagram.dbml`
-- [ ] Endpoint access middleware + `[EndpointAccess]`
-- [ ] `BillingDbContext` (or equivalent) matching **`dbdiagram.dbml`**
-- [ ] EF migration for full platform schema
-- [ ] Seed script for roles, user, menus, endpoints
-- [ ] Domain `AuditableEntity` for first business master
-- [ ] No PostgreSQL stored procedures for CRUD
-
----
-
-*End of blueprint. For schema details, always consult [`dbdiagram.dbml`](./dbdiagram.dbml).*
+*For schema details, always consult [`dbdiagram.dbml`](./dbdiagram.dbml). For day-to-day coding on grids and metadata, start with [`docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md`](./docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md).*

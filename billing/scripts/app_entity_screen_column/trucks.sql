@@ -33,7 +33,7 @@ INNER JOIN app_menu m ON m.menu_id = s.menu_id
 INNER JOIN app_entity e ON e.entity_id = s.entity_id
 CROSS JOIN (
     VALUES
-        ('truck_number', 'Truck #', true, 10, 25, false, 'left', 'text'),
+        ('truck_number', 'Truck #', true, 10, 25, false, 'left', 'vehicle_number'),
         ('name_board_id', 'Name Board', true, 20, 30, false, 'left', 'text'),
         ('is_enabled', 'Enabled', false, 30, 10, false, 'center', 'boolean'),
         ('is_active', 'Active', false, 40, 10, false, 'center', 'boolean'),

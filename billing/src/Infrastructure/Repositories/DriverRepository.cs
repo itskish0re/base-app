@@ -1,3 +1,4 @@
+using Application.Common.Gridify;
 using Domain.Masters;
 using Gridify;
 using Gridify.EntityFramework;
@@ -36,7 +37,9 @@ internal sealed class DriverRepository(BillingDbContext context) : IDriverReposi
 
         var gridifyQuery = new GridifyQuery
         {
-            OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy) ? "DriverId desc" : criteria.OrderBy,
+            OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy)
+                ? "DriverId desc"
+                : GridifyOrderByNormalizer.Normalize(criteria.OrderBy),
             Page = criteria.Page,
             PageSize = criteria.PageSize,
         };

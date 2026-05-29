@@ -1,3 +1,4 @@
+using Application.Common.Gridify;
 using Domain.Masters;
 using Gridify;
 using Gridify.EntityFramework;
@@ -49,7 +50,9 @@ internal sealed class TruckRepository(BillingDbContext context) : ITruckReposito
 
         var gridifyQuery = new GridifyQuery
         {
-            OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy) ? "TruckId desc" : criteria.OrderBy,
+            OrderBy = string.IsNullOrWhiteSpace(criteria.OrderBy)
+                ? "TruckId desc"
+                : GridifyOrderByNormalizer.Normalize(criteria.OrderBy),
             Page = criteria.Page,
             PageSize = criteria.PageSize,
         };

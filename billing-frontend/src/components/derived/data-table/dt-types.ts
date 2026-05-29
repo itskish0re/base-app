@@ -77,6 +77,7 @@ export function dataTableStateToListQueryParams(state: DataTableState): ListQuer
 
 export interface DataTableColumnDef {
   id: string;
+  /** CamelCase from screen metadata; matches list DTO property names. */
   fieldName: string;
   header: string;
   dataType: string;

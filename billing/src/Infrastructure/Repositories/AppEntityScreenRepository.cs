@@ -1,4 +1,5 @@
 using Application.Abstractions.Registry;
+using Application.Common;
 using Application.Registry.Screen;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
@@ -79,6 +80,10 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 f.DefaultValue))
             .ToListAsync(cancellationToken);
 
+        entityFields = entityFields
+            .Select(f => f with { FieldName = FieldNameConverter.ToCamelCase(f.FieldName) })
+            .ToList();
+
         List<ScreenColumnMetadataDto> columns = await context.AppEntityScreenColumns
             .AsNoTracking()
             .Where(c => c.EntityScreenId == screen.EntityScreenId && c.IsActive)
@@ -100,6 +105,10 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 c.IsActive))
             .ToListAsync(cancellationToken);
 
+        columns = columns
+            .Select(c => c with { FieldName = FieldNameConverter.ToCamelCase(c.FieldName) })
+            .ToList();
+
         List<ScreenFormFieldMetadataDto> formFields = await context.AppEntityScreenFields
             .AsNoTracking()
             .Where(f => f.EntityScreenId == screen.EntityScreenId && f.IsActive)
@@ -117,6 +126,10 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 f.IsReadOnly,
                 f.IsActive))
             .ToListAsync(cancellationToken);
+
+        formFields = formFields
+            .Select(f => f with { FieldName = FieldNameConverter.ToCamelCase(f.FieldName) })
+            .ToList();
 
         var entityBundle = new EntityScreenMetadataDto(entity, entityFields, columns, formFields);
 

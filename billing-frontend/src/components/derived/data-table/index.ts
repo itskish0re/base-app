@@ -1,3 +1,11 @@
+export {
+  DataTableCell,
+  resolveColumnCellComponent,
+  formatIndianMobile,
+  formatIndianVehicleNumber,
+  formatInrCurrency,
+  type DataTableColumnCellProps,
+} from '@/components/derived/data-table/column-cells';
 export { DataTable } from '@/components/derived/data-table/dt-table';
 export { DataTableProvider } from '@/components/derived/data-table/dt-provider';
 export { useDataTableStoreApi } from '@/components/derived/data-table/dt-context';

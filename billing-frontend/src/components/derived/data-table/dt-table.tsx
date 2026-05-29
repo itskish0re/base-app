@@ -27,9 +27,9 @@ import {
   type DataTableSortState,
   partitionDataTableColumns,
 } from '@/components/derived/data-table/dt-types';
+import { DataTableCell } from '@/components/derived/data-table/column-cells';
 import {
   applyColumnFilters,
-  formatDataTableCellValue,
   getVisibleDataTableColumns,
   inactiveDataTableRowClassName,
 } from '@/components/derived/data-table/dt-utils';
@@ -84,7 +84,9 @@ function buildTanStackColumns<TRow extends object>(
     id: column.id,
     accessorFn: (row) => row[column.fieldName as keyof TRow],
     header: column.header,
-    cell: ({ row }) => formatDataTableCellValue(row.getValue(column.id)),
+    cell: ({ row }) => (
+      <DataTableCell value={row.getValue(column.id)} column={column} />
+    ),
     meta: { columnDef: column },
   }));
 
@@ -309,7 +311,7 @@ function DataTableView<TRow extends object>({
                       <td
                         key={cell.id}
                         className={cn(
-                          'p-2 align-middle whitespace-nowrap',
+                          'max-w-0 p-2 align-middle whitespace-nowrap',
                           cellAlignClass(align),
                           isActions && DT_STICKY_ACTIONS_CELL_CLASS,
                         )}

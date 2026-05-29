@@ -33,10 +33,10 @@ INNER JOIN app_menu m ON m.menu_id = s.menu_id
 INNER JOIN app_entity e ON e.entity_id = s.entity_id
 CROSS JOIN (
     VALUES
-        ('code', 'Code', true, 10, 15, false, 'left', 'text'),
+        ('code', 'Code', true, 10, 15, false, 'left', 'badge'),
         ('name', 'Name', true, 20, 25, false, 'left', 'text'),
         ('owner_name', 'Owner', true, 30, 25, false, 'left', 'text'),
-        ('owner_phone', 'Phone', true, 40, 20, false, 'left', 'text'),
+        ('owner_phone', 'Phone', true, 40, 20, false, 'left', 'mobile'),
         ('is_enabled', 'Enabled', false, 50, 10, false, 'center', 'boolean'),
         ('is_active', 'Active', false, 60, 10, false, 'center', 'boolean'),
         ('_actions', 'Actions', true, 999, 12, true, 'right', 'actions')
