@@ -7,6 +7,8 @@ import {
   rowActionEdit,
   rowActionToggle,
 } from '@/components/derived/data-table';
+import { useEntityFormShell } from '@/components/derived/form-shell';
+import { NameBoardFormShell } from '@/pages/masters/name-boards/name-board-form-shell';
 import { Button } from '@/components/ui/button';
 import { USE_TEMP_NAME_BOARD_DATA } from '@/dev/temp-name-boards-data';
 import { tempListNameBoardsQueryOptions } from '@/dev/temp-name-boards-query-options';
@@ -44,6 +46,8 @@ export function NameBoardsPage() {
     [metadata.entities],
   );
 
+  const formShell = useEntityFormShell<number>();
+
   const metadataReady = metadata.status === SCREEN_METADATA_LOAD_STATUS.succeeded;
 
   if (metadata.status === SCREEN_METADATA_LOAD_STATUS.failed) {
@@ -57,13 +61,14 @@ export function NameBoardsPage() {
   }
 
   return (
-    <DataTable<NameBoardDto>
-      title="Name Boards"
-      headerActions={
-        <Button type="button" size="sm">
-          Create
-        </Button>
-      }
+    <>
+      <DataTable<NameBoardDto>
+        title="Name Boards"
+        headerActions={
+          <Button type="button" size="sm" onClick={formShell.openCreate}>
+            Create
+          </Button>
+        }
       value={table}
       onChange={onTableChange}
       queryOptions={
@@ -82,9 +87,7 @@ export function NameBoardsPage() {
       renderRowActions={({ row, rowId, mutations }) => [
         rowActionEdit({
           row,
-          onClick: () => {
-            // TODO: open edit sheet/dialog
-          },
+          onClick: () => formShell.openEdit(rowId),
         }),
         rowActionToggle({
           checked: row.isEnabled,
@@ -100,6 +103,8 @@ export function NameBoardsPage() {
           onClick: () => mutations.delete?.mutate({ ids: [rowId] }),
         }),
       ]}
-    />
+      />
+      <NameBoardFormShell shell={formShell} presentation="dialog" />
+    </>
   );
 }
