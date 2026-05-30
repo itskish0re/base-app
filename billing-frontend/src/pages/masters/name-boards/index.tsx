@@ -56,10 +56,10 @@ export function NameBoardsPage() {
 
   return (
     <DataTable<NameBoardDto>
-      title="Name Board"
+      title="Name Boards"
       headerActions={
         <Button type="button" size="sm">
-          Add
+          Create
         </Button>
       }
       value={table}

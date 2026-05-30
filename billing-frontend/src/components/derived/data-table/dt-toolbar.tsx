@@ -8,7 +8,7 @@ export type DtToolbarProps = {
 /** Toolbar: options (left) and global search (right). */
 export function DtToolbar({ searchPlaceholder }: DtToolbarProps) {
   return (
-    <div className="flex flex-col gap-3 border-b py-3 sm:flex-row sm:items-center sm:justify-between">
+    <div className="flex flex-col gap-3 py-3 sm:flex-row sm:items-center sm:justify-between">
       <DtToolbarOptions />
       <DtToolbarSearch placeholder={searchPlaceholder} />
     </div>

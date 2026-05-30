@@ -11,7 +11,7 @@ export function DtHeader({ title, actions }: DtHeaderProps) {
   }
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 border-b pb-3">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-3">
       <div className="min-w-0">
         {title ? <h2 className="text-lg font-semibold tracking-tight">{title}</h2> : null}
       </div>
