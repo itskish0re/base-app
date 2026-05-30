@@ -1,4 +1,4 @@
-import { ENTITY_FORM_EXCLUDED_FIELD_NAMES } from '@/components/derived/entity-form/entity-form-constants';
+import { ENTITY_FORM_EXCLUDED_FIELD_NAMES } from '@/components/derived/entity-form/ef-constants';
 import type {
   EntityFieldMetadataDto,
   EntityScreenMetadataDto,

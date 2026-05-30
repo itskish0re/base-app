@@ -1,4 +1,4 @@
-import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
+import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
 
 export function buildFormFieldValidator(field: MappedEntityFormField) {
   return ({ value }: { value: unknown }) => {

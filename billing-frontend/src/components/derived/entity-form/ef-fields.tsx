@@ -1,6 +1,6 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
-import { EntityFormField } from '@/components/derived/entity-form/entity-form-field';
-import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
+import { EntityFormField } from '@/components/derived/entity-form/ef-field';
+import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
 
 type EntityFormFieldsProps = {
   entityName: string;

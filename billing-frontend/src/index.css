@@ -118,3 +118,24 @@
     letter-spacing: var(--tracking-normal);
   }
 }
+
+@keyframes ef-shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.ef-shimmer {
+  background: linear-gradient(
+    90deg,
+    var(--muted) 0%,
+    color-mix(in oklch, var(--muted-foreground) 14%, var(--muted)) 50%,
+    var(--muted) 100%
+  );
+  background-size: 200% 100%;
+  animation: ef-shimmer 1.6s ease-in-out infinite;
+}

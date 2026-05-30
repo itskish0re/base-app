@@ -3,17 +3,18 @@ import { useForm } from '@tanstack/react-form';
 import { useMemo } from 'react';
 import {
   buildEntityFormDefaultValues,
-  EntityFormFields,
+  EntityFormShellBody,
   getBatchFailureMessage,
   getPrimaryEntityScreen,
   mapScreenFormFields,
   useEntityFormReset,
 } from '@/components/derived/entity-form';
-import type { EntityFormShellController } from '@/components/derived/form-shell/use-entity-form-shell';
+import type { EntityFormShellController } from '@/components/derived/form-shell/useEntityFormShell';
 import {
   ResponsiveFormShell,
+  getEntityFormShellCopy,
   type FormShellPresentation,
-} from '@/components/derived/form-shell/responsive-form-shell';
+} from '@/components/derived/form-shell';
 import { Button } from '@/components/ui/button';
 import { queryKeys } from '@/constants/queryKeys';
 import { toastError, toastSuccess } from '@/lib/toast';
@@ -154,17 +155,17 @@ export function TruckFormShell({
     form,
   });
 
-  const title = shell.isCreate ? 'Create truck' : 'Edit truck';
-  const description = shell.isCreate
-    ? 'Add a new truck and link it to a name board.'
-    : shell.entityId != null
-      ? `Update truck #${shell.entityId}.`
-      : 'Update truck.';
+  const { title, description } = getEntityFormShellCopy({
+    entityLabel: 'truck',
+    createDescription: 'Add a new truck and link it to a name board.',
+    isCreate: shell.isCreate,
+  });
 
-  const isLoadingEdit = shell.isEdit && (detailQuery.isLoading || detailQuery.isFetching);
+  const isLoadingEdit =
+    shell.isEdit && shell.entityId != null && detailQuery.isLoading && !detailQuery.data;
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
   const isEditBlocked = shell.isEdit && detailQuery.isError;
-  const canRenderForm = !isLoadingEdit && !isEditBlocked;
+  const canRenderForm = !isLoadingEdit && !isEditBlocked && formFields.length > 0;
 
   return (
     <ResponsiveFormShell
@@ -199,27 +200,19 @@ export function TruckFormShell({
         </div>
       }
     >
-      {isLoadingEdit ? (
-        <p className="text-sm text-muted-foreground">Loading truck…</p>
-      ) : isEditBlocked ? (
-        <p className="text-sm text-destructive">
-          {detailQuery.error instanceof Error
-            ? detailQuery.error.message
-            : 'Failed to load truck.'}
-        </p>
-      ) : (
-        <form
-          id="truck-form"
-          className="space-y-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            void form.handleSubmit();
-          }}
-        >
-          <EntityFormFields entityName={entityName} fields={formFields} form={form} />
-        </form>
-      )}
+      <EntityFormShellBody
+        formId="truck-form"
+        entityName={entityName}
+        formFields={formFields}
+        form={form}
+        isLoadingEdit={isLoadingEdit}
+        isEditBlocked={isEditBlocked}
+        editError={detailQuery.error}
+        editErrorMessage="Failed to load truck."
+        onSubmit={() => {
+          void form.handleSubmit();
+        }}
+      />
     </ResponsiveFormShell>
   );
 }

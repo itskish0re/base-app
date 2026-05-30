@@ -146,7 +146,9 @@ export function EntityFormLookupCombobox({
                   <span className="min-w-0 flex-1">
                     <span className="block truncate">{lookupItemLabel(item)}</span>
                     {secondary ? (
-                      <span className="block truncate text-xs text-muted-foreground">{secondary}</span>
+                      <span className="block truncate font-mono text-xs uppercase text-muted-foreground">
+                        {secondary}
+                      </span>
                     ) : null}
                   </span>
                 </Button>

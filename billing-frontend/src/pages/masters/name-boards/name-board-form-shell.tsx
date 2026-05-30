@@ -3,17 +3,18 @@ import { useForm } from '@tanstack/react-form';
 import { useMemo } from 'react';
 import {
   buildEntityFormDefaultValues,
-  EntityFormFields,
+  EntityFormShellBody,
   getBatchFailureMessage,
   getPrimaryEntityScreen,
   mapScreenFormFields,
   useEntityFormReset,
 } from '@/components/derived/entity-form';
-import type { EntityFormShellController } from '@/components/derived/form-shell/use-entity-form-shell';
+import type { EntityFormShellController } from '@/components/derived/form-shell/useEntityFormShell';
 import {
   ResponsiveFormShell,
+  getEntityFormShellCopy,
   type FormShellPresentation,
-} from '@/components/derived/form-shell/responsive-form-shell';
+} from '@/components/derived/form-shell';
 import { Button } from '@/components/ui/button';
 import { queryKeys } from '@/constants/queryKeys';
 import { toastError, toastSuccess } from '@/lib/toast';
@@ -152,17 +153,17 @@ export function NameBoardFormShell({
     form,
   });
 
-  const title = shell.isCreate ? 'Create name board' : 'Edit name board';
-  const description = shell.isCreate
-    ? 'Add a new name board to the master list.'
-    : shell.entityId != null
-      ? `Update name board #${shell.entityId}.`
-      : 'Update name board.';
+  const { title, description } = getEntityFormShellCopy({
+    entityLabel: 'name board',
+    createDescription: 'Add a new name board to the master list.',
+    isCreate: shell.isCreate,
+  });
 
-  const isLoadingEdit = shell.isEdit && (detailQuery.isLoading || detailQuery.isFetching);
+  const isLoadingEdit =
+    shell.isEdit && shell.entityId != null && detailQuery.isLoading && !detailQuery.data;
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
   const isEditBlocked = shell.isEdit && detailQuery.isError;
-  const canRenderForm = !isLoadingEdit && !isEditBlocked;
+  const canRenderForm = !isLoadingEdit && !isEditBlocked && formFields.length > 0;
 
   return (
     <ResponsiveFormShell
@@ -197,27 +198,19 @@ export function NameBoardFormShell({
         </div>
       }
     >
-      {isLoadingEdit ? (
-        <p className="text-sm text-muted-foreground">Loading name board…</p>
-      ) : isEditBlocked ? (
-        <p className="text-sm text-destructive">
-          {detailQuery.error instanceof Error
-            ? detailQuery.error.message
-            : 'Failed to load name board.'}
-        </p>
-      ) : (
-        <form
-          id="name-board-form"
-          className="space-y-4"
-          onSubmit={(event) => {
-            event.preventDefault();
-            event.stopPropagation();
-            void form.handleSubmit();
-          }}
-        >
-          <EntityFormFields entityName="name_board" fields={formFields} form={form} />
-        </form>
-      )}
+      <EntityFormShellBody
+        formId="name-board-form"
+        entityName="name_board"
+        formFields={formFields}
+        form={form}
+        isLoadingEdit={isLoadingEdit}
+        isEditBlocked={isEditBlocked}
+        editError={detailQuery.error}
+        editErrorMessage="Failed to load name board."
+        onSubmit={() => {
+          void form.handleSubmit();
+        }}
+      />
     </ResponsiveFormShell>
   );
 }

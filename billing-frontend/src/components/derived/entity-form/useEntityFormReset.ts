@@ -3,8 +3,8 @@ import { useEffect } from 'react';
 import {
   buildEntityFormDefaultValues,
   buildEntityFormValuesFromRecord,
-} from '@/components/derived/entity-form/build-form-default-values';
-import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
+} from '@/components/derived/entity-form/ef-default-values';
+import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
 
 type UseEntityFormResetOptions<TRow extends object> = {
   open: boolean;

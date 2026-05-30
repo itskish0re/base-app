@@ -1,5 +1,5 @@
-import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
-import { parseEntityFieldDefaultValue } from '@/components/derived/entity-form/parse-field-default-value';
+import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
+import { parseEntityFieldDefaultValue } from '@/components/derived/entity-form/ef-parse-default-value';
 
 export function buildEntityFormDefaultValues(
   fields: MappedEntityFormField[],

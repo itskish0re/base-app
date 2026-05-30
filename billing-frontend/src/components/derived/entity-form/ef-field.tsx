@@ -1,8 +1,8 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
-import { buildFormFieldValidator } from '@/components/derived/entity-form/build-form-field-validator';
-import { EntityFormLookupField } from '@/components/derived/entity-form/entity-form-lookup-field';
-import { resolveEntityFieldLookup } from '@/components/derived/entity-form/entity-lookup-registry';
-import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
+import { buildFormFieldValidator } from '@/components/derived/entity-form/ef-field-validator';
+import { EntityFormLookupField } from '@/components/derived/entity-form/ef-lookup-field';
+import { resolveEntityFieldLookup } from '@/components/derived/entity-form/ef-lookup-registry';
+import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
@@ -50,6 +50,10 @@ export function EntityFormField({ entityName, field, form }: EntityFormFieldProp
             readOnly={field.isReadOnly}
             disabled={field.isReadOnly}
             onBlur={fieldApi.handleBlur}
+            autoComplete="off"
+            autoCorrect="off"
+            autoCapitalize="off"
+            spellCheck="false"
             onChange={(event) => fieldApi.handleChange(event.target.value)}
           />
           {fieldApi.state.meta.errors[0] ? (

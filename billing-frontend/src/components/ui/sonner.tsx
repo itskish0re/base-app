@@ -7,7 +7,6 @@ import {
 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
-import { useIsMobile } from '@/hooks/useMobile';
 
 function useDocumentTheme(): ToasterProps['theme'] {
   const [theme, setTheme] = useState<ToasterProps['theme']>(() =>
@@ -32,13 +31,12 @@ function useDocumentTheme(): ToasterProps['theme'] {
 
 /** Global toast host — mount once inside app providers. */
 export function Toaster(props: ToasterProps) {
-  const isMobile = useIsMobile();
   const theme = useDocumentTheme();
 
   return (
     <Sonner
       theme={theme}
-      position={isMobile ? 'bottom-center' : 'top-right'}
+      position="top-center"
       closeButton
       richColors
       className="toaster group"

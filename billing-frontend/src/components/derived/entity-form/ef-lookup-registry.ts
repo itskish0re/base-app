@@ -1,4 +1,4 @@
-import { ENTITY_LOOKUP_STALE_TIME_MS } from '@/components/derived/entity-form/entity-form-constants';
+import { ENTITY_LOOKUP_STALE_TIME_MS } from '@/components/derived/entity-form/ef-constants';
 import { queryKeys } from '@/constants/queryKeys';
 import { lookupDrivers } from '@/service/api/functions/drivers';
 import { lookupNameBoards } from '@/service/api/functions/nameBoards';
