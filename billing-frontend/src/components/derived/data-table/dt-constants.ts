@@ -7,3 +7,15 @@ export const DT_ACTIONS_HEADER_TOOLTIP = 'Actions';
 /** State field names in screen metadata (camelCase); same on all master entities. */
 export const DT_FIELD_IS_ENABLED = 'isEnabled';
 export const DT_FIELD_IS_ACTIVE = 'isActive';
+
+/** Shared sticky header styling for the data table grid. */
+export const DT_TABLE_HEADER_BG_CLASS = 'bg-muted';
+export const DT_TABLE_FILTER_ROW_BG_CLASS = 'bg-secondary';
+export const DT_TABLE_HEADER_STICKY_CLASS = 'sticky top-0 z-30';
+export const DT_TABLE_FILTER_STICKY_CLASS = 'sticky top-10 z-30';
+export const DT_TABLE_HEADER_HEIGHT_CLASS = 'h-10';
+
+/** Bottom gap when computing default viewport max height for the table shell. */
+export const DT_VIEWPORT_MAX_HEIGHT_BOTTOM_GAP_PX = 24;
+
+export const DT_DEFAULT_PAGE_SIZE_OPTIONS = [10, 20, 50, 100] as const;

@@ -8,6 +8,8 @@ import {
   rowActionToggle,
 } from '@/components/derived/data-table';
 import { Button } from '@/components/ui/button';
+import { USE_TEMP_NAME_BOARD_DATA } from '@/dev/temp-name-boards-data';
+import { tempListNameBoardsQueryOptions } from '@/dev/temp-name-boards-query-options';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
@@ -64,7 +66,9 @@ export function NameBoardsPage() {
       }
       value={table}
       onChange={onTableChange}
-      queryOptions={listNameBoardsQueryOptions}
+      queryOptions={
+        USE_TEMP_NAME_BOARD_DATA ? tempListNameBoardsQueryOptions : listNameBoardsQueryOptions
+      }
       enabled={metadataReady}
       mutations={{
         create: () => createNameBoardsMutationOptions,
@@ -77,6 +81,7 @@ export function NameBoardsPage() {
       searchPlaceholder="Search name boards…"
       renderRowActions={({ row, rowId, mutations }) => [
         rowActionEdit({
+          row,
           onClick: () => {
             // TODO: open edit sheet/dialog
           },
@@ -90,6 +95,7 @@ export function NameBoardsPage() {
             }),
         }),
         rowActionDelete({
+          row,
           disabled: mutations.delete?.isPending,
           onClick: () => mutations.delete?.mutate({ ids: [rowId] }),
         }),

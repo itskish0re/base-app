@@ -1,9 +1,12 @@
 import {
   actionsColumnStyle,
   dataColumnStyle,
-  DT_STICKY_ACTIONS_HEAD_CLASS,
   type DataTableLayout,
 } from '@/components/derived/data-table/dt-column-layout';
+import {
+  DT_TABLE_FILTER_ROW_BG_CLASS,
+  DT_TABLE_FILTER_STICKY_CLASS,
+} from '@/components/derived/data-table/dt-constants';
 import type { DataTableColumnDef } from '@/components/derived/data-table/dt-types';
 import { useDataTable } from '@/components/derived/data-table/hooks';
 import { dataTableColumnAlignClass } from '@/components/derived/data-table/dt-utils';
@@ -26,11 +29,16 @@ export function DtColumnFilters({
   const { columnFilters, setColumnFilter } = useDataTable();
 
   return (
-    <tr className="border-b bg-muted/30 hover:bg-muted/30">
+    <tr className={cn('border-b hover:bg-secondary', DT_TABLE_FILTER_ROW_BG_CLASS)}>
       {visibleDataColumns.map((column) => (
         <th
           key={`filter-${column.id}`}
-          className={cn('py-2 px-2 font-normal', dataTableColumnAlignClass(column.align))}
+          className={cn(
+            'py-2 px-2 font-normal',
+            DT_TABLE_FILTER_STICKY_CLASS,
+            DT_TABLE_FILTER_ROW_BG_CLASS,
+            dataTableColumnAlignClass(column.align),
+          )}
           style={dataColumnStyle(layout, column.id)}
         >
           <Input
@@ -46,8 +54,10 @@ export function DtColumnFilters({
         <th
           className={cn(
             'py-2 px-2 font-normal',
+            DT_TABLE_FILTER_STICKY_CLASS,
+            DT_TABLE_FILTER_ROW_BG_CLASS,
+            'sticky right-0 z-40 border-l shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.12)]',
             dataTableColumnAlignClass(actionsColumn?.align),
-            DT_STICKY_ACTIONS_HEAD_CLASS,
           )}
           style={actionsColumnStyle(layout)}
         />

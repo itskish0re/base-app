@@ -8,6 +8,7 @@ import {
   DT_ACTION_ITEM_GAP_PX,
   DT_ACTION_SWITCH_WIDTH_PX,
 } from '@/components/derived/data-table/dt-column-layout';
+import { isInactiveDataTableRow } from '@/components/derived/data-table/dt-utils';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import { Switch } from '@/components/ui/switch';
 
@@ -37,12 +38,26 @@ export function estimateRowActionsInlineMinWidthPx(items: DataTableRowActionItem
   );
 }
 
+type RowEntityActionFlags = {
+  isEnabled?: boolean;
+  isActive?: boolean;
+};
+
+function isRowEditDisabled(row?: RowEntityActionFlags): boolean {
+  return row != null && row.isEnabled === false;
+}
+
+function isRowDeleteHidden(row?: RowEntityActionFlags): boolean {
+  return row != null && isInactiveDataTableRow(row);
+}
+
 type RowActionIconOptions = {
   id?: string;
   label: string;
   icon: LucideIcon;
   onClick: () => void;
   disabled?: boolean;
+  hidden?: boolean;
   destructive?: boolean;
 };
 
@@ -52,11 +67,13 @@ function rowActionIcon({
   icon: Icon,
   onClick,
   disabled,
+  hidden,
   destructive,
 }: RowActionIconOptions): DataTableRowActionItem {
   return {
     id: id ?? label.toLowerCase().replace(/\s+/g, '-'),
     inlineWidthPx: DT_ACTION_ICON_WIDTH_PX,
+    hidden,
     renderInline: ({ disabled: globalDisabled }) => (
       <DtActionIconButton
         label={label}
@@ -88,6 +105,8 @@ type RowActionEditOptions = {
   label?: string;
   onClick: () => void;
   disabled?: boolean;
+  /** When set, edit is disabled while `isEnabled` is false. */
+  row?: RowEntityActionFlags;
 };
 
 export function rowActionEdit({
@@ -95,8 +114,15 @@ export function rowActionEdit({
   label = 'Edit',
   onClick,
   disabled,
+  row,
 }: RowActionEditOptions): DataTableRowActionItem {
-  return rowActionIcon({ id, label, icon: Pencil, onClick, disabled });
+  return rowActionIcon({
+    id,
+    label,
+    icon: Pencil,
+    onClick,
+    disabled: disabled || isRowEditDisabled(row),
+  });
 }
 
 type RowActionDeleteOptions = {
@@ -104,6 +130,8 @@ type RowActionDeleteOptions = {
   label?: string;
   onClick: () => void;
   disabled?: boolean;
+  /** When set, delete is hidden while `isActive` is false (soft-deleted row). */
+  row?: RowEntityActionFlags;
 };
 
 export function rowActionDelete({
@@ -111,8 +139,17 @@ export function rowActionDelete({
   label = 'Delete',
   onClick,
   disabled,
+  row,
 }: RowActionDeleteOptions): DataTableRowActionItem {
-  return rowActionIcon({ id, label, icon: Trash2, onClick, disabled, destructive: true });
+  return rowActionIcon({
+    id,
+    label,
+    icon: Trash2,
+    onClick,
+    disabled,
+    hidden: isRowDeleteHidden(row),
+    destructive: true,
+  });
 }
 
 type RowActionToggleOptions = {

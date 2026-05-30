@@ -88,7 +88,7 @@ export function DtToolbarOptions() {
                 size="icon"
                 aria-label="Toggle column search"
                 aria-pressed={showColumnSearch}
-                className={cn(showColumnSearch && 'bg-secondary')}
+                className={cn('hidden md:inline-flex', showColumnSearch && 'bg-secondary')}
                 onClick={() => {
                   if (showColumnSearch) {
                     clearColumnFilters();

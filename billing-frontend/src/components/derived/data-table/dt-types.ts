@@ -221,4 +221,27 @@ export interface DataTableProps<TRow> {
   enabled?: boolean;
   emptyMessage?: string;
   searchPlaceholder?: string;
+
+  /**
+   * Max height for the entire table shell (header, toolbar, scroll body, pagination).
+   * Defaults to remaining viewport height below the component.
+   */
+  maxHeight?: string | number;
+
+  /** Segmented pagination: boundary/sibling ranges, first/last buttons, etc. */
+  pagination?: DataTablePaginationOptions;
+}
+
+export interface DataTablePaginationOptions {
+  /** Pages pinned at the start and end of the range (default 1). */
+  boundaryCount?: number;
+  /** Pages shown on each side of the active page (default 1). */
+  siblingCount?: number;
+  /** Show jump-to-first / jump-to-last controls (default true). */
+  showFirstLast?: boolean;
+  /** Show rows-per-page selector (default true). */
+  showPageSize?: boolean;
+  /** Show "Showing X–Y of Z" summary (default true). */
+  showSummary?: boolean;
+  pageSizeOptions?: readonly number[];
 }

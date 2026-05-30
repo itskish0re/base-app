@@ -164,7 +164,7 @@ export function actionsColumnStyle(layout: DataTableLayout): {
 }
 
 export const DT_STICKY_ACTIONS_HEAD_CLASS =
-  'sticky right-0 z-20 border-l bg-background shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.12)]';
+  'sticky right-0 border-l shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.12)]';
 
 export const DT_STICKY_ACTIONS_CELL_CLASS =
   'sticky right-0 z-10 border-l bg-background shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.08)] group-hover:bg-muted/50';

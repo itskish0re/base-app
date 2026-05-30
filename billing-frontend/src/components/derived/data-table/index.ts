@@ -25,6 +25,11 @@ export {
 export { DtColumnFilters } from '@/components/derived/data-table/dt-column-filters';
 export { DtHeader, type DtHeaderProps } from '@/components/derived/data-table/dt-header';
 export { DtPagination } from '@/components/derived/data-table/dt-pagination';
+export {
+  buildPaginationRange,
+  type BuildPaginationRangeOptions,
+  type PaginationRangeItem,
+} from '@/components/derived/data-table/dt-pagination-range';
 export { DtToolbar, type DtToolbarProps } from '@/components/derived/data-table/dt-toolbar';
 export { DtToolbarOptions } from '@/components/derived/data-table/dt-toolbar-options';
 export { DtToolbarSearch, type DtToolbarSearchProps } from '@/components/derived/data-table/dt-toolbar-search';
@@ -64,8 +69,15 @@ export { DtActionsColumnHeader } from '@/components/derived/data-table/dt-action
 export {
   DT_COLUMN_COMPONENT_ACTIONS,
   DT_ACTIONS_HEADER_TOOLTIP,
+  DT_DEFAULT_PAGE_SIZE_OPTIONS,
   DT_FIELD_IS_ACTIVE,
   DT_FIELD_IS_ENABLED,
+  DT_TABLE_FILTER_ROW_BG_CLASS,
+  DT_TABLE_FILTER_STICKY_CLASS,
+  DT_TABLE_HEADER_BG_CLASS,
+  DT_TABLE_HEADER_HEIGHT_CLASS,
+  DT_TABLE_HEADER_STICKY_CLASS,
+  DT_VIEWPORT_MAX_HEIGHT_BOTTOM_GAP_PX,
 } from '@/components/derived/data-table/dt-constants';
 export {
   DT_FILTER_DEBOUNCE_MS,
@@ -84,6 +96,7 @@ export {
   type DataTableFilterState,
   type DataTableMutationsConfig,
   type DataTableMutationsHandle,
+  type DataTablePaginationOptions,
   type DataTablePaginationState,
   type DataTableProps,
   type DataTableQueryOptionsFactory,

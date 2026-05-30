@@ -26,6 +26,12 @@ import { DtHeader } from '@/components/derived/data-table/dt-header';
 import { DtPagination } from '@/components/derived/data-table/dt-pagination';
 import { DtToolbar } from '@/components/derived/data-table/dt-toolbar';
 import {
+  DT_TABLE_HEADER_BG_CLASS,
+  DT_TABLE_HEADER_HEIGHT_CLASS,
+  DT_TABLE_HEADER_STICKY_CLASS,
+} from '@/components/derived/data-table/dt-constants';
+import { useDataTableMaxHeight } from '@/components/derived/data-table/use-data-table-max-height';
+import {
   type DataTableColumnDef,
   type DataTableMutationsHandle,
   type DataTableProps,
@@ -130,6 +136,8 @@ type DataTableViewProps<TRow extends object> = Pick<
   | 'title'
   | 'headerActions'
   | 'searchPlaceholder'
+  | 'maxHeight'
+  | 'pagination'
 >;
 
 function DataTableView<TRow extends object>({
@@ -140,6 +148,8 @@ function DataTableView<TRow extends object>({
   title,
   headerActions,
   searchPlaceholder,
+  maxHeight,
+  pagination,
 }: DataTableViewProps<TRow>) {
   const {
     tableState,
@@ -175,7 +185,9 @@ function DataTableView<TRow extends object>({
 
   const showActionsColumn = Boolean(actionsColumnMeta && renderRowActions);
 
+  const rootRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const resolvedMaxHeight = useDataTableMaxHeight(rootRef, maxHeight);
   const [tableContainerWidth, setTableContainerWidth] = useState(0);
 
   useLayoutEffect(() => {
@@ -280,18 +292,31 @@ function DataTableView<TRow extends object>({
   const errorMessages = errorMessage ? [errorMessage] : [];
   const skeletonRowCount = 5;
   const columnCount = visibleDataColumns.length + (showActionsColumn ? 1 : 0);
+  const stickyActionsHeadClass = cn(
+    DT_STICKY_ACTIONS_HEAD_CLASS,
+    DT_TABLE_HEADER_STICKY_CLASS,
+    DT_TABLE_HEADER_BG_CLASS,
+    'z-40',
+  );
 
   return (
-    <div className="space-y-0 rounded-md border p-2 md:p-3">
+    <div
+      ref={rootRef}
+      className="flex min-h-0 flex-col space-y-0 overflow-hidden rounded-md border p-2 md:p-3"
+      style={resolvedMaxHeight ? { maxHeight: resolvedMaxHeight } : undefined}
+    >
       <DtHeader title={title} actions={headerActions} />
-      {errorMessages.length == 0 ? (
+      {errorMessages.length > 0 ? (
         <div className="pt-3">
           <DtErrors messages={errorMessages} />
         </div>
       ) : null}
       <DtToolbar searchPlaceholder={searchPlaceholder} />
 
-      <div ref={scrollContainerRef} className="relative w-full overflow-x-auto rounded-md border">
+      <div
+        ref={scrollContainerRef}
+        className="relative min-h-0 w-full flex-1 overflow-auto rounded-md border"
+      >
         <table
           className="caption-bottom text-sm"
           style={{
@@ -300,13 +325,16 @@ function DataTableView<TRow extends object>({
             tableLayout: 'fixed',
           }}
         >
-          <thead className="[&_tr]:border-b">
+          <thead className={cn('[&_tr]:border-b', DT_TABLE_HEADER_BG_CLASS)}>
             <tr className="border-b">
               {visibleDataColumns.map((column) => (
                 <th
                   key={column.id}
                   className={cn(
-                    'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
+                    DT_TABLE_HEADER_STICKY_CLASS,
+                    DT_TABLE_HEADER_HEIGHT_CLASS,
+                    DT_TABLE_HEADER_BG_CLASS,
+                    'px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
                     dataTableColumnAlignClass(column.align),
                     column.sortable && 'cursor-pointer select-none',
                   )}
@@ -326,9 +354,10 @@ function DataTableView<TRow extends object>({
               {showActionsColumn && actionsColumnMeta ? (
                 <th
                   className={cn(
-                    'h-10 px-2 align-middle font-medium whitespace-nowrap text-foreground',
+                    DT_TABLE_HEADER_HEIGHT_CLASS,
+                    'px-2 align-middle font-medium whitespace-nowrap text-foreground',
                     dataTableColumnAlignClass(actionsColumnMeta.align),
-                    DT_STICKY_ACTIONS_HEAD_CLASS,
+                    stickyActionsHeadClass,
                   )}
                   style={actionsColumnStyle(layout)}
                 >
@@ -423,8 +452,8 @@ function DataTableView<TRow extends object>({
         </table>
       </div>
 
-      <div className="pt-3">
-        <DtPagination />
+      <div className="shrink-0 pt-3">
+        <DtPagination options={pagination} />
       </div>
     </div>
   );
@@ -439,6 +468,8 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
     title,
     headerActions,
     searchPlaceholder,
+    maxHeight,
+    pagination,
     ...providerProps
   } = props;
 
@@ -452,6 +483,8 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
         title={title}
         headerActions={headerActions}
         searchPlaceholder={searchPlaceholder}
+        maxHeight={maxHeight}
+        pagination={pagination}
       />
     </DataTableProvider>
   );
