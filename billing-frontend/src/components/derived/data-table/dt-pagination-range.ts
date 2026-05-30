@@ -1,9 +1,13 @@
 export type PaginationRangeItem = number | 'ellipsis-start' | 'ellipsis-end';
 
 export type BuildPaginationRangeOptions = {
-  /** Pages always shown at the start/end (default 1). */
+  /** Pages always shown from the start (default 3). */
+  leadingCount?: number;
+  /** Pages pinned at the end when the range is compressed (default 1). */
+  trailingCount?: number;
+  /** @deprecated Use `leadingCount`. */
   boundaryCount?: number;
-  /** Pages shown on each side of the active page (default 1). */
+  /** @deprecated Ignored; kept for backward compatibility. */
   siblingCount?: number;
 };
 
@@ -21,54 +25,47 @@ export function buildPaginationRange(
   pageCount: number,
   options: BuildPaginationRangeOptions = {},
 ): PaginationRangeItem[] {
-  const boundaryCount = Math.max(0, options.boundaryCount ?? 1);
-  const siblingCount = Math.max(0, options.siblingCount ?? 1);
+  const leadingCount = Math.max(1, options.leadingCount ?? 3);
+  const trailingCount = Math.max(1, options.trailingCount ?? options.boundaryCount ?? 1);
 
   if (pageCount <= 0) {
     return [];
   }
 
-  if (pageCount === 1) {
-    return [1];
-  }
-
-  const totalPageNumbers = boundaryCount * 2 + siblingCount * 2 + 3;
-  if (pageCount <= totalPageNumbers) {
+  if (pageCount <= leadingCount + trailingCount + 1) {
     return range(1, pageCount);
   }
 
-  const siblingsStart = Math.max(
-    Math.min(currentPage - siblingCount, pageCount - boundaryCount - siblingCount * 2 - 1),
-    boundaryCount + 2,
-  );
+  const trailingStart = pageCount - trailingCount + 1;
+  const items: PaginationRangeItem[] = [...range(1, leadingCount)];
 
-  const siblingsEnd = Math.min(
-    Math.max(currentPage + siblingCount, boundaryCount + siblingCount * 2 + 2),
-    pageCount - boundaryCount - 1,
-  );
+  if (currentPage <= leadingCount) {
+    if (trailingStart > leadingCount + 1) {
+      items.push('ellipsis-end');
+      items.push(...range(trailingStart, pageCount));
+    } else {
+      items.push(...range(leadingCount + 1, pageCount));
+    }
 
-  const showLeftEllipsis = siblingsStart > boundaryCount + 2;
-  const showRightEllipsis = siblingsEnd < pageCount - boundaryCount - 1;
-
-  const items: PaginationRangeItem[] = [];
-
-  items.push(...range(1, boundaryCount));
-
-  if (showLeftEllipsis) {
-    items.push('ellipsis-start');
-  } else {
-    items.push(...range(boundaryCount + 1, siblingsStart - 1));
+    return items;
   }
 
-  items.push(...range(siblingsStart, siblingsEnd));
+  if (currentPage >= trailingStart) {
+    if (trailingStart > leadingCount + 1) {
+      items.push('ellipsis-end');
+    }
 
-  if (showRightEllipsis) {
+    items.push(...range(trailingStart, pageCount));
+    return items;
+  }
+
+  items.push('ellipsis-start');
+  items.push(currentPage);
+
+  if (currentPage + 1 < trailingStart) {
     items.push('ellipsis-end');
-  } else {
-    items.push(...range(siblingsEnd + 1, pageCount - boundaryCount));
   }
 
-  items.push(...range(pageCount - boundaryCount + 1, pageCount));
-
+  items.push(...range(trailingStart, pageCount));
   return items;
 }

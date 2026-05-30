@@ -7,7 +7,7 @@ import { defineConfig, loadEnv } from 'vite';
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, __dirname, '');
   const apiProxyTarget =
-    env.VITE_API_BASE_URL_PROXY?.trim();
+    env.VITE_API_BASE_URL_PROXY?.trim() || 'http://localhost:5000';
 
   return {
     plugins: [
@@ -25,6 +25,8 @@ export default defineConfig(({ mode }) => {
     },
     server: {
       port: 5173,
+      /** Expose dev server on LAN (e.g. http://<laptop-ip>:5173 from phone). */
+      host: true,
       proxy: {
         '/api': {
           target: apiProxyTarget,

@@ -1,10 +1,14 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { buildFormFieldValidator } from '@/components/derived/entity-form/ef-field-validator';
+import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
+import { EntityFormBooleanInput } from '@/components/derived/entity-form/ef-input-boolean';
+import {
+  isEntityFormBooleanField,
+  resolveEntityFormFieldInput,
+} from '@/components/derived/entity-form/ef-input-registry';
 import { EntityFormLookupField } from '@/components/derived/entity-form/ef-lookup-field';
 import { resolveEntityFieldLookup } from '@/components/derived/entity-form/ef-lookup-registry';
 import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
 
 type EntityFormFieldProps = {
   entityName: string;
@@ -18,11 +22,10 @@ export function EntityFormField({ entityName, field, form }: EntityFormFieldProp
     return <EntityFormLookupField entityName={entityName} field={field} form={form} />;
   }
 
-  const component = field.fieldComponent ?? 'text';
-
-  if (component !== 'text' && component !== 'number') {
-    return null;
-  }
+  const fieldComponent = field.fieldComponent ?? 'text';
+  const label = field.displayLabel ?? field.fieldName;
+  const isBoolean = isEntityFormBooleanField(fieldComponent);
+  const InputComponent = resolveEntityFormFieldInput(fieldComponent);
 
   return (
     <form.Field
@@ -32,35 +35,39 @@ export function EntityFormField({ entityName, field, form }: EntityFormFieldProp
         onBlur: buildFormFieldValidator(field),
       }}
     >
-      {(fieldApi) => (
-        <div className="space-y-2">
-          <Label htmlFor={fieldApi.name}>
-            {field.displayLabel ?? field.fieldName}
-            {field.entityField.isRequired ? (
-              <span className="text-destructive" aria-hidden="true">
-                {' '}
-                *
-              </span>
-            ) : null}
-          </Label>
-          <Input
+      {(fieldApi) =>
+        isBoolean ? (
+          <EntityFormFieldControl error={fieldApi.state.meta.errors[0]}>
+            <EntityFormBooleanInput
+              id={fieldApi.name}
+              label={label}
+              required={field.entityField.isRequired}
+              value={fieldApi.state.value}
+              onChange={(nextValue) => fieldApi.handleChange(nextValue)}
+              onBlur={fieldApi.handleBlur}
+              disabled={field.isReadOnly}
+              readOnly={field.isReadOnly}
+            />
+          </EntityFormFieldControl>
+        ) : (
+          <EntityFormFieldControl
             id={fieldApi.name}
-            type={component === 'number' ? 'number' : 'text'}
-            value={String(fieldApi.state.value ?? '')}
-            readOnly={field.isReadOnly}
-            disabled={field.isReadOnly}
-            onBlur={fieldApi.handleBlur}
-            autoComplete="off"
-            autoCorrect="off"
-            autoCapitalize="off"
-            spellCheck="false"
-            onChange={(event) => fieldApi.handleChange(event.target.value)}
-          />
-          {fieldApi.state.meta.errors[0] ? (
-            <p className="text-sm text-destructive">{fieldApi.state.meta.errors[0]}</p>
-          ) : null}
-        </div>
-      )}
+            label={label}
+            required={field.entityField.isRequired}
+            error={fieldApi.state.meta.errors[0]}
+          >
+            <InputComponent
+              id={fieldApi.name}
+              value={fieldApi.state.value}
+              onChange={(nextValue) => fieldApi.handleChange(nextValue)}
+              onBlur={fieldApi.handleBlur}
+              disabled={field.isReadOnly}
+              readOnly={field.isReadOnly}
+              placeholder={label}
+            />
+          </EntityFormFieldControl>
+        )
+      }
     </form.Field>
   );
 }

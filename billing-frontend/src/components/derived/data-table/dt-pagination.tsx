@@ -77,8 +77,8 @@ export function DtPagination({ options }: DtPaginationProps) {
   const { tableState, totalCount, isFetching, setPage, setPageSize } = useDataTable();
   const { page, pageSize } = tableState.pagination;
 
-  const boundaryCount = options?.boundaryCount ?? 1;
-  const siblingCount = options?.siblingCount ?? 1;
+  const leadingCount = options?.leadingCount ?? 3;
+  const trailingCount = options?.trailingCount ?? options?.boundaryCount ?? 1;
   const showFirstLast = options?.showFirstLast ?? true;
   const showPageSize = options?.showPageSize ?? true;
   const showSummary = options?.showSummary ?? true;
@@ -94,8 +94,8 @@ export function DtPagination({ options }: DtPaginationProps) {
   const to = Math.min(page * pageSize, totalCount);
 
   const rangeItems = buildPaginationRange(page, pageCount, {
-    boundaryCount,
-    siblingCount,
+    leadingCount,
+    trailingCount,
   });
 
   const navDisabled = isFetching || totalCount === 0;

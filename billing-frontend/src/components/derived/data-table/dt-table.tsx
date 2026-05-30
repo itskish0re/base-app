@@ -12,14 +12,15 @@ import {
   actionsColumnStyle,
   computeDataTableLayout,
   dataColumnStyle,
-  DT_STICKY_ACTIONS_CELL_CLASS,
-  DT_STICKY_ACTIONS_HEAD_CLASS,
+  getStickyActionsCellClass,
+  getStickyActionsHeadClass,
   estimateActionsInlineMinWidthPx,
   getActionsColumnWidthPercent,
   shouldUseActionsEllipsisMode,
 } from '@/components/derived/data-table/dt-column-layout';
 import { estimateRowActionsInlineMinWidthPx } from '@/components/derived/data-table/dt-row-action-items';
 import { DtRowActionsBar } from '@/components/derived/data-table/dt-row-actions';
+import { useActionsColumnOverlay } from '@/components/derived/data-table/use-actions-column-overlay';
 import { DataTableProvider } from '@/components/derived/data-table/dt-provider';
 import { DtErrors } from '@/components/derived/data-table/dt-errors';
 import { DtHeader } from '@/components/derived/data-table/dt-header';
@@ -292,12 +293,14 @@ function DataTableView<TRow extends object>({
   const errorMessages = errorMessage ? [errorMessage] : [];
   const skeletonRowCount = 5;
   const columnCount = visibleDataColumns.length + (showActionsColumn ? 1 : 0);
+  const isActionsColumnOverlaying = useActionsColumnOverlay(scrollContainerRef, showActionsColumn);
   const stickyActionsHeadClass = cn(
-    DT_STICKY_ACTIONS_HEAD_CLASS,
+    getStickyActionsHeadClass(isActionsColumnOverlaying),
     DT_TABLE_HEADER_STICKY_CLASS,
-    DT_TABLE_HEADER_BG_CLASS,
+    DT_TABLE_HEADER_HEIGHT_CLASS,
     'z-40',
   );
+  const stickyActionsCellClass = getStickyActionsCellClass(isActionsColumnOverlaying);
 
   return (
     <div
@@ -375,6 +378,7 @@ function DataTableView<TRow extends object>({
                 visibleDataColumns={visibleDataColumns}
                 showActionsColumn={showActionsColumn}
                 actionsColumn={actionsColumnMeta}
+                isActionsColumnOverlaying={isActionsColumnOverlaying}
               />
             ) : null}
           </thead>
@@ -393,7 +397,7 @@ function DataTableView<TRow extends object>({
                   ))}
                   {showActionsColumn ? (
                     <td
-                      className={cn('p-2 align-middle', DT_STICKY_ACTIONS_CELL_CLASS)}
+                      className={cn('p-2 align-middle', stickyActionsCellClass)}
                       style={actionsColumnStyle(layout)}
                     >
                       <Skeleton className="h-4 w-full" />
@@ -431,7 +435,7 @@ function DataTableView<TRow extends object>({
                         className={cn(
                           'max-w-0 p-2 align-middle whitespace-nowrap',
                           dataTableColumnAlignClass(align),
-                          isActions && DT_STICKY_ACTIONS_CELL_CLASS,
+                          isActions && stickyActionsCellClass,
                         )}
                         style={
                           isActions

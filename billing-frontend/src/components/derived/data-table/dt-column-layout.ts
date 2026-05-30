@@ -1,5 +1,6 @@
 import type { DataTableColumnDef } from '@/components/derived/data-table/dt-types';
 import { isActionsColumn } from '@/components/derived/data-table/dt-types';
+import { cn } from '@/lib/utils';
 
 /** Base grid width; column percents are shares of this unit. */
 export const DT_GRID_BASE_WIDTH_PERCENT = 100;
@@ -163,11 +164,31 @@ export function actionsColumnStyle(layout: DataTableLayout): {
   return { width: `${width}%` };
 }
 
-export const DT_STICKY_ACTIONS_HEAD_CLASS =
-  'sticky right-0 border-l shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.12)]';
+/** Left edge + drop shadow when the pinned actions column overlays data cells. */
+export const DT_STICKY_ACTIONS_OVERLAY_CLASS =
+  'shadow-[-6px_0_12px_-4px_hsl(var(--foreground)/0.08)] before:pointer-events-none before:absolute before:inset-y-0 before:left-0 before:z-10 before:w-px before:bg-border before:content-[""]';
 
+export function getStickyActionsHeadClass(isOverlaying: boolean): string {
+  return cn('sticky right-0 bg-muted', isOverlaying && DT_STICKY_ACTIONS_OVERLAY_CLASS);
+}
+
+export function getStickyActionsCellClass(isOverlaying: boolean): string {
+  return cn(
+    'sticky right-0 z-10 bg-background group-hover:bg-muted/50',
+    isOverlaying && DT_STICKY_ACTIONS_OVERLAY_CLASS,
+  );
+}
+
+export function getStickyActionsFilterClass(isOverlaying: boolean): string {
+  return cn('sticky right-0 z-40 bg-secondary', isOverlaying && DT_STICKY_ACTIONS_OVERLAY_CLASS);
+}
+
+/** @deprecated Use `getStickyActionsHeadClass(isOverlaying)` */
+export const DT_STICKY_ACTIONS_HEAD_CLASS = 'sticky right-0 bg-muted';
+
+/** @deprecated Use `getStickyActionsCellClass(isOverlaying)` */
 export const DT_STICKY_ACTIONS_CELL_CLASS =
-  'sticky right-0 z-10 border-l bg-background shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.08)] group-hover:bg-muted/50';
+  'sticky right-0 z-10 bg-background group-hover:bg-muted/50';
 
 export function getActionsColumnWidthPercent(
   columns: DataTableColumnDef[],

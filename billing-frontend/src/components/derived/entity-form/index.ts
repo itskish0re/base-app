@@ -8,6 +8,28 @@ export {
 } from '@/components/derived/entity-form/ef-default-values';
 export { buildFormFieldValidator } from '@/components/derived/entity-form/ef-field-validator';
 export { EntityFormField } from '@/components/derived/entity-form/ef-field';
+export { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
+export {
+  isEntityFormBooleanField,
+  resolveEntityFormFieldInput,
+} from '@/components/derived/entity-form/ef-input-registry';
+export { EntityFormBooleanInput } from '@/components/derived/entity-form/ef-input-boolean';
+export { EntityFormMobileInput } from '@/components/derived/entity-form/ef-input-mobile';
+export { EntityFormNumberInput } from '@/components/derived/entity-form/ef-input-number';
+export { EntityFormTextInput, EntityFormBadgeTextInput } from '@/components/derived/entity-form/ef-input-text';
+export { EntityFormVehicleNumberInput } from '@/components/derived/entity-form/ef-input-vehicle-number';
+export type {
+  EntityFormFieldInputComponent,
+  EntityFormFieldInputProps,
+} from '@/components/derived/entity-form/ef-field-types';
+export {
+  formatMobileInputDisplay,
+  formatNumberFieldDisplay,
+  formatVehicleNumberInputDisplay,
+  parseMobileStoredValue,
+  parseNumberFieldValue,
+  parseVehicleNumberStoredValue,
+} from '@/components/derived/entity-form/ef-input-value';
 export { EntityFormFieldSkeleton } from '@/components/derived/entity-form/ef-field-skeleton';
 export { EntityFormFields } from '@/components/derived/entity-form/ef-fields';
 export { EntityFormFieldsSkeleton } from '@/components/derived/entity-form/ef-fields-skeleton';

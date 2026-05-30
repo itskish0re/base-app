@@ -1,6 +1,7 @@
 import {
   actionsColumnStyle,
   dataColumnStyle,
+  getStickyActionsFilterClass,
   type DataTableLayout,
 } from '@/components/derived/data-table/dt-column-layout';
 import {
@@ -18,6 +19,7 @@ type DtColumnFiltersProps = {
   visibleDataColumns: DataTableColumnDef[];
   showActionsColumn: boolean;
   actionsColumn: DataTableColumnDef | null;
+  isActionsColumnOverlaying?: boolean;
 };
 
 export function DtColumnFilters({
@@ -25,6 +27,7 @@ export function DtColumnFilters({
   visibleDataColumns,
   showActionsColumn,
   actionsColumn,
+  isActionsColumnOverlaying = false,
 }: DtColumnFiltersProps) {
   const { columnFilters, setColumnFilter } = useDataTable();
 
@@ -55,8 +58,7 @@ export function DtColumnFilters({
           className={cn(
             'py-2 px-2 font-normal',
             DT_TABLE_FILTER_STICKY_CLASS,
-            DT_TABLE_FILTER_ROW_BG_CLASS,
-            'sticky right-0 z-40 border-l shadow-[-4px_0_8px_-4px_rgba(0,0,0,0.12)]',
+            getStickyActionsFilterClass(isActionsColumnOverlaying),
             dataTableColumnAlignClass(actionsColumn?.align),
           )}
           style={actionsColumnStyle(layout)}

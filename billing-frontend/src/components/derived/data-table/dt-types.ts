@@ -233,9 +233,13 @@ export interface DataTableProps<TRow> {
 }
 
 export interface DataTablePaginationOptions {
-  /** Pages pinned at the start and end of the range (default 1). */
+  /** Pages always shown from the start of the range (default 3). */
+  leadingCount?: number;
+  /** Pages pinned at the end when the range is compressed (default 1). */
+  trailingCount?: number;
+  /** @deprecated Use `leadingCount` / `trailingCount`. */
   boundaryCount?: number;
-  /** Pages shown on each side of the active page (default 1). */
+  /** @deprecated Ignored; kept for backward compatibility. */
   siblingCount?: number;
   /** Show jump-to-first / jump-to-last controls (default true). */
   showFirstLast?: boolean;
