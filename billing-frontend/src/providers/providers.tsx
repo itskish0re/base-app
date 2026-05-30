@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Provider } from 'react-redux';
+import { Toaster } from '@/components/ui/sonner';
 import { QueryDevtools } from '@/providers/query-devtools';
 import { ApiError } from '@/service/api/client';
 import { store } from '@/store/store';
@@ -40,6 +41,7 @@ export function Providers({ children }: { children: ReactNode }) {
     <Provider store={store}>
       <QueryClientProvider client={queryClient}>
         {children}
+        <Toaster />
         <QueryDevtools />
       </QueryClientProvider>
     </Provider>

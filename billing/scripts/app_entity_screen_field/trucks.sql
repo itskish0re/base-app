@@ -28,8 +28,7 @@ INNER JOIN app_entity e ON e.entity_id = s.entity_id
 CROSS JOIN (
     VALUES
         ('truck_number', 'Truck number', true, 10, 'text', false),
-        ('name_board_id', 'Name board', true, 20, 'number', false),
-        ('is_enabled', 'Enabled', true, 30, 'boolean', false)
+        ('name_board_id', 'Name board', true, 20, 'number', false)
 ) AS v(field_name, display_label, is_visible, display_order, field_component, is_read_only)
 INNER JOIN app_entity_field f ON f.entity_id = e.entity_id AND f.field_name = v.field_name
 WHERE m.menu_code = 'truck'

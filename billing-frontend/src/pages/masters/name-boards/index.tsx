@@ -17,10 +17,8 @@ import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
 import { listNameBoardsQueryOptions } from '@/service/query/nameBoards';
 import {
-  createNameBoardsMutationOptions,
   deleteNameBoardsMutationOptions,
   toggleNameBoardsMutationOptions,
-  updateNameBoardsMutationOptions,
 } from '@/service/mutation/nameBoards';
 import { useAppDispatch } from '@/store/hooks';
 import { nameBoardsScreenActions } from '@/store/screens/nameBoardsSlice';
@@ -76,8 +74,6 @@ export function NameBoardsPage() {
       }
       enabled={metadataReady}
       mutations={{
-        create: () => createNameBoardsMutationOptions,
-        update: () => updateNameBoardsMutationOptions,
         delete: () => deleteNameBoardsMutationOptions,
         toggle: () => toggleNameBoardsMutationOptions,
       }}
@@ -104,7 +100,11 @@ export function NameBoardsPage() {
         }),
       ]}
       />
-      <NameBoardFormShell shell={formShell} presentation="dialog" />
+      <NameBoardFormShell
+        shell={formShell}
+        entities={metadata.entities}
+        presentation="dialog"
+      />
     </>
   );
 }
