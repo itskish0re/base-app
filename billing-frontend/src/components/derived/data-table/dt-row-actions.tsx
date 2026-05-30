@@ -30,14 +30,12 @@ function RowActionsOverflowMenu({
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <span className="inline-flex">
-          <DtActionIconButton
-            label={overflowMenuLabel ?? 'Actions'}
-            icon={MoreHorizontal}
-            disabled={ctx.disabled}
-          />
-        </span>
+      <DropdownMenuTrigger render={<span className="inline-flex" />}>
+        <DtActionIconButton
+          label={overflowMenuLabel ?? 'Actions'}
+          icon={MoreHorizontal}
+          disabled={ctx.disabled}
+        />
       </DropdownMenuTrigger>
       <DropdownMenuContent align={menuAlign} className="w-44">
         {items.map((item) => (
@@ -65,7 +63,7 @@ export function DtRowActionsBar({
   }
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <TooltipProvider delay={300}>
       <div className={cn('flex w-full min-w-0 items-center', flexClass)}>
         {ellipsisMode ? (
           <RowActionsOverflowMenu

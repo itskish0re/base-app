@@ -67,18 +67,20 @@ export function DtCellOverflow({ label, children, className, align = 'left' }: D
 
   return (
     <Popover>
-      <PopoverTrigger asChild>
-        <button
-          type="button"
-          className={cn(
-            'block w-full min-w-0 max-w-full cursor-pointer rounded-sm text-inherit',
-            'hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-            alignClass(align),
-          )}
-          aria-label={`View full value: ${label}`}
-        >
-          {content}
-        </button>
+      <PopoverTrigger
+        render={
+          <button
+            type="button"
+            className={cn(
+              'block w-full min-w-0 max-w-full cursor-pointer rounded-sm text-inherit',
+              'hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+              alignClass(align),
+            )}
+            aria-label={`View full value: ${label}`}
+          />
+        }
+      >
+        {content}
       </PopoverTrigger>
       <PopoverContent className="max-w-md break-words" align="start">
         {label}

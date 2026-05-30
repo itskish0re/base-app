@@ -31,16 +31,25 @@ export function DtToolbarOptions() {
   ).length;
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <TooltipProvider delay={300}>
       <div className="flex items-center gap-1">
         <DropdownMenu>
           <Tooltip>
-            <TooltipTrigger asChild>
-              <DropdownMenuTrigger asChild>
-                <Button type="button" variant="outline" size="icon" aria-label="Show or hide columns">
-                  <Columns3 className="size-4" />
-                </Button>
-              </DropdownMenuTrigger>
+            <TooltipTrigger
+              render={
+                <DropdownMenuTrigger
+                  render={
+                    <Button
+                      type="button"
+                      variant="outline"
+                      size="icon"
+                      aria-label="Show or hide columns"
+                    />
+                  }
+                />
+              }
+            >
+              <Columns3 className="size-4" />
             </TooltipTrigger>
             <TooltipContent>Show / hide columns</TooltipContent>
           </Tooltip>
@@ -71,23 +80,25 @@ export function DtToolbarOptions() {
         </DropdownMenu>
 
         <Tooltip>
-          <TooltipTrigger asChild>
-            <Button
-              type="button"
-              variant={showColumnSearch ? 'secondary' : 'outline'}
-              size="icon"
-              aria-label="Toggle column search"
-              aria-pressed={showColumnSearch}
-              className={cn(showColumnSearch && 'bg-secondary')}
-              onClick={() => {
-                if (showColumnSearch) {
-                  clearColumnFilters();
-                }
-                toggleShowColumnSearch();
-              }}
-            >
-              <ListFilter className="size-4" />
-            </Button>
+          <TooltipTrigger
+            render={
+              <Button
+                type="button"
+                variant={showColumnSearch ? 'secondary' : 'outline'}
+                size="icon"
+                aria-label="Toggle column search"
+                aria-pressed={showColumnSearch}
+                className={cn(showColumnSearch && 'bg-secondary')}
+                onClick={() => {
+                  if (showColumnSearch) {
+                    clearColumnFilters();
+                  }
+                  toggleShowColumnSearch();
+                }}
+              />
+            }
+          >
+            <ListFilter className="size-4" />
           </TooltipTrigger>
           <TooltipContent>Column search</TooltipContent>
         </Tooltip>

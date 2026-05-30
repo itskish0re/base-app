@@ -21,15 +21,13 @@ export function DtActionToggleSwitch({
 
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <span className="inline-flex items-center px-1">
-          <Switch
-            checked={checked}
-            onCheckedChange={onCheckedChange}
-            disabled={disabled}
-            aria-label={label}
-          />
-        </span>
+      <TooltipTrigger render={<span className="inline-flex items-center px-1" />}>
+        <Switch
+          checked={checked}
+          onCheckedChange={onCheckedChange}
+          disabled={disabled}
+          aria-label={label}
+        />
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

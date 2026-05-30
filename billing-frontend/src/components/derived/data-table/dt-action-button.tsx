@@ -23,18 +23,20 @@ export function DtActionIconButton({
 }: DtActionIconButtonProps) {
   return (
     <Tooltip>
-      <TooltipTrigger asChild>
-        <Button
-          type="button"
-          variant={variant}
-          size="icon"
-          className={cn('size-8 shrink-0', className)}
-          aria-label={label}
-          disabled={disabled}
-          onClick={onClick}
-        >
-          <Icon className="size-4" />
-        </Button>
+      <TooltipTrigger
+        render={
+          <Button
+            type="button"
+            variant={variant}
+            size="icon"
+            className={cn('size-8 shrink-0', className)}
+            aria-label={label}
+            disabled={disabled}
+            onClick={onClick}
+          />
+        }
+      >
+        <Icon className="size-4" />
       </TooltipTrigger>
       <TooltipContent>{label}</TooltipContent>
     </Tooltip>

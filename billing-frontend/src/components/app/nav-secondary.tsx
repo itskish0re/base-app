@@ -35,11 +35,13 @@ export function NavSecondary({
             const Icon = resolveMenuIcon(menu.icon);
             return (
               <SidebarMenuItem key={menu.menuId}>
-                <SidebarMenuButton asChild size="sm" tooltip={menuTooltip(menu)}>
-                  <MenuNavLink routePath={menu.routePath}>
-                    <Icon />
-                    <span>{menu.displayName}</span>
-                  </MenuNavLink>
+                <SidebarMenuButton
+                  render={<MenuNavLink routePath={menu.routePath} />}
+                  size="sm"
+                  tooltip={menuTooltip(menu)}
+                >
+                  <Icon />
+                  <span>{menu.displayName}</span>
                 </SidebarMenuButton>
               </SidebarMenuItem>
             );

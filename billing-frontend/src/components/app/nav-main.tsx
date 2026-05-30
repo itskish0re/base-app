@@ -29,10 +29,8 @@ function NavSubLink({ menu }: { menu: NavigationMenuNode }) {
   const active = isRouteActive(pathname, menu.routePath);
 
   return (
-    <SidebarMenuSubButton asChild isActive={active}>
-      <MenuNavLink routePath={menu.routePath}>
-        <span>{menu.displayName}</span>
-      </MenuNavLink>
+    <SidebarMenuSubButton render={<MenuNavLink routePath={menu.routePath} />} isActive={active}>
+      <span>{menu.displayName}</span>
     </SidebarMenuSubButton>
   );
 }
@@ -55,8 +53,12 @@ function NavMainItem({ item }: { item: NavigationMenuNode }) {
 
     return (
       <SidebarMenuItem>
-        <SidebarMenuButton asChild tooltip={tooltip} isActive={active}>
-          <MenuNavLink routePath={item.routePath}>{content}</MenuNavLink>
+        <SidebarMenuButton
+          render={<MenuNavLink routePath={item.routePath} />}
+          tooltip={tooltip}
+          isActive={active}
+        >
+          {content}
         </SidebarMenuButton>
         {item.badge ? <SidebarMenuBadge>{item.badge}</SidebarMenuBadge> : null}
       </SidebarMenuItem>
@@ -64,15 +66,15 @@ function NavMainItem({ item }: { item: NavigationMenuNode }) {
   }
 
   return (
-    <Collapsible asChild defaultOpen={item.defaultExpanded || childActive} className="group/collapsible">
-      <SidebarMenuItem>
-        <CollapsibleTrigger asChild>
-          <SidebarMenuButton tooltip={tooltip} isActive={active || childActive}>
-            <Icon />
-            <span>{item.displayName}</span>
-            {item.badge ? <SidebarMenuBadge className="right-8">{item.badge}</SidebarMenuBadge> : null}
-            <ChevronRight className="ml-auto transition-transform duration-200 group-data-[state=open]/collapsible:rotate-90" />
-          </SidebarMenuButton>
+    <SidebarMenuItem>
+      <Collapsible defaultOpen={item.defaultExpanded || childActive} className="group/collapsible">
+        <CollapsibleTrigger
+          render={<SidebarMenuButton tooltip={tooltip} isActive={active || childActive} />}
+        >
+          <Icon />
+          <span>{item.displayName}</span>
+          {item.badge ? <SidebarMenuBadge className="right-8">{item.badge}</SidebarMenuBadge> : null}
+          <ChevronRight className="ml-auto transition-transform duration-200 group-data-open/collapsible:rotate-90" />
         </CollapsibleTrigger>
         <CollapsibleContent>
           <SidebarMenuSub>
@@ -83,8 +85,8 @@ function NavMainItem({ item }: { item: NavigationMenuNode }) {
             ))}
           </SidebarMenuSub>
         </CollapsibleContent>
-      </SidebarMenuItem>
-    </Collapsible>
+      </Collapsible>
+    </SidebarMenuItem>
   );
 }
 

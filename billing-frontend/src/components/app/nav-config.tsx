@@ -36,11 +36,12 @@ export function NavConfig({
           const Icon = resolveMenuIcon(item.icon);
           return (
             <SidebarMenuItem key={item.menuId}>
-              <SidebarMenuButton asChild tooltip={menuTooltip(item)}>
-                <MenuNavLink routePath={item.routePath}>
-                  <Icon />
-                  <span>{item.displayName}</span>
-                </MenuNavLink>
+              <SidebarMenuButton
+                render={<MenuNavLink routePath={item.routePath} />}
+                tooltip={menuTooltip(item)}
+              >
+                <Icon />
+                <span>{item.displayName}</span>
               </SidebarMenuButton>
             </SidebarMenuItem>
           );

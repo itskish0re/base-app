@@ -282,7 +282,7 @@ function DataTableView<TRow extends object>({
   const columnCount = visibleDataColumns.length + (showActionsColumn ? 1 : 0);
 
   return (
-    <div className="space-y-0 rounded-md border p-4 sm:p-2">
+    <div className="space-y-0 rounded-md border p-2 md:p-3">
       <DtHeader title={title} actions={headerActions} />
       {errorMessages.length == 0 ? (
         <div className="pt-3">

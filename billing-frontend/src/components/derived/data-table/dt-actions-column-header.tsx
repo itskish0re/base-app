@@ -30,16 +30,18 @@ export function DtActionsColumnHeader({
   }
 
   return (
-    <TooltipProvider delayDuration={300}>
+    <TooltipProvider delay={300}>
       <div className={cn('flex w-full min-w-0 items-center', flexClass)}>
         <Tooltip>
-          <TooltipTrigger asChild>
-            <span
-              className="inline-flex size-8 shrink-0 items-center justify-center text-muted-foreground"
-              aria-label={tooltip}
-            >
-              <MoreHorizontal className="size-4" />
-            </span>
+          <TooltipTrigger
+            render={
+              <span
+                className="inline-flex size-8 shrink-0 items-center justify-center text-muted-foreground"
+                aria-label={tooltip}
+              />
+            }
+          >
+            <MoreHorizontal className="size-4" />
           </TooltipTrigger>
           <TooltipContent>{tooltip}</TooltipContent>
         </Tooltip>
