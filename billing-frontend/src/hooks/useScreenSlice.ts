@@ -1,6 +1,7 @@
 import { useLayoutEffect } from 'react';
 import { shallowEqual } from 'react-redux';
 import type { ScreenKey } from '@/constants/screenKeys';
+import { selectScreenMetadataState } from '@/store/global/screenCacheSlice';
 import { useAppSelector } from '@/store/hooks';
 import { screenReducerRegistry } from '@/store/screens/registry';
 import { screenMountActionsByKey } from '@/store/screens/screenMountActions';
@@ -61,7 +62,10 @@ export function useScreenTableSelector<K extends ScreenKeyWithTable>(screenKey: 
   return useScreenSelector(screenKey, (state) => state.table, shallowEqual);
 }
 
-/** Select `metadata` from a screen slice (shallow-equal to avoid redundant rerenders). */
+/** Select cached screen metadata (persists across route unmount). */
 export function useScreenMetadataSelector<K extends ScreenKeyWithMetadata>(screenKey: K) {
-  return useScreenSelector(screenKey, (state) => state.metadata, shallowEqual);
+  return useAppSelector(
+    (state) => selectScreenMetadataState(state, screenKey),
+    shallowEqual,
+  );
 }

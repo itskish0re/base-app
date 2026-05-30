@@ -18,11 +18,13 @@ import {
   SidebarMenuItem,
 } from '@/components/ui/sidebar';
 import { buildNavigationTree } from '@/lib/navigationTree';
+import { useMenuRouteActive } from '@/lib/menuRouteActive';
 import { DASHBOARD_ROUTE } from '@/constants/routes';
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const sections = useAppSelector(selectMenuSections);
   const status = useAppSelector(selectMenuLoadStatus);
+  const dashboardActive = useMenuRouteActive(DASHBOARD_ROUTE);
   const isLoading =
     status === MENU_LOAD_STATUS.idle || status === MENU_LOAD_STATUS.loading;
   const isError = status === MENU_LOAD_STATUS.failed;
@@ -32,7 +34,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarHeader>
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton size="lg" render={<Link to={DASHBOARD_ROUTE} />}>
+            <SidebarMenuButton
+              size="lg"
+              render={<Link to={DASHBOARD_ROUTE} activeOptions={{ exact: true }} />}
+              isActive={dashboardActive}
+            >
               <div className="flex aspect-square size-8 items-center justify-center rounded-lg bg-sidebar-primary text-sidebar-primary-foreground">
                 <Command className="size-4" />
               </div>

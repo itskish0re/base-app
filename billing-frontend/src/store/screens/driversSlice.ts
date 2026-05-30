@@ -4,13 +4,10 @@ import {
   type DataTableState,
 } from '@/components/derived/data-table';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
-import { createScreenMetadataReducers } from '@/store/screens/screenMetadataReducers';
 import type { DriversScreenState } from '@/types/store/screens/drivers';
-import { createInitialScreenMetadataState } from '@/types/store/screen';
 
 const initialState: DriversScreenState = {
   table: createInitialDataTableState(),
-  metadata: createInitialScreenMetadataState(),
 };
 
 const driversSlice = createSlice({
@@ -21,7 +18,6 @@ const driversSlice = createSlice({
       state.table = action.payload;
     },
     resetScreenState: () => initialState,
-    ...createScreenMetadataReducers(),
   },
 });
 

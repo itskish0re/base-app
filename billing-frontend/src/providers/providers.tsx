@@ -4,6 +4,7 @@ import { Provider } from 'react-redux';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryDevtools } from '@/providers/query-devtools';
 import { ApiError } from '@/service/api/client';
+import { bootstrapScreenCacheOnReload } from '@/store/bootstrapScreenCacheOnReload';
 import { store } from '@/store/store';
 import { clearAuth } from '@/store/global/authSlice';
 
@@ -21,6 +22,8 @@ const queryClient = new QueryClient({
     },
   },
 });
+
+bootstrapScreenCacheOnReload(store.dispatch, queryClient);
 
 queryClient.getQueryCache().subscribe((event) => {
   if (event.type !== 'updated' || event.action.type !== 'error') {

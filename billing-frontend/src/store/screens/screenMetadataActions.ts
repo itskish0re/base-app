@@ -1,17 +1,17 @@
 import { SCREEN_KEYS, type ScreenKey } from '@/constants/screenKeys';
-import { driversScreenActions } from '@/store/screens/driversSlice';
-import { nameBoardsScreenActions } from '@/store/screens/nameBoardsSlice';
-import { trucksScreenActions } from '@/store/screens/trucksSlice';
 
-/** Master screens that load registry metadata into their slice. */
-export const screenMetadataActionsByKey = {
-  [SCREEN_KEYS.nameBoard]: nameBoardsScreenActions,
-  [SCREEN_KEYS.truck]: trucksScreenActions,
-  [SCREEN_KEYS.driver]: driversScreenActions,
-} as const;
+/** Master screens that load registry metadata into the global screen cache. */
+export type ScreenKeyWithMetadata =
+  | typeof SCREEN_KEYS.nameBoard
+  | typeof SCREEN_KEYS.truck
+  | typeof SCREEN_KEYS.driver;
 
-export type ScreenKeyWithMetadata = keyof typeof screenMetadataActionsByKey;
+const SCREEN_KEYS_WITH_METADATA = new Set<ScreenKeyWithMetadata>([
+  SCREEN_KEYS.nameBoard,
+  SCREEN_KEYS.truck,
+  SCREEN_KEYS.driver,
+]);
 
 export function isScreenKeyWithMetadata(key: ScreenKey): key is ScreenKeyWithMetadata {
-  return key in screenMetadataActionsByKey;
+  return SCREEN_KEYS_WITH_METADATA.has(key as ScreenKeyWithMetadata);
 }

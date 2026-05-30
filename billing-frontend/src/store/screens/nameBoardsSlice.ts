@@ -4,13 +4,10 @@ import {
   type DataTableState,
 } from '@/components/derived/data-table';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
-import { createScreenMetadataReducers } from '@/store/screens/screenMetadataReducers';
 import type { NameBoardsScreenState } from '@/types/store/screens/nameBoards';
-import { createInitialScreenMetadataState } from '@/types/store/screen';
 
 const initialState: NameBoardsScreenState = {
   table: createInitialDataTableState(),
-  metadata: createInitialScreenMetadataState(),
 };
 
 const nameBoardsSlice = createSlice({
@@ -21,7 +18,6 @@ const nameBoardsSlice = createSlice({
       state.table = action.payload;
     },
     resetScreenState: () => initialState,
-    ...createScreenMetadataReducers(),
   },
 });
 

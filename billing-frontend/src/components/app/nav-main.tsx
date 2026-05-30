@@ -17,16 +17,12 @@ import {
   SidebarMenuSubButton,
   SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
+import { isMenuRouteActive, useMenuRouteActive } from '@/lib/menuRouteActive';
 import { menuTooltip, type NavigationMenuNode } from '@/lib/navigationTree';
 import { resolveMenuIcon } from '@/lib/menu-icons';
 
-function isRouteActive(pathname: string, routePath: string): boolean {
-  return pathname === routePath || pathname.startsWith(`${routePath}/`);
-}
-
 function NavSubLink({ menu }: { menu: NavigationMenuNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
-  const active = isRouteActive(pathname, menu.routePath);
+  const active = useMenuRouteActive(menu.routePath);
 
   return (
     <SidebarMenuSubButton render={<MenuNavLink routePath={menu.routePath} />} isActive={active}>
@@ -36,21 +32,14 @@ function NavSubLink({ menu }: { menu: NavigationMenuNode }) {
 }
 
 function NavMainItem({ item }: { item: NavigationMenuNode }) {
-  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const pathname = useRouterState({ select: (state) => state.location.pathname });
+  const active = isMenuRouteActive(pathname, item.routePath);
   const Icon = resolveMenuIcon(item.icon);
   const tooltip = menuTooltip(item);
   const hasChildren = item.children.length > 0;
-  const childActive = item.children.some((c) => isRouteActive(pathname, c.routePath));
-  const active = isRouteActive(pathname, item.routePath);
+  const childActive = item.children.some((child) => isMenuRouteActive(pathname, child.routePath));
 
   if (!hasChildren) {
-    const content = (
-      <>
-        <Icon />
-        <span>{item.displayName}</span>
-      </>
-    );
-
     return (
       <SidebarMenuItem>
         <SidebarMenuButton
@@ -58,7 +47,8 @@ function NavMainItem({ item }: { item: NavigationMenuNode }) {
           tooltip={tooltip}
           isActive={active}
         >
-          {content}
+          <Icon />
+          <span>{item.displayName}</span>
         </SidebarMenuButton>
         {item.badge ? <SidebarMenuBadge>{item.badge}</SidebarMenuBadge> : null}
       </SidebarMenuItem>
@@ -109,12 +99,12 @@ export function NavMain({
     <SidebarGroup>
       {showLabel ? <SidebarGroupLabel>{SECTION_LABEL}</SidebarGroupLabel> : null}
       <SidebarMenu>
-        {isError && (
+        {isError ? (
           <p className="px-2 py-1.5 text-sm text-destructive">Could not load navigation.</p>
-        )}
-        {!isError && items.map((item) => (
-          <NavMainItem key={item.menuId} item={item} />
-        ))}
+        ) : null}
+        {!isError
+          ? items.map((item) => <NavMainItem key={item.menuId} item={item} />)
+          : null}
       </SidebarMenu>
     </SidebarGroup>
   );

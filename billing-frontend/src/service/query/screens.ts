@@ -11,7 +11,7 @@ export function screenByMenuQueryOptions(menuCode: string) {
     queryKey: queryKeys.screens.byMenu(menuCode),
     queryFn: ({ signal }) => fetchScreenByMenuCode(menuCode, signal),
     enabled: Boolean(menuCode) && Boolean(store.getState().auth.accessToken),
-    staleTime: SCREEN_METADATA_STALE_TIME_MS,
+    staleTime: 0,
     gcTime: SCREEN_METADATA_STALE_TIME_MS,
     refetchOnWindowFocus: false,
     retry: (failureCount, error) => !isQueryAbortError(error) && failureCount < 1,

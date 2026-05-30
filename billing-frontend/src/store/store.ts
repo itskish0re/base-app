@@ -2,6 +2,7 @@ import { configureStore, type Reducer } from '@reduxjs/toolkit';
 import type { ScreenKey } from '@/constants/screenKeys';
 import { authReducer } from '@/store/global/authSlice';
 import { menuReducer } from '@/store/global/menuSlice';
+import { screenCacheReducer } from '@/store/global/screenCacheSlice';
 import { createReducerManager } from '@/store/reducerManager';
 import type { ScreenStateByKey } from '@/types/store/screens';
 import type { RootState } from '@/types/store/root';
@@ -9,6 +10,7 @@ import type { RootState } from '@/types/store/root';
 const staticReducers = {
   auth: authReducer,
   menu: menuReducer,
+  screenCache: screenCacheReducer,
 };
 
 const reducerManager = createReducerManager(staticReducers);

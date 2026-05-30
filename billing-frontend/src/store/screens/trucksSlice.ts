@@ -4,13 +4,10 @@ import {
   type DataTableState,
 } from '@/components/derived/data-table';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
-import { createScreenMetadataReducers } from '@/store/screens/screenMetadataReducers';
 import type { TrucksScreenState } from '@/types/store/screens/trucks';
-import { createInitialScreenMetadataState } from '@/types/store/screen';
 
 const initialState: TrucksScreenState = {
   table: createInitialDataTableState(),
-  metadata: createInitialScreenMetadataState(),
 };
 
 const trucksSlice = createSlice({
@@ -21,7 +18,6 @@ const trucksSlice = createSlice({
       state.table = action.payload;
     },
     resetScreenState: () => initialState,
-    ...createScreenMetadataReducers(),
   },
 });
 

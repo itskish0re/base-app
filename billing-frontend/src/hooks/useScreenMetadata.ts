@@ -1,21 +1,21 @@
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import type { ScreenKey } from '@/constants/screenKeys';
+import { queryKeys } from '@/constants/queryKeys';
 import { screenByMenuQueryOptions } from '@/service/query/screens';
 import { isQueryAbortError } from '@/service/query/query-errors';
+import {
+  screenCacheActions,
+  selectScreenMetadataState,
+} from '@/store/global/screenCacheSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectCurrentMenuCode } from '@/store/global/menuSlice';
-import {
-  screenMetadataActionsByKey,
-  type ScreenKeyWithMetadata,
-} from '@/store/screens/screenMetadataActions';
-import { ensureScreenSliceMounted } from '@/hooks/useScreenSlice';
+import type { ScreenKeyWithMetadata } from '@/store/screens/screenMetadataActions';
 import {
   SCREEN_METADATA_LOAD_STATUS,
   createInitialScreenMetadataState,
   type ScreenMetadataState,
 } from '@/types/store/screen';
-import type { ScreenStateByKey } from '@/types/store/screens';
 
 const FALLBACK_SCREEN_METADATA = createInitialScreenMetadataState();
 
@@ -49,8 +49,8 @@ export type UseScreenMetadataResult = {
 };
 
 /**
- * Loads screen metadata from GET /api/screens/by-menu/{menuCode} into the screen slice.
- * Call {@link useScreenSlice} first on the page (or rely on {@link ensureScreenSliceMounted} here).
+ * Loads screen metadata from GET /api/screens/by-menu/{menuCode} into the global screen cache.
+ * Cached metadata survives in-app navigation; a hard browser reload clears the cache and refetches.
  */
 export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
   screenKey: K,
@@ -58,66 +58,73 @@ export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
 ): UseScreenMetadataResult {
   const { menuCode: menuCodeOverride, enabled = true } = options;
 
-  ensureScreenSliceMounted(screenKey);
-
   const dispatch = useAppDispatch();
+  const queryClient = useQueryClient();
   const currentMenuCode = useAppSelector(selectCurrentMenuCode);
   const menuCode = resolveMenuCode(screenKey, currentMenuCode, menuCodeOverride);
-  const actions = screenMetadataActionsByKey[screenKey];
-  const sliceMounted = useAppSelector(
-    (state) => (state[screenKey] as ScreenStateByKey[K] | undefined) !== undefined,
-  );
+
+  const metadata = useAppSelector((state) => selectScreenMetadataState(state, screenKey));
+  const hasCachedMetadata = metadata.status === SCREEN_METADATA_LOAD_STATUS.succeeded;
 
   const query = useQuery({
     ...screenByMenuQueryOptions(menuCode ?? ''),
-    enabled: enabled && Boolean(menuCode) && sliceMounted,
+    enabled: enabled && Boolean(menuCode) && !hasCachedMetadata,
   });
 
   useEffect(() => {
-    if (!enabled || !menuCode || !sliceMounted) {
+    if (!enabled || !menuCode || hasCachedMetadata) {
       return;
     }
 
     if (query.data) {
-      dispatch(actions.setScreenMetadataSucceeded(query.data));
-    }
-
-    if (query.isError && !isQueryAbortError(query.error)) {
-      if (!query.data) {
-        dispatch(actions.setScreenMetadataFailed(metadataErrorMessage(query.error)));
-      }
+      dispatch(
+        screenCacheActions.setScreenMetadataSucceeded({
+          screenKey,
+          data: query.data,
+        }),
+      );
       return;
     }
 
-    if (!query.data && (query.isPending || query.isFetching)) {
-      dispatch(actions.setScreenMetadataLoading());
+    if (query.isError && !isQueryAbortError(query.error)) {
+      dispatch(
+        screenCacheActions.setScreenMetadataFailed({
+          screenKey,
+          error: metadataErrorMessage(query.error),
+        }),
+      );
+      return;
+    }
+
+    if (query.isPending || query.isFetching) {
+      dispatch(screenCacheActions.setScreenMetadataLoading({ screenKey }));
     }
   }, [
-    actions,
     dispatch,
     enabled,
+    hasCachedMetadata,
     menuCode,
     query.data,
     query.error,
     query.isError,
     query.isFetching,
     query.isPending,
-    sliceMounted,
+    screenKey,
   ]);
 
-  const metadata = useAppSelector((state) => {
-    const slice = state[screenKey] as ScreenStateByKey[K] | undefined;
-    return slice?.metadata ?? FALLBACK_SCREEN_METADATA;
-  });
-
-  const hasMetadata = metadata.status === SCREEN_METADATA_LOAD_STATUS.succeeded;
+  const refetch = () => {
+    dispatch(screenCacheActions.clearScreenMetadata({ screenKey }));
+    if (menuCode) {
+      void queryClient.invalidateQueries({ queryKey: queryKeys.screens.byMenu(menuCode) });
+    }
+  };
 
   return {
     menuCode,
-    metadata,
-    isLoading: !sliceMounted || (query.isPending && !hasMetadata),
+    metadata: metadata ?? FALLBACK_SCREEN_METADATA,
+    isLoading: !hasCachedMetadata && (query.isPending || metadata.status === SCREEN_METADATA_LOAD_STATUS.loading),
     isError: metadata.status === SCREEN_METADATA_LOAD_STATUS.failed,
     error: query.error,
-    refetch: query.refetch,
+    refetch,
   };
 }
