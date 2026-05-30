@@ -8,6 +8,7 @@ import {
   rowActionToggle,
   type DataTableColumnDef,
 } from '@/components/derived/data-table';
+import { ScreenDataTableSkeleton } from '@/components/derived/screen-page';
 import { useEntityFormShell } from '@/components/derived/form-shell';
 import { TruckFormShell } from '@/pages/masters/trucks/truck-form-shell';
 import { Button } from '@/components/ui/button';
@@ -40,7 +41,7 @@ export function TrucksPage() {
 
   const dispatch = useAppDispatch();
   const table = useScreenTableSelector(SCREEN_KEYS.truck);
-  const { metadata } = useScreenMetadata(SCREEN_KEYS.truck);
+  const { metadata, isLoading } = useScreenMetadata(SCREEN_KEYS.truck);
   const formShell = useEntityFormShell<number>();
 
   const onTableChange = useCallback(
@@ -63,8 +64,8 @@ export function TrucksPage() {
     );
   }
 
-  if (!metadataReady) {
-    return <p className="text-sm text-muted-foreground">Loading screen…</p>;
+  if (isLoading) {
+    return <ScreenDataTableSkeleton title="Trucks" />;
   }
 
   return (

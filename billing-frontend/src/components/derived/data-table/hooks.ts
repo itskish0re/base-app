@@ -1,4 +1,4 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useMutation, useQuery } from '@tanstack/react-query';
 import { useEffect, useMemo, useState } from 'react';
 import { useShallow } from 'zustand/react/shallow';
 import { useDataTableStoreApi } from '@/components/derived/data-table/dt-context';
@@ -98,6 +98,7 @@ export function useDataTableQuery<TRow>(
     queryKey: options.queryKey ?? ['data-table', 'list', params],
     queryFn: options.queryFn ?? (async () => ({ items: [], page: 1, pageSize: 20, totalCount: 0 })),
     enabled,
+    placeholderData: keepPreviousData,
   });
 
   const errorMessage =

@@ -11,6 +11,12 @@ internal sealed class GlobalExceptionHandler(ILogger<GlobalExceptionHandler> log
         Exception exception,
         CancellationToken cancellationToken)
     {
+        if (exception is OperationCanceledException)
+        {
+            httpContext.Response.StatusCode = StatusCodes.Status499ClientClosedRequest;
+            return true;
+        }
+
         logger.LogError(exception, "Unhandled exception occurred");
 
         var problemDetails = new ProblemDetails

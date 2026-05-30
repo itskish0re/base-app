@@ -14,6 +14,9 @@ export const DT_TABLE_FILTER_ROW_BG_CLASS = 'bg-secondary';
 export const DT_TABLE_HEADER_STICKY_CLASS = 'sticky top-0 z-30';
 export const DT_TABLE_FILTER_STICKY_CLASS = 'sticky top-10 z-30';
 export const DT_TABLE_HEADER_HEIGHT_CLASS = 'h-10';
+/** Sticky offset for the fetch progress bar below header rows. */
+export const DT_TABLE_FETCH_PROGRESS_STICKY_CLASS = 'top-10';
+export const DT_TABLE_FETCH_PROGRESS_STICKY_WITH_FILTER_CLASS = 'top-20';
 
 /** Bottom gap when computing default viewport max height for the table shell. */
 export const DT_VIEWPORT_MAX_HEIGHT_BOTTOM_GAP_PX = 24;

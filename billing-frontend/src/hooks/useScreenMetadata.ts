@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import type { ScreenKey } from '@/constants/screenKeys';
 import { screenByMenuQueryOptions } from '@/service/query/screens';
+import { isQueryAbortError } from '@/service/query/query-errors';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectCurrentMenuCode } from '@/store/global/menuSlice';
 import {
@@ -77,18 +78,19 @@ export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
       return;
     }
 
-    if (query.isPending || query.isFetching) {
-      dispatch(actions.setScreenMetadataLoading());
-      return;
-    }
-
-    if (query.isError) {
-      dispatch(actions.setScreenMetadataFailed(metadataErrorMessage(query.error)));
-      return;
-    }
-
     if (query.data) {
       dispatch(actions.setScreenMetadataSucceeded(query.data));
+    }
+
+    if (query.isError && !isQueryAbortError(query.error)) {
+      if (!query.data) {
+        dispatch(actions.setScreenMetadataFailed(metadataErrorMessage(query.error)));
+      }
+      return;
+    }
+
+    if (!query.data && (query.isPending || query.isFetching)) {
+      dispatch(actions.setScreenMetadataLoading());
     }
   }, [
     actions,
@@ -108,13 +110,12 @@ export function useScreenMetadata<K extends ScreenKeyWithMetadata>(
     return slice?.metadata ?? FALLBACK_SCREEN_METADATA;
   });
 
+  const hasMetadata = metadata.status === SCREEN_METADATA_LOAD_STATUS.succeeded;
+
   return {
     menuCode,
     metadata,
-    isLoading:
-      !sliceMounted ||
-      metadata.status === SCREEN_METADATA_LOAD_STATUS.loading ||
-      metadata.status === SCREEN_METADATA_LOAD_STATUS.idle,
+    isLoading: !sliceMounted || (query.isPending && !hasMetadata),
     isError: metadata.status === SCREEN_METADATA_LOAD_STATUS.failed,
     error: query.error,
     refetch: query.refetch,

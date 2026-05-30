@@ -8,6 +8,7 @@ import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { DtActionsColumnHeader } from '@/components/derived/data-table/dt-actions-column-header';
 import { DtColumnFilters } from '@/components/derived/data-table/dt-column-filters';
+import { DtTableFetchProgress } from '@/components/derived/data-table/dt-table-fetch-progress';
 import {
   actionsColumnStyle,
   computeDataTableLayout,
@@ -156,6 +157,7 @@ function DataTableView<TRow extends object>({
     tableState,
     rows,
     isLoading,
+    isFetching,
     errorMessage,
     mutations,
     toggleSort,
@@ -301,6 +303,7 @@ function DataTableView<TRow extends object>({
     'z-40',
   );
   const stickyActionsCellClass = getStickyActionsCellClass(isActionsColumnOverlaying);
+  const showFetchProgress = isFetching && !isLoading;
 
   return (
     <div
@@ -381,6 +384,11 @@ function DataTableView<TRow extends object>({
                 isActionsColumnOverlaying={isActionsColumnOverlaying}
               />
             ) : null}
+            <DtTableFetchProgress
+              columnCount={columnCount}
+              showColumnSearch={showColumnSearch}
+              visible={showFetchProgress}
+            />
           </thead>
           <tbody className="[&_tr:last-child]:border-0">
             {isLoading ? (

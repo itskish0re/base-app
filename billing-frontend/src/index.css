@@ -139,3 +139,17 @@
   background-size: 200% 100%;
   animation: ef-shimmer 1.6s ease-in-out infinite;
 }
+
+@keyframes dt-fetch-progress {
+  0% {
+    transform: translateX(-100%);
+  }
+
+  100% {
+    transform: translateX(400%);
+  }
+}
+
+.dt-fetch-progress {
+  animation: dt-fetch-progress 1.1s ease-in-out infinite;
+}

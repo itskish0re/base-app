@@ -7,6 +7,7 @@ import {
   rowActionEdit,
   rowActionToggle,
 } from '@/components/derived/data-table';
+import { ScreenDataTableSkeleton } from '@/components/derived/screen-page';
 import { useEntityFormShell } from '@/components/derived/form-shell';
 import { NameBoardFormShell } from '@/pages/masters/name-boards/name-board-form-shell';
 import { Button } from '@/components/ui/button';
@@ -28,7 +29,7 @@ export function NameBoardsPage() {
 
   const dispatch = useAppDispatch();
   const table = useScreenTableSelector(SCREEN_KEYS.nameBoard);
-  const { metadata } = useScreenMetadata(SCREEN_KEYS.nameBoard);
+  const { metadata, isLoading } = useScreenMetadata(SCREEN_KEYS.nameBoard);
 
   const onTableChange = useCallback(
     (next: typeof table) => {
@@ -52,8 +53,8 @@ export function NameBoardsPage() {
     );
   }
 
-  if (!metadataReady) {
-    return <p className="text-sm text-muted-foreground">Loading screen…</p>;
+  if (isLoading) {
+    return <ScreenDataTableSkeleton title="Name Boards" />;
   }
 
   return (
