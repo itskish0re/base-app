@@ -5,6 +5,7 @@ public sealed record TruckResponse(
     string TruckNumber,
     int NameBoardId,
     string? NameBoardCode,
+    string? NameBoardName,
     bool IsEnabled,
     bool IsActive,
     DateTime CreatedAt,

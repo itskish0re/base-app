@@ -1,3 +1,4 @@
+using Application.Common;
 using Application.Common.Gridify;
 using Domain.Masters;
 using Gridify;
@@ -20,7 +21,7 @@ internal sealed class TruckRepository(BillingDbContext context) : ITruckReposito
         int? excludeId,
         CancellationToken cancellationToken = default)
     {
-        string normalized = truckNumber.Trim();
+        string normalized = TruckNumberNormalizer.Normalize(truckNumber);
         return await context.Trucks.AnyAsync(
             x => !x.IsDeleted
                  && x.TruckNumber == normalized

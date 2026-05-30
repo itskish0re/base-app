@@ -11,6 +11,7 @@ export interface TruckDto {
   truckNumber: string;
   nameBoardId: number;
   nameBoardCode: string | null;
+  nameBoardName: string | null;
   isEnabled: boolean;
   isActive: boolean;
   createdAt: string;

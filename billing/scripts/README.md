@@ -84,6 +84,27 @@ psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
 
 Restart the API (or wait ~5 minutes) after changing `app_endpoint` rows so `EndpointAccessCache` refreshes.
 
+### 7. Master data (name boards + trucks from CSV)
+
+Seeds business rows from `Trucks_details.csv` at the repo root. Run **name boards first** (trucks reference `name_board_id` via `code`).
+
+```bash
+psql "$CONN" -f scripts/name_board/seed_from_trucks_csv.sql
+psql "$CONN" -f scripts/truck/seed_from_trucks_csv.sql
+```
+
+If trucks were seeded earlier with spaced numbers, normalize once before re-seeding:
+
+```bash
+psql "$CONN" -f scripts/truck/migrate_normalize_truck_numbers.sql
+```
+
+To regenerate after editing the CSV:
+
+```bash
+python scripts/_generate_trucks_seed.py
+```
+
 ## Optional maintenance
 
 ```bash
@@ -141,4 +162,7 @@ psql "$CONN" -f scripts/app_role_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_role_endpoint/name_boards_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/trucks_drivers_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
+
+psql "$CONN" -f scripts/name_board/seed_from_trucks_csv.sql
+psql "$CONN" -f scripts/truck/seed_from_trucks_csv.sql
 ```

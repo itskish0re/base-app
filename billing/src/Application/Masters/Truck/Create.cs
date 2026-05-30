@@ -1,6 +1,7 @@
 using Application.Abstractions.Authentication;
 using Application.Abstractions.Data;
 using Application.Abstractions.Messaging;
+using Application.Common;
 using Domain.Masters;
 using FluentValidation;
 using SharedKernel;
@@ -28,7 +29,7 @@ internal sealed class BatchCreateTrucksCommandHandler(
         for (int index = 0; index < request.Items.Count; index++)
         {
             CreateTruckItem item = request.Items[index];
-            string truckNumber = item.TruckNumber.Trim();
+            string truckNumber = TruckNumberNormalizer.Normalize(item.TruckNumber);
 
             if (!numbersInBatch.Add(truckNumber))
             {

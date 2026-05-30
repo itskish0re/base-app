@@ -8,6 +8,7 @@ internal static class TruckMappings
             entity.TruckNumber,
             entity.NameBoardId,
             entity.NameBoard?.Code,
+            entity.NameBoard?.Name,
             entity.IsEnabled,
             entity.IsActive,
             entity.CreatedAt,

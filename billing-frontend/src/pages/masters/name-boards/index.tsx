@@ -10,8 +10,6 @@ import {
 import { useEntityFormShell } from '@/components/derived/form-shell';
 import { NameBoardFormShell } from '@/pages/masters/name-boards/name-board-form-shell';
 import { Button } from '@/components/ui/button';
-import { USE_TEMP_NAME_BOARD_DATA } from '@/dev/temp-name-boards-data';
-import { tempListNameBoardsQueryOptions } from '@/dev/temp-name-boards-query-options';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
@@ -69,9 +67,7 @@ export function NameBoardsPage() {
         }
       value={table}
       onChange={onTableChange}
-      queryOptions={
-        USE_TEMP_NAME_BOARD_DATA ? tempListNameBoardsQueryOptions : listNameBoardsQueryOptions
-      }
+      queryOptions={listNameBoardsQueryOptions}
       enabled={metadataReady}
       mutations={{
         delete: () => deleteNameBoardsMutationOptions,

@@ -35,7 +35,7 @@ export function formatIndianMobile(value: unknown): string {
   return `+91 ${local}`;
 }
 
-/** Indian vehicle registration: KA 01 AB 1234. */
+/** Indian vehicle registration stored compact; displayed as first 4, middle, last 4. */
 export function formatIndianVehicleNumber(value: unknown): string {
   const raw = String(value ?? '')
     .replace(/[\s-]/g, '')
@@ -45,9 +45,16 @@ export function formatIndianVehicleNumber(value: unknown): string {
     return '';
   }
 
-  const match = raw.match(/^([A-Z]{2})(\d{2})([A-Z]{1,3})(\d{4})$/);
-  if (match) {
-    return `${match[1]} ${match[2]} ${match[3]} ${match[4]}`;
+  if (raw.length >= 8) {
+    const first = raw.slice(0, 4);
+    const last = raw.slice(-4);
+    const middle = raw.slice(4, -4);
+
+    if (middle) {
+      return `${first} ${middle} ${last}`;
+    }
+
+    return `${first} ${last}`;
   }
 
   return raw;
