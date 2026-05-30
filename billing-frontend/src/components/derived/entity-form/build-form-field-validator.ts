@@ -5,7 +5,11 @@ export function buildFormFieldValidator(field: MappedEntityFormField) {
     const label = field.displayLabel ?? field.fieldName;
 
     if (field.entityField.isRequired) {
-      if (value == null) {
+      if (value == null || value === '') {
+        return `${label} is required`;
+      }
+
+      if (typeof value === 'number' && value <= 0) {
         return `${label} is required`;
       }
 

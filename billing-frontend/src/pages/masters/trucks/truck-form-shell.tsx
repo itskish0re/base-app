@@ -18,79 +18,71 @@ import { Button } from '@/components/ui/button';
 import { queryKeys } from '@/constants/queryKeys';
 import { toastError, toastSuccess } from '@/lib/toast';
 import {
-  createNameBoardsMutationOptions,
-  updateNameBoardsMutationOptions,
-} from '@/service/mutation/nameBoards';
-import { nameBoardByIdQueryOptions } from '@/service/query/nameBoards';
+  createTrucksMutationOptions,
+  updateTrucksMutationOptions,
+} from '@/service/mutation/trucks';
+import { truckByIdQueryOptions } from '@/service/query/trucks';
 import { ApiError } from '@/service/api/client';
 import type { EntityScreenMetadataDto } from '@/types/entity/screen';
-import type { NameBoardDto } from '@/types/entity';
+import type { TruckDto } from '@/types/entity';
 
-type NameBoardFormValues = {
-  name: string;
-  code: string;
-  ownerName: string;
-  ownerPhone: string;
+type TruckFormValues = {
+  truckNumber: string;
+  nameBoardId: number | null;
 };
 
-type NameBoardFormShellProps = {
+type TruckFormShellProps = {
   shell: EntityFormShellController<number>;
   entities: EntityScreenMetadataDto[];
-  /** Desktop layout; mobile always uses a bottom sheet. */
   presentation?: FormShellPresentation;
 };
 
-function toOptionalText(value: string): string | null {
-  const trimmed = value.trim();
-  return trimmed.length > 0 ? trimmed : null;
+function normalizeTruckNumber(value: string): string {
+  return value.replace(/\s+/g, '').trim();
 }
 
-function mapFormValuesToCreateItem(values: NameBoardFormValues) {
+function mapFormValuesToCreateItem(values: TruckFormValues) {
   return {
-    name: values.name.trim(),
-    code: values.code.trim(),
-    ownerName: values.ownerName.trim(),
-    ownerPhone: toOptionalText(values.ownerPhone),
+    truckNumber: normalizeTruckNumber(values.truckNumber),
+    nameBoardId: values.nameBoardId!,
   };
 }
 
 function mapFormValuesToUpdateItem(
   entityId: number,
-  values: NameBoardFormValues,
-  existing: NameBoardDto,
+  values: TruckFormValues,
+  existing: TruckDto,
 ) {
   return {
-    nameBoardId: entityId,
-    name: values.name.trim(),
-    code: values.code.trim(),
-    ownerName: values.ownerName.trim(),
-    ownerPhone: toOptionalText(values.ownerPhone),
+    truckId: entityId,
+    truckNumber: normalizeTruckNumber(values.truckNumber),
+    nameBoardId: values.nameBoardId!,
     isEnabled: existing.isEnabled,
     isActive: existing.isActive,
   };
 }
 
-export function NameBoardFormShell({
+export function TruckFormShell({
   shell,
   entities,
   presentation = 'dialog',
-}: NameBoardFormShellProps) {
+}: TruckFormShellProps) {
   const queryClient = useQueryClient();
-  const formFields = useMemo(
-    () => mapScreenFormFields(getPrimaryEntityScreen(entities)),
-    [entities],
-  );
+  const entityScreen = getPrimaryEntityScreen(entities);
+  const entityName = entityScreen?.entity.entityName ?? 'truck';
+
+  const formFields = useMemo(() => mapScreenFormFields(entityScreen), [entityScreen]);
 
   const detailQuery = useQuery({
-    ...nameBoardByIdQueryOptions(shell.entityId ?? 0),
+    ...truckByIdQueryOptions(shell.entityId ?? 0),
     enabled: shell.open && shell.isEdit && shell.entityId != null && shell.entityId > 0,
   });
 
-  const createMutation = useMutation(createNameBoardsMutationOptions);
-  const updateMutation = useMutation(updateNameBoardsMutationOptions);
+  const createMutation = useMutation(createTrucksMutationOptions);
+  const updateMutation = useMutation(updateTrucksMutationOptions);
 
   const initialValues = useMemo(
-    () => buildEntityFormDefaultValues(formFields) as NameBoardFormValues,
+    () => buildEntityFormDefaultValues(formFields) as TruckFormValues,
     [formFields],
   );
 
@@ -98,6 +90,16 @@ export function NameBoardFormShell({
     defaultValues: initialValues,
     onSubmit: async ({ value }) => {
       try {
+        if (value.nameBoardId == null || value.nameBoardId <= 0) {
+          toastError('Name board is required.');
+          return;
+        }
+
+        if (!normalizeTruckNumber(value.truckNumber)) {
+          toastError('Truck number is required.');
+          return;
+        }
+
         if (shell.isCreate) {
           const result = await createMutation.mutateAsync({
             items: [mapFormValuesToCreateItem(value)],
@@ -109,8 +111,8 @@ export function NameBoardFormShell({
             return;
           }
 
-          await queryClient.invalidateQueries({ queryKey: queryKeys.nameBoards.all });
-          toastSuccess('Name board created');
+          await queryClient.invalidateQueries({ queryKey: queryKeys.trucks.all });
+          toastSuccess('Truck created');
           shell.close();
           return;
         }
@@ -130,8 +132,8 @@ export function NameBoardFormShell({
           return;
         }
 
-        await queryClient.invalidateQueries({ queryKey: queryKeys.nameBoards.all });
-        toastSuccess('Name board updated');
+        await queryClient.invalidateQueries({ queryKey: queryKeys.trucks.all });
+        toastSuccess('Truck updated');
         shell.close();
       } catch (error) {
         if (error instanceof ApiError) {
@@ -139,7 +141,7 @@ export function NameBoardFormShell({
           return;
         }
 
-        toastError('Unable to save name board. Please try again.');
+        toastError('Unable to save truck. Please try again.');
       }
     },
   });
@@ -152,12 +154,12 @@ export function NameBoardFormShell({
     form,
   });
 
-  const title = shell.isCreate ? 'Create name board' : 'Edit name board';
+  const title = shell.isCreate ? 'Create truck' : 'Edit truck';
   const description = shell.isCreate
-    ? 'Add a new name board to the master list.'
+    ? 'Add a new truck and link it to a name board.'
     : shell.entityId != null
-      ? `Update name board #${shell.entityId}.`
-      : 'Update name board.';
+      ? `Update truck #${shell.entityId}.`
+      : 'Update truck.';
 
   const isLoadingEdit = shell.isEdit && (detailQuery.isLoading || detailQuery.isFetching);
   const isSubmitting = createMutation.isPending || updateMutation.isPending;
@@ -180,7 +182,7 @@ export function NameBoardFormShell({
             {([canSubmit, formSubmitting]) => (
               <Button
                 type="submit"
-                form="name-board-form"
+                form="truck-form"
                 disabled={
                   !canSubmit ||
                   formSubmitting ||
@@ -198,16 +200,16 @@ export function NameBoardFormShell({
       }
     >
       {isLoadingEdit ? (
-        <p className="text-sm text-muted-foreground">Loading name board…</p>
+        <p className="text-sm text-muted-foreground">Loading truck…</p>
       ) : isEditBlocked ? (
         <p className="text-sm text-destructive">
           {detailQuery.error instanceof Error
             ? detailQuery.error.message
-            : 'Failed to load name board.'}
+            : 'Failed to load truck.'}
         </p>
       ) : (
         <form
-          id="name-board-form"
+          id="truck-form"
           className="space-y-4"
           onSubmit={(event) => {
             event.preventDefault();
@@ -215,7 +217,7 @@ export function NameBoardFormShell({
             void form.handleSubmit();
           }}
         >
-          <EntityFormFields entityName="name_board" fields={formFields} form={form} />
+          <EntityFormFields entityName={entityName} fields={formFields} form={form} />
         </form>
       )}
     </ResponsiveFormShell>

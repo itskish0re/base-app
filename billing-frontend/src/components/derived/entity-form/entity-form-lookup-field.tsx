@@ -1,28 +1,21 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { buildFormFieldValidator } from '@/components/derived/entity-form/build-form-field-validator';
-import { EntityFormLookupField } from '@/components/derived/entity-form/entity-form-lookup-field';
+import { EntityFormLookupCombobox } from '@/components/derived/entity-form/entity-form-lookup-combobox';
 import { resolveEntityFieldLookup } from '@/components/derived/entity-form/entity-lookup-registry';
 import type { MappedEntityFormField } from '@/components/derived/entity-form/map-screen-form-fields';
-import { Input } from '@/components/ui/input';
+import { useEntityLookupOptions } from '@/components/derived/entity-form/use-entity-lookup-options';
 import { Label } from '@/components/ui/label';
 
-type EntityFormFieldProps = {
+type EntityFormLookupFieldProps = {
   entityName: string;
   field: MappedEntityFormField;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- TanStack Form instance is entity-specific
   form: ReactFormExtendedApi<any, any, any, any, any, any, any, any, any, any, any, any>;
 };
 
-export function EntityFormField({ entityName, field, form }: EntityFormFieldProps) {
-  if (resolveEntityFieldLookup(entityName, field.fieldName)) {
-    return <EntityFormLookupField entityName={entityName} field={field} form={form} />;
-  }
-
-  const component = field.fieldComponent ?? 'text';
-
-  if (component !== 'text' && component !== 'number') {
-    return null;
-  }
+export function EntityFormLookupField({ entityName, field, form }: EntityFormLookupFieldProps) {
+  const lookup = resolveEntityFieldLookup(entityName, field.fieldName);
+  const lookupQuery = useEntityLookupOptions(lookup);
 
   return (
     <form.Field
@@ -43,14 +36,17 @@ export function EntityFormField({ entityName, field, form }: EntityFormFieldProp
               </span>
             ) : null}
           </Label>
-          <Input
+          <EntityFormLookupCombobox
             id={fieldApi.name}
-            type={component === 'number' ? 'number' : 'text'}
-            value={String(fieldApi.state.value ?? '')}
-            readOnly={field.isReadOnly}
-            disabled={field.isReadOnly}
+            value={fieldApi.state.value}
+            onChange={(nextValue) => fieldApi.handleChange(nextValue)}
             onBlur={fieldApi.handleBlur}
-            onChange={(event) => fieldApi.handleChange(event.target.value)}
+            disabled={field.isReadOnly || lookupQuery.isLoading}
+            placeholder={`Select ${field.displayLabel ?? field.fieldName}…`}
+            searchPlaceholder={`Search ${field.displayLabel ?? field.fieldName}…`}
+            items={lookupQuery.data?.items ?? []}
+            isLoading={lookupQuery.isLoading}
+            isError={lookupQuery.isError}
           />
           {fieldApi.state.meta.errors[0] ? (
             <p className="text-sm text-destructive">{fieldApi.state.meta.errors[0]}</p>

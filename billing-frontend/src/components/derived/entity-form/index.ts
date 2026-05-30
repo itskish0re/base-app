@@ -9,6 +9,14 @@ export {
 export { buildFormFieldValidator } from '@/components/derived/entity-form/build-form-field-validator';
 export { EntityFormField } from '@/components/derived/entity-form/entity-form-field';
 export { EntityFormFields } from '@/components/derived/entity-form/entity-form-fields';
+export { EntityFormLookupCombobox } from '@/components/derived/entity-form/entity-form-lookup-combobox';
+export { EntityFormLookupField } from '@/components/derived/entity-form/entity-form-lookup-field';
+export {
+  isEntityLookupField,
+  resolveEntityFieldLookup,
+  type EntityLookupDefinition,
+  type EntityLookupFieldMapping,
+} from '@/components/derived/entity-form/entity-lookup-registry';
 export { getBatchFailureMessage } from '@/components/derived/entity-form/get-batch-failure-message';
 export {
   getPrimaryEntityScreen,
@@ -17,3 +25,4 @@ export {
 } from '@/components/derived/entity-form/map-screen-form-fields';
 export { parseEntityFieldDefaultValue } from '@/components/derived/entity-form/parse-field-default-value';
 export { useEntityFormReset } from '@/components/derived/entity-form/use-entity-form-reset';
+export { useEntityLookupOptions } from '@/components/derived/entity-form/use-entity-lookup-options';

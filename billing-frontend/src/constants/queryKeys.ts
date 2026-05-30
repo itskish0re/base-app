@@ -14,16 +14,22 @@ export const queryKeys = {
     all: ['name-boards'] as const,
     list: (params?: ListQueryParams) => [...queryKeys.nameBoards.all, 'list', params] as const,
     detail: (id: number) => [...queryKeys.nameBoards.all, 'detail', id] as const,
+    lookup: (valueColumn: string, labelColumn: string) =>
+      [...queryKeys.nameBoards.all, 'lookup', valueColumn, labelColumn] as const,
   },
   trucks: {
     all: ['trucks'] as const,
     list: (params?: ListQueryParams) => [...queryKeys.trucks.all, 'list', params] as const,
     detail: (id: number) => [...queryKeys.trucks.all, 'detail', id] as const,
+    lookup: (valueColumn: string, labelColumn: string) =>
+      [...queryKeys.trucks.all, 'lookup', valueColumn, labelColumn] as const,
   },
   drivers: {
     all: ['drivers'] as const,
     list: (params?: ListQueryParams) => [...queryKeys.drivers.all, 'list', params] as const,
     detail: (id: number) => [...queryKeys.drivers.all, 'detail', id] as const,
+    lookup: (valueColumn: string, labelColumn: string) =>
+      [...queryKeys.drivers.all, 'lookup', valueColumn, labelColumn] as const,
   },
   menus: {
     all: ['menus'] as const,

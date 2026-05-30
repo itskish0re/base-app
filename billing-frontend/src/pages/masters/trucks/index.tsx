@@ -4,9 +4,13 @@ import {
   getPrimaryEntityColumns,
   mapScreenColumnsToDataTableColumns,
   rowActionDelete,
+  rowActionEdit,
   rowActionToggle,
   type DataTableColumnDef,
 } from '@/components/derived/data-table';
+import { useEntityFormShell } from '@/components/derived/form-shell';
+import { TruckFormShell } from '@/pages/masters/trucks/truck-form-shell';
+import { Button } from '@/components/ui/button';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
@@ -37,6 +41,7 @@ export function TrucksPage() {
   const dispatch = useAppDispatch();
   const table = useScreenTableSelector(SCREEN_KEYS.truck);
   const { metadata } = useScreenMetadata(SCREEN_KEYS.truck);
+  const formShell = useEntityFormShell<number>();
 
   const onTableChange = useCallback(
     (next: typeof table) => {
@@ -63,34 +68,50 @@ export function TrucksPage() {
   }
 
   return (
-    <DataTable<TruckDto>
-      title="Trucks"
-      value={table}
-      onChange={onTableChange}
-      queryOptions={listTrucksQueryOptions}
-      enabled={metadataReady}
-      mutations={{
-        delete: () => deleteTrucksMutationOptions,
-        toggle: () => toggleTrucksMutationOptions,
-      }}
-      columns={columns}
-      rowId={(row) => row.truckId}
-      searchPlaceholder="Search trucks…"
-      renderRowActions={({ row, rowId, mutations }) => [
-        rowActionToggle({
-          checked: row.isEnabled,
-          disabled: mutations.toggle?.isPending,
-          onCheckedChange: (checked) =>
-            mutations.toggle?.mutate({
-              items: [{ truckId: rowId, isEnabled: checked }],
-            }),
-        }),
-        rowActionDelete({
-          row,
-          disabled: mutations.delete?.isPending,
-          onClick: () => mutations.delete?.mutate({ ids: [rowId] }),
-        }),
-      ]}
-    />
+    <>
+      <DataTable<TruckDto>
+        title="Trucks"
+        headerActions={
+          <Button type="button" size="sm" onClick={formShell.openCreate}>
+            Create
+          </Button>
+        }
+        value={table}
+        onChange={onTableChange}
+        queryOptions={listTrucksQueryOptions}
+        enabled={metadataReady}
+        mutations={{
+          delete: () => deleteTrucksMutationOptions,
+          toggle: () => toggleTrucksMutationOptions,
+        }}
+        columns={columns}
+        rowId={(row) => row.truckId}
+        searchPlaceholder="Search trucks…"
+        renderRowActions={({ row, rowId, mutations }) => [
+          rowActionEdit({
+            row,
+            onClick: () => formShell.openEdit(rowId),
+          }),
+          rowActionToggle({
+            checked: row.isEnabled,
+            disabled: mutations.toggle?.isPending,
+            onCheckedChange: (checked) =>
+              mutations.toggle?.mutate({
+                items: [{ truckId: rowId, isEnabled: checked }],
+              }),
+          }),
+          rowActionDelete({
+            row,
+            disabled: mutations.delete?.isPending,
+            onClick: () => mutations.delete?.mutate({ ids: [rowId] }),
+          }),
+        ]}
+      />
+      <TruckFormShell
+        shell={formShell}
+        entities={metadata.entities}
+        presentation="dialog"
+      />
+    </>
   );
 }
