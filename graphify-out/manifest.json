@@ -1,0 +1,1446 @@
+{
+  "D:\\source\\base-app\\billing\\scripts\\app_endpoint\\auth_access.sql": {
+    "mtime": 1779770813.8281863,
+    "hash": "de4d8d9f87a2a032b5e0eea8a47908d3"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_endpoint\\menus.sql": {
+    "mtime": 1779639300.6827612,
+    "hash": "afe5e63fb3688eac0d9ddaf184facd01"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_endpoint\\name_boards.sql": {
+    "mtime": 1779639289.7981305,
+    "hash": "03d3f220f0fe89b1c6762c750ed14d86"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_endpoint\\remove_masters_lookup.sql": {
+    "mtime": 1779639301.631794,
+    "hash": "8b76d8144acec404a6f2fe093df33bb5"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_endpoint\\trucks_drivers.sql": {
+    "mtime": 1779639297.2657006,
+    "hash": "ce6944db5c38c59734e86d24336385f7"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity\\insert.sql": {
+    "mtime": 1779639259.0835392,
+    "hash": "989c0be2e29d611bdc3f053cf41376ef"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_field\\driver.sql": {
+    "mtime": 1780083158.5098112,
+    "hash": "a71303a6a7c67499ebfde07ce7d98f49"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_field\\name_board.sql": {
+    "mtime": 1780083153.5689304,
+    "hash": "5ba248d8043f657d8f48469aa13709ed"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_field\\truck.sql": {
+    "mtime": 1780083156.4133704,
+    "hash": "ee46ef5918147fa400c6a943e76437d4"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_registry\\migrate_field_data_type_and_components.sql": {
+    "mtime": 1779768435.24879,
+    "hash": "5c957de443f22952aa5eaaf0d9c01f9e"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen\\insert.sql": {
+    "mtime": 1779912664.41566,
+    "hash": "9ab20204f96822d1a3b37ec7c091de2f"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_column\\drivers.sql": {
+    "mtime": 1780086500.5371969,
+    "hash": "82572e77f55367fd8e129ecf5c54aaef"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_column\\migrate_column_width_percent.sql": {
+    "mtime": 1780079211.6820753,
+    "hash": "75ca054ffbd93659a1b219bbfcbe43d3"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_column\\migrate_hide_state_columns.sql": {
+    "mtime": 1780084191.6984007,
+    "hash": "38c7b8e195cd43c688cd7805f4cba947"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_column\\name_boards.sql": {
+    "mtime": 1780086500.4155896,
+    "hash": "2fb2d584e4f8fe9f926d15726ba27db7"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_column\\trucks.sql": {
+    "mtime": 1780086500.5012677,
+    "hash": "121367877d74ba14a7c32a5d7fb4f4f1"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_field\\drivers.sql": {
+    "mtime": 1779912664.5001936,
+    "hash": "4af8f4c106b2fce7a08565ed548c7b00"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_field\\name_boards.sql": {
+    "mtime": 1779912664.4721448,
+    "hash": "91de7900fd02785c730605b2b7af349c"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_entity_screen_field\\trucks.sql": {
+    "mtime": 1779912664.4493408,
+    "hash": "2a0b117713d29dde83884150a0403de4"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_field_data_type\\insert.sql": {
+    "mtime": 1779768431.7832682,
+    "hash": "b8d472ce045ea01ff2c0ddf0f6c65c94"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_menu\\add_menu_group.sql": {
+    "mtime": 1779650819.3348494,
+    "hash": "1f80c1a5e8cc43ccd50f7dcd12c36fa6"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_menu\\add_sidebar_columns.sql": {
+    "mtime": 1779644816.1662545,
+    "hash": "20ac3302cb3bc625e24f239a199ae4e9"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_menu\\drop_group_label.sql": {
+    "mtime": 1779650819.277526,
+    "hash": "0de8943c43167f6607503726650cdd8a"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_menu\\migrate_menu_codes_to_singular.sql": {
+    "mtime": 1779912664.4458272,
+    "hash": "f0223cd798f248913bd91e41fc047b3b"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_menu\\seed_billing_menus.sql": {
+    "mtime": 1779912664.4493408,
+    "hash": "b3718a437a3b443f782a66c2e707fc5b"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_role_endpoint\\auth_access.sql": {
+    "mtime": 1779770813.799799,
+    "hash": "69ad40b4504999faaecbf21f14b7b1fb"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_role_endpoint\\menus_admin.sql": {
+    "mtime": 1779639306.1113946,
+    "hash": "44a2662cd1938604f1807509ba67fd24"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_role_endpoint\\name_boards_admin.sql": {
+    "mtime": 1779639303.72568,
+    "hash": "003a955f78128928d97a3dff70c1840e"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\app_role_endpoint\\trucks_drivers_admin.sql": {
+    "mtime": 1779639304.901946,
+    "hash": "bc8a87824690454f4852d4ab6e590ba4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\DependencyInjection.cs": {
+    "mtime": 1779555815.435891,
+    "hash": "2471c41c813bf62132767a33a97672df"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Authentication\\IJwtTokenService.cs": {
+    "mtime": 1779530631.0174592,
+    "hash": "8a257670ec1a780a217063017e56b1ce"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Authentication\\IPasswordHasher.cs": {
+    "mtime": 1779530631.0337076,
+    "hash": "b07e6b1f96ee673f71438b9d649fa945"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Authentication\\IUserContext.cs": {
+    "mtime": 1779530631.0429502,
+    "hash": "450c33a8af7c7a15bee539c001957e6d"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Authentication\\JwtSettings.cs": {
+    "mtime": 1779549244.8794405,
+    "hash": "89e1da16089e7ba5dfff04eee30a42c7"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Behaviors\\ValidationPipelineBehavior.cs": {
+    "mtime": 1779530631.0596476,
+    "hash": "906c1583c31dffd5daa3b31a1d59dbe9"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Caching\\ICachedQuery.cs": {
+    "mtime": 1779530631.067234,
+    "hash": "b9187a5e47af042d634b870923a64d52"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Caching\\ICacheService.cs": {
+    "mtime": 1779530631.0833738,
+    "hash": "f149e9d489a1c673c2a289ddad5736d9"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Data\\IDbConnectionFactory.cs": {
+    "mtime": 1779530631.092811,
+    "hash": "58a5283b4eed85a5c95265ec0acba7a2"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Data\\IUnitOfWork.cs": {
+    "mtime": 1779530631.1031418,
+    "hash": "748c136ce6654868cc3c7c623fbf6b1c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Lookup\\IRegistryColumnResolver.cs": {
+    "mtime": 1779622130.4501674,
+    "hash": "2003e4e913e470dfc13a5b7f502f925c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Messaging\\ICommand.cs": {
+    "mtime": 1779530631.109642,
+    "hash": "ee27b6693efe60759c34fc6d2b7a63a6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Messaging\\ICommandHandler.cs": {
+    "mtime": 1779530631.116873,
+    "hash": "92b9e4da0af7d80cf328b276165ce03a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Messaging\\IQuery.cs": {
+    "mtime": 1779530631.1319287,
+    "hash": "fb99395652993050fcd8e6c163ca5995"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Messaging\\IQueryHandler.cs": {
+    "mtime": 1779530631.1367416,
+    "hash": "c78fbea12e80771dafbcb5eb9ee462ae"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Messaging\\ITransactionalCommand.cs": {
+    "mtime": 1779530631.141483,
+    "hash": "d35300efa546f5a3302c4ea0f19807ff"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Registry\\IAppEntityRegistryRepository.cs": {
+    "mtime": 1779622109.5776575,
+    "hash": "07587460ac642a685e63fe98d2f8eadb"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Abstractions\\Registry\\IAppEntityScreenRepository.cs": {
+    "mtime": 1779770792.8290758,
+    "hash": "d65c2378114eb4a986acbd7b0985f77a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\GetNavigation\\GetNavigationQuery.cs": {
+    "mtime": 1779649226.4527402,
+    "hash": "2e5c52436b169c8f57f881abc94a6e7b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\GetNavigation\\GetNavigationQueryHandler.cs": {
+    "mtime": 1779649226.507376,
+    "hash": "372684c24bcd28c939ee9bb9d8f22af8"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Create.cs": {
+    "mtime": 1779649237.768654,
+    "hash": "42e8a2e3f2bb6f51d967f33176e33407"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Delete.cs": {
+    "mtime": 1779639389.4225712,
+    "hash": "75fc8fa00af4e1424bc5f1532e9b0525"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Dtos.cs": {
+    "mtime": 1779649232.284582,
+    "hash": "295e670ac6210a81673ea612d4c24565"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Errors.cs": {
+    "mtime": 1779639414.3385408,
+    "hash": "6aec4fa7d89637be577c61861e7f6522"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\GetById.cs": {
+    "mtime": 1779639365.692513,
+    "hash": "3ed6a76d7713cb55455a832457cf99c9"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\List.cs": {
+    "mtime": 1779639363.868186,
+    "hash": "ddf0c7df2f97c191a79b8c351094db71"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Mappings.cs": {
+    "mtime": 1779649232.4932632,
+    "hash": "32e585d319bf46644ff0fca49a1f833f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Toggle.cs": {
+    "mtime": 1779639394.7727866,
+    "hash": "60991b0bfe917b7fb7a99d0a4f7f6901"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Access\\Menu\\Update.cs": {
+    "mtime": 1779649235.5054114,
+    "hash": "17180500f209d8b7430766447499f4e4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Login\\LoginCommand.cs": {
+    "mtime": 1779530631.1592422,
+    "hash": "94876ce5eb97c4f95b964854fd9ef69a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Login\\LoginCommandHandler.cs": {
+    "mtime": 1779549247.280488,
+    "hash": "d8c3aab30d65da96c63ce2568b80ee5c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Login\\LoginCommandValidator.cs": {
+    "mtime": 1779530631.1689632,
+    "hash": "abcf4835968a5a8193b6947f1cb83238"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Refresh\\RefreshTokenCommand.cs": {
+    "mtime": 1779530631.172993,
+    "hash": "45988a8fae8418a50224e28d418e20d6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Refresh\\RefreshTokenCommandHandler.cs": {
+    "mtime": 1779549248.0006366,
+    "hash": "e25c69ef4fec32689ac72f98e7dfd382"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Revoke\\RevokeTokenCommand.cs": {
+    "mtime": 1779530631.182825,
+    "hash": "6a5aad75e768b08169650a5f8270fc06"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Auth\\Revoke\\RevokeTokenCommandHandler.cs": {
+    "mtime": 1779530631.190167,
+    "hash": "b1b8e0d0f72dd14d14abe2124c00de3b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Common\\FieldNameConverter.cs": {
+    "mtime": 1780088631.3013554,
+    "hash": "00af153b0b8b083401aae96b9cd9be0e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Common\\Gridify\\GridifyOrderByNormalizer.cs": {
+    "mtime": 1780088634.3620658,
+    "hash": "998858c0e344ad680cc0a476095f4f91"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Common\\Lookup\\EntityColumnResolver.cs": {
+    "mtime": 1779622128.8453412,
+    "hash": "d1e24e8f1ec293caee0449e505c9c5bc"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Common\\Lookup\\EntityKinds.cs": {
+    "mtime": 1779622111.2237525,
+    "hash": "631045646ecfeed24416467c884bdbd1"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Mappings\\MasterMappingRegister.cs": {
+    "mtime": 1779620157.4032674,
+    "hash": "c21a9783be109f4e13ec76fb18bcca11"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Create.cs": {
+    "mtime": 1779623893.609394,
+    "hash": "cd239063c6c030ae63cd279e68951d4e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Delete.cs": {
+    "mtime": 1779623901.4177823,
+    "hash": "b21784695dd7ba230e871c35bd30652e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Dtos.cs": {
+    "mtime": 1779623890.678647,
+    "hash": "f834ee8f8fd52a0e835aa05139c62c46"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Errors.cs": {
+    "mtime": 1779623891.1688914,
+    "hash": "8eb025a9c2178993c2ac85d905d9c4a2"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\GetById.cs": {
+    "mtime": 1779623895.7756288,
+    "hash": "f58b8180bb3aa16ef57826e0e4c15ad6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\List.cs": {
+    "mtime": 1779623894.8842463,
+    "hash": "2a843a1cc47d1be8036d97fa675fa016"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Lookup.cs": {
+    "mtime": 1779623908.3048003,
+    "hash": "5cee78ecd461cf3969ff082815cda14f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Mappings.cs": {
+    "mtime": 1779623891.1761787,
+    "hash": "a554beb8cb94b01dd79ea6be2924e1fe"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Toggle.cs": {
+    "mtime": 1779623903.3132753,
+    "hash": "4f38cb1d7db62c94271ccb7546ccaa7e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Driver\\Update.cs": {
+    "mtime": 1779623898.6400256,
+    "hash": "0069c5661cfbc2d20f0b90292c54dc76"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Create.cs": {
+    "mtime": 1779620127.141138,
+    "hash": "0b90aa404daa28d0576259f83ec7e6f1"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Delete.cs": {
+    "mtime": 1779623854.520274,
+    "hash": "63b4f6ea3489738ff7a74f6a9a7e8869"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Dtos.cs": {
+    "mtime": 1779621413.9634848,
+    "hash": "e77f1684f5cc04c8d793d6a63865242b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Errors.cs": {
+    "mtime": 1779623855.242594,
+    "hash": "bc2434e39febd518c781377be8f05756"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\GetById.cs": {
+    "mtime": 1779620130.2402444,
+    "hash": "727b613c5c1f72eefd694ba8f140477e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\List.cs": {
+    "mtime": 1779620128.9073129,
+    "hash": "5203a926d32bb031ac90318824bf8af2"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Lookup.cs": {
+    "mtime": 1779621837.2930877,
+    "hash": "2ec7fdc5cc3a0033184e8e2efda41aac"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Mappings.cs": {
+    "mtime": 1779621414.3978941,
+    "hash": "eca5429fc29fec84283e9323567d5e8b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Toggle.cs": {
+    "mtime": 1779620138.5383697,
+    "hash": "7ca96bf7f506c3fcd94f613d62b56fc2"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\NameBoard\\Update.cs": {
+    "mtime": 1779620133.673006,
+    "hash": "eeadacd5b95eeb8bdcba5b36d1c61861"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Create.cs": {
+    "mtime": 1779623865.3726442,
+    "hash": "7c072b835ca4039b8832c1b1a487cfc8"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Delete.cs": {
+    "mtime": 1779623873.7047596,
+    "hash": "692548499cebb23fdef432350ca8ba5f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Dtos.cs": {
+    "mtime": 1779623860.8901,
+    "hash": "e26b09c336dd5135b4725c17788653f4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Errors.cs": {
+    "mtime": 1779623862.0652423,
+    "hash": "119e3d7c7ba6b5f2cac1b7a14e0f994e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\GetById.cs": {
+    "mtime": 1779623867.9388835,
+    "hash": "e61668eeb72b6666b13bf5bfa7d1459f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\List.cs": {
+    "mtime": 1779623866.7072854,
+    "hash": "ea1aed8083e11303b37a8e1198fd98ec"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Lookup.cs": {
+    "mtime": 1779623881.5328398,
+    "hash": "f10900935560258a3784d9975a2b886f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Mappings.cs": {
+    "mtime": 1779623862.5025673,
+    "hash": "2f1671be0c050f82d7d98948c1a33cdb"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Toggle.cs": {
+    "mtime": 1779623876.0441175,
+    "hash": "e27f9e02b5cb404f2390f804156082d6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Masters\\Truck\\Update.cs": {
+    "mtime": 1779623871.3051443,
+    "hash": "a88ec6f946da496143b17474f8cf7e2a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Registry\\Screen\\Dtos.cs": {
+    "mtime": 1780079212.077806,
+    "hash": "0357951ed7d7cce200f1536a30900d91"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Registry\\Screen\\Errors.cs": {
+    "mtime": 1779770797.0089788,
+    "hash": "8404075506356871acf13960f717ff32"
+  },
+  "D:\\source\\base-app\\billing\\src\\Application\\Registry\\Screen\\GetByMenuCode.cs": {
+    "mtime": 1779770800.1006691,
+    "hash": "634bd7123e5844f0b1bef4604eb68e5d"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\AppMenu.cs": {
+    "mtime": 1779649224.392506,
+    "hash": "88b7cf33c7ca4a82ebfef0644fefeb0a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\AppRole.cs": {
+    "mtime": 1779648167.7588267,
+    "hash": "c59b098ae0a9c3f4243423606ef05c5a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\AppRoleMenu.cs": {
+    "mtime": 1779648168.3414915,
+    "hash": "bf3018f4914a87c3396c2c00c04d5dc1"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\IEndpointAccessRepository.cs": {
+    "mtime": 1779530631.2127163,
+    "hash": "08ec3f4a0940acff4c2d8867a518f3c5"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\IMenuRepository.cs": {
+    "mtime": 1779639319.8776238,
+    "hash": "a50114748a159f85c2d94a941dd8cfa6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\MenuGroups.cs": {
+    "mtime": 1779649222.7576826,
+    "hash": "c5235fc0ddcb0ab0d0be0d23e956a237"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Access\\NavigationMenu.cs": {
+    "mtime": 1779649225.8441472,
+    "hash": "9572a63beac3c73deca070d3d208161a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Auth\\AuthUser.cs": {
+    "mtime": 1779530631.2937055,
+    "hash": "73aadb07477fdbd4691fa86bee44349a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Auth\\IRefreshTokenRepository.cs": {
+    "mtime": 1779530631.2975676,
+    "hash": "c0e717a35ca833b195825768dece3875"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Auth\\IUserRepository.cs": {
+    "mtime": 1779530631.2975676,
+    "hash": "01037cf90893d949a47e2ee0d643f0ea"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Auth\\RefreshTokenRecord.cs": {
+    "mtime": 1779530631.2975676,
+    "hash": "8576959b708c45af4f4e7324cc4d106f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\Driver.cs": {
+    "mtime": 1779555810.6600122,
+    "hash": "f5eb90dec6781fd149d629a64fa12860"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\IDriverRepository.cs": {
+    "mtime": 1779623847.6280422,
+    "hash": "4b899a3b54c8e419de87c21004393626"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\INameBoardRepository.cs": {
+    "mtime": 1779623848.7942214,
+    "hash": "f566cef2133245ac12d9ade2166a1a30"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\ITruckRepository.cs": {
+    "mtime": 1779623846.7421312,
+    "hash": "6762edbd868c620f38143b32e0675605"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\NameBoard.cs": {
+    "mtime": 1779555788.4830692,
+    "hash": "eede7b1cb2d6206fd85edc80aa04eddf"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Masters\\Truck.cs": {
+    "mtime": 1779555810.234174,
+    "hash": "78f2e2fe43ec225403a10bf2827bb786"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Platform\\AuditableEntity.cs": {
+    "mtime": 1779538514.043099,
+    "hash": "a17943c42145ef51037754af786d07e7"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppEntity.cs": {
+    "mtime": 1779533472.175701,
+    "hash": "3f1639b9b18c264d9b3db13826c9fb19"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppEntityField.cs": {
+    "mtime": 1779768399.746519,
+    "hash": "0d64e5654643b979ced0390c18a56fb5"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppEntityScreen.cs": {
+    "mtime": 1779533476.9451818,
+    "hash": "85e2c3051ae368ea1bec6d2fe7677443"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppEntityScreenColumn.cs": {
+    "mtime": 1780079211.997972,
+    "hash": "c238550cf19691347a67117390ac5b46"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppEntityScreenField.cs": {
+    "mtime": 1779768398.8786483,
+    "hash": "77a02100d439a0644fbbc44481e8aa03"
+  },
+  "D:\\source\\base-app\\billing\\src\\Domain\\Registry\\AppFieldDataType.cs": {
+    "mtime": 1779768393.8912294,
+    "hash": "5fdb90b806d013e01e866dc62b5e92a1"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\DependencyInjection.cs": {
+    "mtime": 1779770810.3040996,
+    "hash": "2c7a4812e157179e2c4d399f1a29cb7e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Authentication\\BillingClaimTypes.cs": {
+    "mtime": 1779636541.0045373,
+    "hash": "38a993b972a02ec223bdddbc08287975"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Authentication\\EndpointAccessCache.cs": {
+    "mtime": 1779530631.3259194,
+    "hash": "1d8b92ae1786e3301a732c2e7ec211f4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Authentication\\JwtTokenService.cs": {
+    "mtime": 1779636653.0345387,
+    "hash": "6740584cc79c19e3e414bf6306caa17c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Authentication\\PasswordHasher.cs": {
+    "mtime": 1779530631.3305914,
+    "hash": "a853d08724f4759ecf3f45d829374ee4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Authentication\\UserContext.cs": {
+    "mtime": 1779636653.0533993,
+    "hash": "3188e7f27fe3c73f948793ad0faf035c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Data\\DbConnectionFactory.cs": {
+    "mtime": 1779530631.3456445,
+    "hash": "624350bd8da8b8dde6bbb39a547db04b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Database\\DateOnlyTypeHandler.cs": {
+    "mtime": 1779530631.3491652,
+    "hash": "ed83445fb2b07a70ff1e977dde66f29e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Database\\Schemas.cs": {
+    "mtime": 1779530631.3509836,
+    "hash": "65734fd50e7d4c7ab6e774b726730915"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Gridify\\GridifyListFilter.cs": {
+    "mtime": 1780078018.8569565,
+    "hash": "c90ef1e1d654a7b216e02d9ce64b2381"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Gridify\\MasterGridifyMappers.cs": {
+    "mtime": 1780078078.062272,
+    "hash": "d0919075f43b182f6de7e60a4d42a5d4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Lookup\\RegistryColumnResolver.cs": {
+    "mtime": 1779622117.0008893,
+    "hash": "35837d69bbe2518ebc53e539a3494b4a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\BillingDbContext.cs": {
+    "mtime": 1779768431.3722055,
+    "hash": "ed1e8c9a4b6bf136c1af28e4fa75dd53"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\BillingDbContextFactory.cs": {
+    "mtime": 1779530649.3989305,
+    "hash": "c9b26308bb3ef7ced69b93f75eeb9ba6"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppEntityConfiguration.cs": {
+    "mtime": 1779533480.6746542,
+    "hash": "4e6fe857b143c66f417352368e0743a4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppEntityFieldConfiguration.cs": {
+    "mtime": 1779768550.5900378,
+    "hash": "201b7657f383ab9fcf25136d14329089"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppEntityScreenColumnConfiguration.cs": {
+    "mtime": 1780079212.0524755,
+    "hash": "9d2e980c9191d24bfeb11715ca63a7a4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppEntityScreenConfiguration.cs": {
+    "mtime": 1779533482.1366322,
+    "hash": "9d13a63874b69d31b71ada35474abc6d"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppEntityScreenFieldConfiguration.cs": {
+    "mtime": 1779768431.0162742,
+    "hash": "b5e91d8785d37ed4bf770a0863ec09dc"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppFieldDataTypeConfiguration.cs": {
+    "mtime": 1779768425.6538093,
+    "hash": "9a3a442d716588c5f8de9f54a8d549af"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppMenuConfiguration.cs": {
+    "mtime": 1779649226.759424,
+    "hash": "522876ab87767c502a42f0f680bb3a37"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppRoleConfiguration.cs": {
+    "mtime": 1779648170.382589,
+    "hash": "1c78a94313c662e310904953bde073bb"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\AppRoleMenuConfiguration.cs": {
+    "mtime": 1779648171.8216927,
+    "hash": "3504126ffc9d3c02a0ced1f469bc4f0e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\DriverConfiguration.cs": {
+    "mtime": 1779555795.8980007,
+    "hash": "3d4620f441af8cac985bb2e72eb11586"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\NameBoardConfiguration.cs": {
+    "mtime": 1779538519.6266134,
+    "hash": "9af4d346dc22650b49825ff4f7f20a0b"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Persistence\\Configurations\\TruckConfiguration.cs": {
+    "mtime": 1779555792.2496448,
+    "hash": "e46b0637932d9a9fbe64edee9fc9ad8f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\AppEntityRegistryRepository.cs": {
+    "mtime": 1779622112.9403057,
+    "hash": "c4e9f011dc13415a1d95fa2427f44983"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\AppEntityScreenRepository.cs": {
+    "mtime": 1780088644.9692087,
+    "hash": "54933bea42214959e81ab79ca5377116"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\DriverRepository.cs": {
+    "mtime": 1780088657.1915429,
+    "hash": "310786ebfa649a7d79b03d481495036f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\MenuRepository.cs": {
+    "mtime": 1779649226.7715042,
+    "hash": "49ae2aaea02cfa9e5ecc8a2754c813a7"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\NameBoardRepository.cs": {
+    "mtime": 1780088644.9781861,
+    "hash": "0ba0bfd63011800128d19616b63c6f0f"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\TruckRepository.cs": {
+    "mtime": 1780088650.6925557,
+    "hash": "0437b235ee3e7632d7829b97532549b4"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\Dapper\\EndpointAccessRepository.cs": {
+    "mtime": 1779530631.3960385,
+    "hash": "2381f6002daa7a9a4d17d9744cd21477"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\Dapper\\RefreshTokenRepository.cs": {
+    "mtime": 1779530631.3960385,
+    "hash": "8a8dd40c62749efd6cb9007d6c801e61"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Repositories\\Dapper\\UserRepository.cs": {
+    "mtime": 1779530631.4037557,
+    "hash": "a549fb7e1ae996e386cf60229fa24d56"
+  },
+  "D:\\source\\base-app\\billing\\src\\Infrastructure\\Time\\DateTimeProvider.cs": {
+    "mtime": 1779530631.4037557,
+    "hash": "b2aafa1df0af43d41386ab8f1079ad28"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\Ensure.cs": {
+    "mtime": 1779530631.4129782,
+    "hash": "1cc7d7473307b0bb37e8ab1408c8e150"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\Entity.cs": {
+    "mtime": 1779530631.4129782,
+    "hash": "7690ce0df6af02e561033b622011ac1f"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\Error.cs": {
+    "mtime": 1779530631.4215229,
+    "hash": "2fef8d7c9ad8b4cdd2b30c7a03355ffa"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\ErrorType.cs": {
+    "mtime": 1779530631.4233594,
+    "hash": "d78ed01e71c6020e72565bfd94ff8a62"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\IDateTimeProvider.cs": {
+    "mtime": 1779530631.4250655,
+    "hash": "37c17ab5562b98fb6b54eec03208b735"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\IDomainEvent.cs": {
+    "mtime": 1779530631.4258442,
+    "hash": "005380abab11e769b3534b0b6f6c41e2"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\Result.cs": {
+    "mtime": 1779530631.4292579,
+    "hash": "d38004288211794ca8ce22abdf27dd73"
+  },
+  "D:\\source\\base-app\\billing\\src\\SharedKernel\\ValidationError.cs": {
+    "mtime": 1779530631.446377,
+    "hash": "7edef11cce3830dd87ba89bd726e6503"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Program.cs": {
+    "mtime": 1779636563.3128836,
+    "hash": "b91f93663a031fd55e0a3b7af8b02f5d"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Authorization\\EndpointAccessAttribute.cs": {
+    "mtime": 1779530631.446377,
+    "hash": "f5524ea0879d412309142e17d0a05e1c"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\AccessController.cs": {
+    "mtime": 1779530631.4757552,
+    "hash": "41aa93890741d2d467000c45aba217bf"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\AnonController.cs": {
+    "mtime": 1779530631.477139,
+    "hash": "5ffbc185910067297ad3d24eeee2e519"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\AuthController.cs": {
+    "mtime": 1779530631.4792473,
+    "hash": "e3d483ea2cf040349fe980a5e591b843"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\DriversController.cs": {
+    "mtime": 1779623955.3300166,
+    "hash": "d70f95e8ed5054d0e48e15f528a9ff23"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\HealthController.cs": {
+    "mtime": 1779530631.4816413,
+    "hash": "4908079024454d40ea49223a07ccf353"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\MenusController.cs": {
+    "mtime": 1779649237.7544465,
+    "hash": "51eb1c4eedde05b66a209632dcd793b0"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\NameBoardsController.cs": {
+    "mtime": 1779621427.964427,
+    "hash": "94e15fb838048e1f57e453969c997649"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\ScreensController.cs": {
+    "mtime": 1779912664.4493408,
+    "hash": "6c01f2d20bb2da1adb8320918d4b0389"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Controllers\\TrucksController.cs": {
+    "mtime": 1779623955.2508771,
+    "hash": "8039cf4116e32ee4685014eb71e0b24e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Extensions\\CorsExtensions.cs": {
+    "mtime": 1779627434.4552104,
+    "hash": "48aed1f831092e20145a6be00e795508"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Extensions\\MiddlewareExtensions.cs": {
+    "mtime": 1779530631.4840393,
+    "hash": "753d74f99ae3d37703a2c75c0d35b00e"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Extensions\\MigrationExtensions.cs": {
+    "mtime": 1779536638.2270412,
+    "hash": "6d966d6ccb2ff27daccba2ac8eb858f3"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Extensions\\ResultExtensions.cs": {
+    "mtime": 1779530631.4840393,
+    "hash": "e560f5555b31ef53402ca073612d9857"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Extensions\\SwaggerExtensions.cs": {
+    "mtime": 1779541230.6025057,
+    "hash": "a4d1826ebcbf07f4c06920a7e41a8af8"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Filters\\EndpointAccessFilter.cs": {
+    "mtime": 1779908409.5139482,
+    "hash": "45c3aa76f07d3bd4773e618c3cd3ce3a"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Infrastructure\\CustomResults.cs": {
+    "mtime": 1779530631.4889107,
+    "hash": "5bfdd4644ceb3e9d23e40af3000524cb"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Infrastructure\\GlobalExceptionHandler.cs": {
+    "mtime": 1779530631.4889107,
+    "hash": "94c040ad8a20c0ccc1cd803c4b52e5b0"
+  },
+  "D:\\source\\base-app\\billing\\src\\Web.Api\\Middleware\\RequestContextLoggingMiddleware.cs": {
+    "mtime": 1779530631.4969566,
+    "hash": "2666ce8b6251e279dc0953d938189567"
+  },
+  "D:\\source\\base-app\\billing-frontend\\eslint.config.js": {
+    "mtime": 1779625315.9744098,
+    "hash": "5792e0c2953ef7718a0e2a9bee0d6c18"
+  },
+  "D:\\source\\base-app\\billing-frontend\\vite.config.ts": {
+    "mtime": 1779826136.432026,
+    "hash": "dbea7ed1b14178eacec1ec966e1a6798"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\main.tsx": {
+    "mtime": 1779627516.3172066,
+    "hash": "62daf65770cf495aa347bd4f54fb77fd"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routeTree.gen.ts": {
+    "mtime": 1779909142.1070223,
+    "hash": "ac5d3193599bc087e2b896ba3e17e981"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\vite-env.d.ts": {
+    "mtime": 1779825867.0559645,
+    "hash": "e669b7bf8162d688e9b905b3c00cfd69"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\app-shell.tsx": {
+    "mtime": 1779905365.861123,
+    "hash": "08b2fc02e154c3fc0ab231df11bb6328"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\app-sidebar.tsx": {
+    "mtime": 1779905933.8064384,
+    "hash": "f1495374213ca3c3455e9dd899b17816"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\menu-nav-link.tsx": {
+    "mtime": 1779647709.0535505,
+    "hash": "1debf6073fa0ad490bfb28e480bd695d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\nav-config.tsx": {
+    "mtime": 1779820876.3865504,
+    "hash": "e35ba3f27bd66e337a915fe0198a2a08"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\nav-main.tsx": {
+    "mtime": 1779813505.0845523,
+    "hash": "580ebe47bd34308fdde6933d1df1e370"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\nav-secondary.tsx": {
+    "mtime": 1779820874.5200796,
+    "hash": "737a0c1a7a248ca60a2241bd6efe38a6"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\nav-user.tsx": {
+    "mtime": 1779905361.2082946,
+    "hash": "753f181b06b4409f786abd36e38558b8"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\app\\sidebar-nav-skeleton.tsx": {
+    "mtime": 1779732958.194986,
+    "hash": "d3416bcab41c6c8fff5febd96286384b"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\page-placeholder.tsx": {
+    "mtime": 1779802113.2616343,
+    "hash": "bdd3a2fa5ff78103b6d127cae1fb08ef"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-column-filters.tsx": {
+    "mtime": 1780086976.5887833,
+    "hash": "966d82879ff033c5f89572c1002f696b"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-column-layout.ts": {
+    "mtime": 1780083103.236444,
+    "hash": "8b5827f5bc882f7d985e51828786deed"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-constants.ts": {
+    "mtime": 1780088659.4178245,
+    "hash": "03b0931f609b631b416678893d449f55"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-context.tsx": {
+    "mtime": 1780066384.05545,
+    "hash": "ce5868986463a5b39212f00b15743ca5"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-errors.tsx": {
+    "mtime": 1779999793.73503,
+    "hash": "92737d5e6a30166159069b060ed72450"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-header.tsx": {
+    "mtime": 1780071418.3123262,
+    "hash": "dc017a9698dad6ce507c3a49b2d1368d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-pagination.tsx": {
+    "mtime": 1780066367.1908603,
+    "hash": "f90b7383cd25c832bc406459311e641a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-provider.tsx": {
+    "mtime": 1780083186.5842986,
+    "hash": "fdabdfb88a88965cbffb69e66e899687"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-store.ts": {
+    "mtime": 1780083118.6571293,
+    "hash": "29029a41c2b28c0ecb24637b1e09670b"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-table.tsx": {
+    "mtime": 1780088674.4805675,
+    "hash": "15e5bc78f16782cbeda1e96d73f1839e"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-toolbar-options.tsx": {
+    "mtime": 1780083120.0964808,
+    "hash": "683d8bd64572b37301aa5bc19c4acd9f"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-toolbar-search.tsx": {
+    "mtime": 1780071420.2351775,
+    "hash": "4a3c9a00be08d0a215a27e562be8c331"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-toolbar.tsx": {
+    "mtime": 1780071423.3774266,
+    "hash": "a0d1e9ffa37576531a92e227de5d5719"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-types.ts": {
+    "mtime": 1780088674.444293,
+    "hash": "48183f6685309c2f404e73ded04abfae"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\dt-utils.ts": {
+    "mtime": 1780088674.468045,
+    "hash": "6d351118ffc16b144b5dbdcd1daf8675"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\hooks.ts": {
+    "mtime": 1780071430.6004171,
+    "hash": "6b015d7b3d7c4d935cbc6276ffb39452"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\index.ts": {
+    "mtime": 1780086500.5111787,
+    "hash": "58d507b6559ce31e1a561a35818cb941"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\badge-cell.tsx": {
+    "mtime": 1780086476.3884225,
+    "hash": "477d6a1caf73c0d3a224afc5e2101d9a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\boolean-cell.tsx": {
+    "mtime": 1780086480.2212198,
+    "hash": "c684dfb4e4a869f74fca8d92e469182c"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\currency-cell.tsx": {
+    "mtime": 1780086480.810779,
+    "hash": "6c9bd0de650bc6993e4e4b4ad3e5f05a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\data-table-cell.tsx": {
+    "mtime": 1780086486.4505353,
+    "hash": "a8b6d8c6837ad7180fc0109ecb1665cd"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\date-cell.tsx": {
+    "mtime": 1780086480.677787,
+    "hash": "1586f0d558b2831589b78330fbfeff5e"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\default-cell.tsx": {
+    "mtime": 1780086474.6723032,
+    "hash": "bf27cd9e259e15a3e1b5cfec16ea1f5d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\dt-cell-overflow.tsx": {
+    "mtime": 1780086473.7220027,
+    "hash": "9ca7f1f9aee057c62829b4f0d66e1f2e"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\formatters.ts": {
+    "mtime": 1780086471.0286622,
+    "hash": "86231717764a58672636d654c76e8dce"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\get-cell-search-text.ts": {
+    "mtime": 1780086506.59041,
+    "hash": "1708bc8b475f1a471dfcc94e2ef5a768"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\index.ts": {
+    "mtime": 1780086506.8315663,
+    "hash": "6af3b103a2bb98dec7a0b879d3a6bdd0"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\mobile-cell.tsx": {
+    "mtime": 1780086476.5050614,
+    "hash": "654dd5a3871c057ebac3671eac703df2"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\registry.ts": {
+    "mtime": 1780086486.3483908,
+    "hash": "e488d8af5a4af053353e0ab8d03b5698"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\types.ts": {
+    "mtime": 1780086471.1277764,
+    "hash": "9ab77940fb56010403753e84a6c296d5"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\derived\\data-table\\column-cells\\vehicle-number-cell.tsx": {
+    "mtime": 1780086478.0820522,
+    "hash": "bb164436798eb62eea948af3bfa08342"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\avatar.tsx": {
+    "mtime": 1779645477.1617968,
+    "hash": "06b6b11b06ea5a026dfd3fb1056eb3e0"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\badge.tsx": {
+    "mtime": 1780086450.7709632,
+    "hash": "e6f6e5bf984545f3f57e42bfc99f0c43"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\button.tsx": {
+    "mtime": 1779627542.7622066,
+    "hash": "521674caa99fffa616000e26bb96c631"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\card.tsx": {
+    "mtime": 1779627471.2550802,
+    "hash": "162a19721a5f7a2229624eaf4e4f2154"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\collapsible.tsx": {
+    "mtime": 1779643300.1175392,
+    "hash": "293fe772ef3109a4587df7d030dde401"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\dropdown-menu.tsx": {
+    "mtime": 1779645476.5412233,
+    "hash": "f5a071885b17d59df98a268e00c72cb3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\input.tsx": {
+    "mtime": 1779627544.281765,
+    "hash": "81955e434538382a7f0d9cd2e61fe70b"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\label.tsx": {
+    "mtime": 1779627467.7254295,
+    "hash": "c3fe94bfea0aaba790c5d06510dce560"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\popover.tsx": {
+    "mtime": 1780086453.029964,
+    "hash": "fc2f294d48fd1337c713618ac01cd5e5"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\separator.tsx": {
+    "mtime": 1779643300.560927,
+    "hash": "7462e289534d24ec09c149f8e02421c2"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\sheet.tsx": {
+    "mtime": 1779643309.719815,
+    "hash": "30d2e8c5b78048126a5daf1677166183"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\sidebar.tsx": {
+    "mtime": 1779813504.8644922,
+    "hash": "7008d2c05bd0049b04690973a0bc870a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\skeleton.tsx": {
+    "mtime": 1779643301.171811,
+    "hash": "9d7db5d53db038626a8c899063466a07"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\table.tsx": {
+    "mtime": 1779999916.8230784,
+    "hash": "7c97d9957ca75a1d436c6d30ac407f7a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\components\\ui\\tooltip.tsx": {
+    "mtime": 1779643303.4053786,
+    "hash": "dccec229f6298de293d54ea5194d7672"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\config\\endpoints.ts": {
+    "mtime": 1779906012.4554486,
+    "hash": "9e8f4e51ab86deb85d5b5ae56c5ff01a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\config\\env.ts": {
+    "mtime": 1779822853.2767036,
+    "hash": "686a01ef02abe3c342084d22dcb37dfa"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\apiControllers.ts": {
+    "mtime": 1779906007.392466,
+    "hash": "8ffc5f4d879d10accaaa4646bba6f4af"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\index.ts": {
+    "mtime": 1779912664.4762704,
+    "hash": "e0ad1e44ba05aa86d1b451a4fbbe663c"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\menu.ts": {
+    "mtime": 1779912664.41566,
+    "hash": "6c7b67425af5424af9c511a22a83f63e"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\queryKeys.ts": {
+    "mtime": 1779905765.2754908,
+    "hash": "e144ecef4884a35b7c14a4b0ce013cd9"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\routes.ts": {
+    "mtime": 1779912664.4493408,
+    "hash": "24375da731348bb3385b925cd50daf77"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\constants\\screenKeys.ts": {
+    "mtime": 1779912664.4493408,
+    "hash": "2c6ae096dc4b8dd7ccf2ee61f6216160"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\hooks\\useMenuBootstrap.ts": {
+    "mtime": 1779905349.592926,
+    "hash": "f6fb70dbbfccfef116456d8c4a009234"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\hooks\\useMobile.ts": {
+    "mtime": 1779813494.2612433,
+    "hash": "cb92d92d34b71fdfd3ea01a4385df330"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\hooks\\useScreenMetadata.ts": {
+    "mtime": 1780076022.9315114,
+    "hash": "04a8de00b1051d7c8a66d43f2450cc4c"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\hooks\\useScreenSlice.ts": {
+    "mtime": 1780076050.4005165,
+    "hash": "7a79cb697caca1aea70b96c46b80ee49"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\lib\\jwt.ts": {
+    "mtime": 1779645586.1322143,
+    "hash": "b43110458a07b14323243deb6b1e1aa0"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\lib\\menu-icons.tsx": {
+    "mtime": 1779731648.0665267,
+    "hash": "98f305604e13363809c652373c89186b"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\lib\\navigationTree.ts": {
+    "mtime": 1779905934.3663993,
+    "hash": "2f40a12971e64609334b6d4e35c507e3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\lib\\storage.ts": {
+    "mtime": 1779636577.3510475,
+    "hash": "f405a73ca4c06c8d3fe50ebe1457d8ca"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\lib\\utils.ts": {
+    "mtime": 1779627461.8395722,
+    "hash": "a04f8d04422001647c72c8675f5c2359"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\admin\\menus\\index.tsx": {
+    "mtime": 1779912664.4493408,
+    "hash": "365f67f17bc6c9740f36504888afc9d2"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\dashboard\\index.tsx": {
+    "mtime": 1779905366.0534692,
+    "hash": "f62881d10330f43cb588954a100555a3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\login\\form.tsx": {
+    "mtime": 1779905352.9781768,
+    "hash": "514ad305d1c0180f69843454a309e5b3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\login\\index.tsx": {
+    "mtime": 1779802118.473537,
+    "hash": "1235387cbef696a4bf8bffac412fbe57"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\masters\\drivers\\index.tsx": {
+    "mtime": 1779915085.7592216,
+    "hash": "473bcc2d00f70fd6658cea0cdf8c4cdc"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\masters\\name-boards\\index.tsx": {
+    "mtime": 1780083138.5861108,
+    "hash": "bccb4ca8f0330596cd51c68b42287d66"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\pages\\masters\\trucks\\index.tsx": {
+    "mtime": 1779915083.2327447,
+    "hash": "0e52b198666cd6a850ae973c28c8dd53"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\providers\\providers.tsx": {
+    "mtime": 1779905348.7809732,
+    "hash": "91217a858d92b4e0525a765db6094eab"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\providers\\query-devtools.tsx": {
+    "mtime": 1779822858.2967334,
+    "hash": "ba51cdea9bf19b1c7b343e1340ffee27"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\login.tsx": {
+    "mtime": 1779820019.7629278,
+    "hash": "f899236cbbc1a3083f7ce24bb65163f9"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated.tsx": {
+    "mtime": 1779813502.035763,
+    "hash": "b3beb34e5834ea1393455aed81cc00b9"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\__root.tsx": {
+    "mtime": 1779813503.9263322,
+    "hash": "00f29e090ee29562578574aa3c18138f"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\index.tsx": {
+    "mtime": 1779820019.7846203,
+    "hash": "f5adf68f28aba751d14c80c3623b9fb7"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\admin\\menu.tsx": {
+    "mtime": 1779912664.41566,
+    "hash": "283c2294a3bf56d485343c4fee402249"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\main\\dashboard.tsx": {
+    "mtime": 1779802140.5183208,
+    "hash": "a0acf08f016f4fcc8dad999a790495b6"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\masters\\driver.tsx": {
+    "mtime": 1779912664.4493408,
+    "hash": "222b887750449aa24f7b0a1795771414"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\masters\\name-board.tsx": {
+    "mtime": 1779912664.4721448,
+    "hash": "33426ad079a0b5fc819cbac95f489dbd"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\routes\\_authenticated\\masters\\truck.tsx": {
+    "mtime": 1779912664.5001936,
+    "hash": "9dfb8641f621e06f7bdef572549170e3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\axios.d.ts": {
+    "mtime": 1779819916.873379,
+    "hash": "f20c0f54536ef3eb0dae72c3422ea88d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\client.ts": {
+    "mtime": 1779905351.8368506,
+    "hash": "defb05a6cbb4b81a7b7574c02fda4a05"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\access.ts": {
+    "mtime": 1779820877.3982227,
+    "hash": "442ea13c19b90e8e5f76b36afb08b88f"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\auth.ts": {
+    "mtime": 1779820879.9654787,
+    "hash": "992917ad6b5af00700c02a660ae5d52e"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\drivers.ts": {
+    "mtime": 1779905769.8335414,
+    "hash": "1e064e1aa058810629774574474e9852"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\index.ts": {
+    "mtime": 1779819943.6886182,
+    "hash": "bb04ab46bf8db7f2346c5b0581f2772f"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\menus.ts": {
+    "mtime": 1779904747.5296483,
+    "hash": "9b35acd2afec48ab6d3634fea736a560"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\nameBoards.ts": {
+    "mtime": 1779905772.986279,
+    "hash": "ec381ed7ef75c87dc67734169cbf2f84"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\screens.ts": {
+    "mtime": 1779904747.5556781,
+    "hash": "758502dce08f9ff80d467d6955637ca7"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\api\\functions\\trucks.ts": {
+    "mtime": 1779905775.6728888,
+    "hash": "ed9d0211ed241e9295709f17014697dc"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\auth.ts": {
+    "mtime": 1779820897.0759006,
+    "hash": "9f5a77bb4a9dbfc35e73139310ca456a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\drivers.ts": {
+    "mtime": 1779819954.457899,
+    "hash": "d4806278b2c46eff012284dc684ec1c5"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\index.ts": {
+    "mtime": 1779819958.3406668,
+    "hash": "66c2a2883fd351180fc76a5b9eab6746"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\menus.ts": {
+    "mtime": 1779819957.2826781,
+    "hash": "7a4adec33cc811a6b72aaa3edd0ea170"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\nameBoards.ts": {
+    "mtime": 1779819950.9982896,
+    "hash": "85dfc49e4fa6f4f012bccb0e6c14a1ac"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\mutation\\trucks.ts": {
+    "mtime": 1779819953.822577,
+    "hash": "77630f12f1322c2897e27ba180c4a603"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\access.ts": {
+    "mtime": 1779821859.9219348,
+    "hash": "b43a564aac9983ad3dded64d8a2405fd"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\drivers.ts": {
+    "mtime": 1779905767.0012796,
+    "hash": "310adea8ef0d2071b93b672c7e7f4f55"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\index.ts": {
+    "mtime": 1779819969.546274,
+    "hash": "a34d9af658d420682865ff692d0c8f30"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\menus.ts": {
+    "mtime": 1779904748.4002533,
+    "hash": "e6f4df60ff011e983966f46c212ab1e6"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\nameBoards.ts": {
+    "mtime": 1779905767.1821096,
+    "hash": "04e3ff015315fbe95e20fd8cb4098bbd"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\screens.ts": {
+    "mtime": 1779819960.6609664,
+    "hash": "2d8e5b5a6b297efc549d4ac65573e4f1"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\service\\query\\trucks.ts": {
+    "mtime": 1779905767.2884102,
+    "hash": "655bcec5375c5dddc7b20fdc94fe76d3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\hooks.ts": {
+    "mtime": 1779905325.6100209,
+    "hash": "ba8bfcfb4c45c8e40f1b638a4e9fedd1"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\reducerManager.ts": {
+    "mtime": 1779813928.4097643,
+    "hash": "b542d9fc3d13dc1fe220a9d6efbece97"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\store.ts": {
+    "mtime": 1779916114.8026774,
+    "hash": "2fb964439e6ee9ea3d01cb3a4a7f0004"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\global\\authSlice.ts": {
+    "mtime": 1779905291.0142088,
+    "hash": "9b2257904f7f1af680b9028e9599c529"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\global\\menuSlice.ts": {
+    "mtime": 1779905933.4679558,
+    "hash": "4f2cebaf81fe578b180ca831ebf0186a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\dashboardSlice.ts": {
+    "mtime": 1779905302.6527903,
+    "hash": "328706c004d478d753e244a709d0a635"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\driversSlice.ts": {
+    "mtime": 1779999809.115882,
+    "hash": "1846224b4381137d5dd63963bad61745"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\menusSlice.ts": {
+    "mtime": 1779912664.4721448,
+    "hash": "4504382f2b9373c176135c6425d25503"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\nameBoardsSlice.ts": {
+    "mtime": 1779999804.002217,
+    "hash": "c4654217b2b5dbd38397d5ef0432c534"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\registry.ts": {
+    "mtime": 1779912664.4493408,
+    "hash": "ca43d3e694a198ddf082dcc971da0e89"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\screenMetadataActions.ts": {
+    "mtime": 1779914427.0250487,
+    "hash": "b16511953605cf89774aebba21321836"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\screenMetadataReducers.ts": {
+    "mtime": 1779914344.4352653,
+    "hash": "6a7216619711baa4513e84463cf623d3"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\screenMountActions.ts": {
+    "mtime": 1779916153.4035428,
+    "hash": "98c1ba5a29c2e7be5015a4167e22ad26"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\store\\screens\\trucksSlice.ts": {
+    "mtime": 1779999806.410297,
+    "hash": "e723e5bb0322b1d385140196e608a635"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\access.ts": {
+    "mtime": 1779820849.2607188,
+    "hash": "f3dafb650e1c442892ff9a94fd60a9df"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\auth.ts": {
+    "mtime": 1779820850.921861,
+    "hash": "787aa3549f03f126f8a6e6510f763a2a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\common.ts": {
+    "mtime": 1780064904.1534226,
+    "hash": "8898c46e1d9a8ce6e02aedb22fb27d83"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\index.ts": {
+    "mtime": 1779914395.81895,
+    "hash": "1300ed0ba1ef3e9318a5b4ded967e981"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\driver.ts": {
+    "mtime": 1779905706.4583924,
+    "hash": "300c06e52a16f5af327af5b5b1241642"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\index.ts": {
+    "mtime": 1779914371.522788,
+    "hash": "6737432ce5da2c4333042c4a635f9628"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\menu.ts": {
+    "mtime": 1779905709.6628382,
+    "hash": "3b6117b791b24328650db8e768b41bf0"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\nameBoard.ts": {
+    "mtime": 1779905710.6784947,
+    "hash": "a9be4503f57a1de6793f524ca5314b95"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\screen.ts": {
+    "mtime": 1780079221.771938,
+    "hash": "fe76c3fa1cd1913dafef8c34cbe559f2"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\entity\\truck.ts": {
+    "mtime": 1779905710.71775,
+    "hash": "0079db1c5c572d6fdff5427cd1d4bf4d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\index.ts": {
+    "mtime": 1779905288.001712,
+    "hash": "b1a4476f83b320c240f3e9046c52be5a"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\root.ts": {
+    "mtime": 1779905287.8826416,
+    "hash": "41ffe90f870144cc6fd7ebcc4eddabc5"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\global\\auth.ts": {
+    "mtime": 1779905265.328334,
+    "hash": "91028dd6fe7f39e006814c6c2715d51d"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\global\\index.ts": {
+    "mtime": 1779905269.4170976,
+    "hash": "a1fb3919c562061b78ca3d7724d03de4"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\global\\menu.ts": {
+    "mtime": 1779905933.5510378,
+    "hash": "7ebc8bfd3febd3d6d76e66f086dfa543"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\column.ts": {
+    "mtime": 1779914312.1825342,
+    "hash": "01c2fc0079bc8cf8d780c77c06a415d6"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\entity.ts": {
+    "mtime": 1779914308.9459324,
+    "hash": "9f86810551c0b6b3efb7ed974f70c5ba"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\field.ts": {
+    "mtime": 1779914312.1082845,
+    "hash": "3abd69caba4761cb1f6321ca507d3d33"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\formField.ts": {
+    "mtime": 1779914312.3219645,
+    "hash": "e28b346539cda3f79db737405280d794"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\index.ts": {
+    "mtime": 1779914315.3623283,
+    "hash": "8838275929a6652073786c6353e198c7"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\loadState.ts": {
+    "mtime": 1779914428.35854,
+    "hash": "fc6cd098cc0bfce4ec77fc621519a3b2"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screen\\screen.ts": {
+    "mtime": 1779914308.322464,
+    "hash": "5a3865cfa5bdbbdb3ae0f52a71bc3170"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\dashboard.ts": {
+    "mtime": 1779905269.7092438,
+    "hash": "99f42779c00ef24b9b5f122d3c998d29"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\drivers.ts": {
+    "mtime": 1779999801.2311127,
+    "hash": "3cbe57b1ac2f96959c9410052bbac1a9"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\index.ts": {
+    "mtime": 1780076048.9019265,
+    "hash": "22b2d5f6f5e45481f6bad1f52bc2c825"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\menus.ts": {
+    "mtime": 1779905272.8171628,
+    "hash": "6fb9f87cba65332a34410ae7dfc7d46f"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\nameBoards.ts": {
+    "mtime": 1779999797.2414186,
+    "hash": "3de7a0c1fac587493b2f0c3af23e0f31"
+  },
+  "D:\\source\\base-app\\billing-frontend\\src\\types\\store\\screens\\trucks.ts": {
+    "mtime": 1779999798.5272248,
+    "hash": "199e2b825ff4ed15c6c912fdcc719b24"
+  },
+  "D:\\source\\base-app\\BILLING-V3.md": {
+    "mtime": 1780089349.6796453,
+    "hash": "c95abdaabf893379520eb84190d46887"
+  },
+  "D:\\source\\base-app\\billing\\docker-compose.override.yml": {
+    "mtime": 1709284240.0,
+    "hash": "be5547eb5b786bd6a899bbd98ceb445c"
+  },
+  "D:\\source\\base-app\\billing\\docker-compose.yml": {
+    "mtime": 1779535621.399217,
+    "hash": "a33485b434baf0669ba8ff4d4f9aafdf"
+  },
+  "D:\\source\\base-app\\billing\\README.md": {
+    "mtime": 1780078026.1529264,
+    "hash": "4008411054784e6cea86a4023b9718f8"
+  },
+  "D:\\source\\base-app\\billing\\scripts\\README.md": {
+    "mtime": 1779914456.1448653,
+    "hash": "e30fd99cb2997ba599e420fe9c1cf609"
+  },
+  "D:\\source\\base-app\\billing-frontend\\index.html": {
+    "mtime": 1780086500.3133194,
+    "hash": "85d8a68075166ff9abd0e1fca8203791"
+  },
+  "D:\\source\\base-app\\billing-frontend\\README.md": {
+    "mtime": 1779915088.7111547,
+    "hash": "4e068b97e3570dc6272cfe9cfad472a4"
+  },
+  "D:\\source\\base-app\\docs\\BILLING-V3-IMPLEMENTATION-CONTEXT.md": {
+    "mtime": 1780089334.2501745,
+    "hash": "11566e970f0c0a21b49eaf9cbb1a4d43"
+  },
+  "D:\\source\\base-app\\Table.png": {
+    "mtime": 1780089238.5897186,
+    "hash": "361447227e97eee91cbbd7a4e21e3f77"
+  },
+  "D:\\source\\base-app\\billing-frontend\\public\\vite.svg": {
+    "mtime": 1779625319.799713,
+    "hash": "e6bdc9b81dd0c4a823e26c8bbda39ccb"
+  }
+}

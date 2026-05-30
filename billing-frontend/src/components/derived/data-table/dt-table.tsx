@@ -5,7 +5,8 @@ import {
   type ColumnDef,
 } from '@tanstack/react-table';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import { useEffect, useMemo } from 'react';
+import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { DtActionsColumnHeader } from '@/components/derived/data-table/dt-actions-column-header';
 import { DtColumnFilters } from '@/components/derived/data-table/dt-column-filters';
 import {
   actionsColumnStyle,
@@ -13,8 +14,12 @@ import {
   dataColumnStyle,
   DT_STICKY_ACTIONS_CELL_CLASS,
   DT_STICKY_ACTIONS_HEAD_CLASS,
+  estimateActionsInlineMinWidthPx,
   getActionsColumnWidthPercent,
+  shouldUseActionsEllipsisMode,
 } from '@/components/derived/data-table/dt-column-layout';
+import { estimateRowActionsInlineMinWidthPx } from '@/components/derived/data-table/dt-row-action-items';
+import { DtRowActionsBar } from '@/components/derived/data-table/dt-row-actions';
 import { DataTableProvider } from '@/components/derived/data-table/dt-provider';
 import { DtErrors } from '@/components/derived/data-table/dt-errors';
 import { DtHeader } from '@/components/derived/data-table/dt-header';
@@ -30,24 +35,13 @@ import {
 import { DataTableCell } from '@/components/derived/data-table/column-cells';
 import {
   applyColumnFilters,
+  dataTableColumnAlignClass,
   getVisibleDataTableColumns,
   inactiveDataTableRowClassName,
 } from '@/components/derived/data-table/dt-utils';
 import { useDataTable } from '@/components/derived/data-table/hooks';
 import { Skeleton } from '@/components/ui/skeleton';
 import { cn } from '@/lib/utils';
-
-function cellAlignClass(align: DataTableColumnDef['align']): string {
-  if (align === 'center') {
-    return 'text-center';
-  }
-
-  if (align === 'right') {
-    return 'text-right';
-  }
-
-  return 'text-left';
-}
 
 function SortIndicator({
   fieldName,
@@ -77,8 +71,9 @@ function buildTanStackColumns<TRow extends object>(
   visibleDataColumns: DataTableColumnDef[],
   rowId: (row: TRow) => number,
   mutations: DataTableMutationsHandle,
-  renderActionsColumn: DataTableProps<TRow>['renderActionsColumn'],
+  renderRowActions: DataTableProps<TRow>['renderRowActions'],
   actionsColumnMeta: DataTableColumnDef | null,
+  actionsEllipsisMode: boolean,
 ): ColumnDef<TRow>[] {
   const dataColumns: ColumnDef<TRow>[] = visibleDataColumns.map((column) => ({
     id: column.id,
@@ -90,21 +85,37 @@ function buildTanStackColumns<TRow extends object>(
     meta: { columnDef: column },
   }));
 
-  if (!actionsColumnMeta || !renderActionsColumn) {
+  if (!actionsColumnMeta || !renderRowActions) {
     return dataColumns;
   }
+
+  const isPending = Boolean(
+    mutations.update?.isPending ||
+      mutations.delete?.isPending ||
+      mutations.toggle?.isPending,
+  );
 
   return [
     ...dataColumns,
     {
       id: actionsColumnMeta.id,
       header: actionsColumnMeta.header,
-      cell: ({ row }) =>
-        renderActionsColumn({
+      cell: ({ row }) => {
+        const items = renderRowActions({
           row: row.original,
           rowId: rowId(row.original),
           mutations,
-        }),
+        });
+
+        return (
+          <DtRowActionsBar
+            items={items}
+            align={actionsColumnMeta.align}
+            ellipsisMode={actionsEllipsisMode}
+            isPending={isPending}
+          />
+        );
+      },
       meta: { isActions: true, columnDef: actionsColumnMeta },
     },
   ];
@@ -114,7 +125,7 @@ type DataTableViewProps<TRow extends object> = Pick<
   DataTableProps<TRow>,
   | 'columns'
   | 'rowId'
-  | 'renderActionsColumn'
+  | 'renderRowActions'
   | 'emptyMessage'
   | 'title'
   | 'headerActions'
@@ -124,7 +135,7 @@ type DataTableViewProps<TRow extends object> = Pick<
 function DataTableView<TRow extends object>({
   columns,
   rowId,
-  renderActionsColumn,
+  renderRowActions,
   emptyMessage = 'No results.',
   title,
   headerActions,
@@ -162,15 +173,78 @@ function DataTableView<TRow extends object>({
     [rows, visibleDataColumns, columnFilters],
   );
 
-  const showActionsColumn = Boolean(actionsColumnMeta && renderActionsColumn);
+  const showActionsColumn = Boolean(actionsColumnMeta && renderRowActions);
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [tableContainerWidth, setTableContainerWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    const element = scrollContainerRef.current;
+    if (!element) {
+      return;
+    }
+
+    const updateWidth = () => {
+      setTableContainerWidth(element.clientWidth);
+    };
+
+    updateWidth();
+    const observer = new ResizeObserver(updateWidth);
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
+
+  const configuredActionsWidthPercent = getActionsColumnWidthPercent(columns);
+
+  const actionsInlineMinWidthPx = useMemo(() => {
+    if (!renderRowActions) {
+      return estimateActionsInlineMinWidthPx({
+        update: Boolean(mutations.update),
+        toggle: Boolean(mutations.toggle),
+        delete: Boolean(mutations.delete),
+      });
+    }
+
+    if (displayRows.length > 0) {
+      const sampleRow = displayRows[0];
+      const items = renderRowActions({
+        row: sampleRow,
+        rowId: rowId(sampleRow),
+        mutations,
+      });
+      return estimateRowActionsInlineMinWidthPx(items);
+    }
+
+    return estimateActionsInlineMinWidthPx({
+      update: Boolean(mutations.update),
+      toggle: Boolean(mutations.toggle),
+      delete: Boolean(mutations.delete),
+    });
+  }, [renderRowActions, displayRows, rowId, mutations, mutations.delete, mutations.toggle, mutations.update]);
+
+  const actionsEllipsisMode = useMemo(
+    () =>
+      showActionsColumn &&
+      shouldUseActionsEllipsisMode(
+        tableContainerWidth,
+        configuredActionsWidthPercent,
+        actionsInlineMinWidthPx,
+      ),
+    [
+      showActionsColumn,
+      tableContainerWidth,
+      configuredActionsWidthPercent,
+      actionsInlineMinWidthPx,
+    ],
+  );
 
   const layout = useMemo(
     () =>
-      computeDataTableLayout(
-        visibleDataColumns,
-        getActionsColumnWidthPercent(columns),
-      ),
-    [visibleDataColumns, columns],
+      computeDataTableLayout(visibleDataColumns, configuredActionsWidthPercent, {
+        actionsEllipsisMode,
+        tableContainerWidthPx: tableContainerWidth,
+      }),
+    [visibleDataColumns, configuredActionsWidthPercent, actionsEllipsisMode, tableContainerWidth],
   );
 
   const tanstackColumns = useMemo(
@@ -179,10 +253,19 @@ function DataTableView<TRow extends object>({
         visibleDataColumns,
         rowId,
         mutations,
-        renderActionsColumn,
+        renderRowActions,
         showActionsColumn ? actionsColumnMeta : null,
+        actionsEllipsisMode,
       ),
-    [visibleDataColumns, rowId, mutations, renderActionsColumn, showActionsColumn, actionsColumnMeta],
+    [
+      visibleDataColumns,
+      rowId,
+      mutations,
+      renderRowActions,
+      showActionsColumn,
+      actionsColumnMeta,
+      actionsEllipsisMode,
+    ],
   );
 
   const table = useReactTable({
@@ -208,7 +291,7 @@ function DataTableView<TRow extends object>({
       ) : null}
       <DtToolbar searchPlaceholder={searchPlaceholder} />
 
-      <div className="relative w-full overflow-x-auto rounded-md border">
+      <div ref={scrollContainerRef} className="relative w-full overflow-x-auto rounded-md border">
         <table
           className="caption-bottom text-sm"
           style={{
@@ -224,7 +307,7 @@ function DataTableView<TRow extends object>({
                   key={column.id}
                   className={cn(
                     'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
-                    cellAlignClass(column.align),
+                    dataTableColumnAlignClass(column.align),
                     column.sortable && 'cursor-pointer select-none',
                   )}
                   style={dataColumnStyle(layout, column.id)}
@@ -243,12 +326,17 @@ function DataTableView<TRow extends object>({
               {showActionsColumn && actionsColumnMeta ? (
                 <th
                   className={cn(
-                    'h-10 px-2 text-left align-middle font-medium whitespace-nowrap text-foreground',
+                    'h-10 px-2 align-middle font-medium whitespace-nowrap text-foreground',
+                    dataTableColumnAlignClass(actionsColumnMeta.align),
                     DT_STICKY_ACTIONS_HEAD_CLASS,
                   )}
                   style={actionsColumnStyle(layout)}
                 >
-                  {actionsColumnMeta.header}
+                  <DtActionsColumnHeader
+                    align={actionsColumnMeta.align}
+                    label={actionsColumnMeta.header}
+                    ellipsisMode={actionsEllipsisMode}
+                  />
                 </th>
               ) : null}
             </tr>
@@ -257,6 +345,7 @@ function DataTableView<TRow extends object>({
                 layout={layout}
                 visibleDataColumns={visibleDataColumns}
                 showActionsColumn={showActionsColumn}
+                actionsColumn={actionsColumnMeta}
               />
             ) : null}
           </thead>
@@ -312,7 +401,7 @@ function DataTableView<TRow extends object>({
                         key={cell.id}
                         className={cn(
                           'max-w-0 p-2 align-middle whitespace-nowrap',
-                          cellAlignClass(align),
+                          dataTableColumnAlignClass(align),
                           isActions && DT_STICKY_ACTIONS_CELL_CLASS,
                         )}
                         style={
@@ -345,7 +434,7 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
   const {
     columns,
     rowId,
-    renderActionsColumn,
+    renderRowActions,
     emptyMessage,
     title,
     headerActions,
@@ -358,7 +447,7 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
       <DataTableView
         columns={columns}
         rowId={rowId}
-        renderActionsColumn={renderActionsColumn}
+        renderRowActions={renderRowActions}
         emptyMessage={emptyMessage}
         title={title}
         headerActions={headerActions}

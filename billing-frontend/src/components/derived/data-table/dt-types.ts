@@ -1,6 +1,9 @@
 import type { UseMutationOptions, UseMutationResult, UseQueryOptions } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { DT_COLUMN_COMPONENT_ACTIONS } from '@/components/derived/data-table/dt-constants';
+import type {
+  DataTableRowActionItem,
+} from '@/components/derived/data-table/dt-row-action-items';
 import type { ListQueryParams, PagedResponse } from '@/types/common';
 import type {
   EntityScreenMetadataDto,
@@ -184,15 +187,15 @@ export type DataTableMutationsHandle = {
   toggle?: UseMutationResult<any, Error, any, any>;
 };
 
-export type DataTableActionsColumnRenderProps<TRow> = {
+export type DataTableRowActionsRenderProps<TRow> = {
   row: TRow;
   rowId: number;
   mutations: DataTableMutationsHandle;
 };
 
-export type DataTableActionsColumnRender<TRow> = (
-  props: DataTableActionsColumnRenderProps<TRow>,
-) => ReactNode;
+export type DataTableRowActionsRender<TRow> = (
+  props: DataTableRowActionsRenderProps<TRow>,
+) => DataTableRowActionItem[];
 
 export interface DataTableProps<TRow> {
   /** Top bar: table name (left). */
@@ -211,8 +214,8 @@ export interface DataTableProps<TRow> {
   columns: DataTableColumnDef[];
   rowId: (row: TRow) => number;
 
-  /** Row actions cell; required when metadata includes an `actions` column. */
-  renderActionsColumn?: DataTableActionsColumnRender<TRow>;
+  /** Returns row action items; DataTable renders layout, ellipsis mode, and alignment. */
+  renderRowActions?: DataTableRowActionsRender<TRow>;
 
   /** When false, list query is disabled; table structure still renders from `columns`. */
   enabled?: boolean;

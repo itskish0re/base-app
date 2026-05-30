@@ -8,5 +8,6 @@ export function screenByMenuQueryOptions(menuCode: string) {
     queryKey: queryKeys.screens.byMenu(menuCode),
     queryFn: () => fetchScreenByMenuCode(menuCode),
     enabled: Boolean(menuCode) && Boolean(store.getState().auth.accessToken),
+    staleTime: 5 * 60 * 1000
   });
 }

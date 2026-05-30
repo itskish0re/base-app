@@ -6,18 +6,74 @@ export const DT_GRID_BASE_WIDTH_PERCENT = 100;
 
 export const DT_DEFAULT_ACTIONS_COLUMN_WIDTH_PERCENT = 12;
 
+/** Inline row action control sizes (px). */
+export const DT_ACTION_ICON_WIDTH_PX = 32;
+export const DT_ACTION_SWITCH_WIDTH_PX = 44;
+export const DT_ACTION_ITEM_GAP_PX = 2;
+
+/** Fixed actions column width when collapsed to ellipsis menu (one icon button + cell padding). */
+export const DT_ACTIONS_ELLIPSIS_COLUMN_WIDTH_PX = 48;
+
+export type DataTableRowActionSlots = {
+  update?: boolean;
+  toggle?: boolean;
+  delete?: boolean;
+};
+
 export type DataTableLayout = {
   /** Table width relative to the scroll container (100 = fit; &gt;100 = horizontal scroll). */
   tableWidthPercent: number;
   /** Each data column width as % of the table element. */
   columnWidthPercentOfTable: Map<string, number>;
-  /** Actions column width as % of the table element. */
+  /** Actions column width as % of the table element (budget only when ellipsis uses fixed px). */
   actionsWidthPercentOfTable: number | null;
+  /** When true, actions column renders at `DT_ACTIONS_ELLIPSIS_COLUMN_WIDTH_PX`. */
+  actionsEllipsisMode: boolean;
+};
+
+export type ComputeDataTableLayoutOptions = {
+  actionsEllipsisMode?: boolean;
+  tableContainerWidthPx?: number;
 };
 
 export function resolveColumnWidthPercent(column: DataTableColumnDef): number {
   const percent = column.widthPercent ?? 0;
   return percent > 0 ? percent : 15;
+}
+
+export function estimateActionsInlineMinWidthPx(slots: DataTableRowActionSlots): number {
+  let width = 0;
+
+  const add = (itemWidth: number) => {
+    width += (width > 0 ? DT_ACTION_ITEM_GAP_PX : 0) + itemWidth;
+  };
+
+  if (slots.update) {
+    add(DT_ACTION_ICON_WIDTH_PX);
+  }
+
+  if (slots.toggle) {
+    add(DT_ACTION_SWITCH_WIDTH_PX);
+  }
+
+  if (slots.delete) {
+    add(DT_ACTION_ICON_WIDTH_PX);
+  }
+
+  return width > 0 ? width : DT_ACTION_ICON_WIDTH_PX;
+}
+
+export function shouldUseActionsEllipsisMode(
+  containerWidthPx: number,
+  configuredActionsWidthPercent: number,
+  inlineMinWidthPx: number,
+): boolean {
+  if (containerWidthPx <= 0) {
+    return false;
+  }
+
+  const allocatedPx = (configuredActionsWidthPercent / 100) * containerWidthPx;
+  return allocatedPx < inlineMinWidthPx;
 }
 
 /**
@@ -28,8 +84,16 @@ export function resolveColumnWidthPercent(column: DataTableColumnDef): number {
 export function computeDataTableLayout(
   visibleDataColumns: DataTableColumnDef[],
   actionsWidthPercent: number = DT_DEFAULT_ACTIONS_COLUMN_WIDTH_PERCENT,
+  options?: ComputeDataTableLayoutOptions,
 ): DataTableLayout {
-  const actionsShare = Math.max(actionsWidthPercent, 1);
+  const actionsEllipsisMode = options?.actionsEllipsisMode ?? false;
+  const containerWidthPx = options?.tableContainerWidthPx ?? 0;
+
+  let actionsShare = Math.max(actionsWidthPercent, 1);
+  if (actionsEllipsisMode && containerWidthPx > 0) {
+    actionsShare = Math.max((DT_ACTIONS_ELLIPSIS_COLUMN_WIDTH_PX / containerWidthPx) * 100, 1);
+  }
+
   const dataBudget = DT_GRID_BASE_WIDTH_PERCENT - actionsShare;
   const count = visibleDataColumns.length;
 
@@ -38,6 +102,7 @@ export function computeDataTableLayout(
       tableWidthPercent: DT_GRID_BASE_WIDTH_PERCENT,
       columnWidthPercentOfTable: new Map(),
       actionsWidthPercentOfTable: actionsShare,
+      actionsEllipsisMode,
     };
   }
 
@@ -58,6 +123,7 @@ export function computeDataTableLayout(
       tableWidthPercent: DT_GRID_BASE_WIDTH_PERCENT,
       columnWidthPercentOfTable,
       actionsWidthPercentOfTable: actionsShare,
+      actionsEllipsisMode,
     };
   }
 
@@ -71,6 +137,7 @@ export function computeDataTableLayout(
     tableWidthPercent,
     columnWidthPercentOfTable,
     actionsWidthPercentOfTable: (actionsShare / tableWidthPercent) * 100,
+    actionsEllipsisMode,
   };
 }
 
@@ -82,7 +149,16 @@ export function dataColumnStyle(
   return { width: `${width}%` };
 }
 
-export function actionsColumnStyle(layout: DataTableLayout): { width: string } {
+export function actionsColumnStyle(layout: DataTableLayout): {
+  width: string;
+  minWidth?: string;
+  maxWidth?: string;
+} {
+  if (layout.actionsEllipsisMode) {
+    const px = `${DT_ACTIONS_ELLIPSIS_COLUMN_WIDTH_PX}px`;
+    return { width: px, minWidth: px, maxWidth: px };
+  }
+
   const width = layout.actionsWidthPercentOfTable ?? DT_DEFAULT_ACTIONS_COLUMN_WIDTH_PERCENT;
   return { width: `${width}%` };
 }

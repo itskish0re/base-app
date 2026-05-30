@@ -6,31 +6,22 @@ import {
 } from '@/components/derived/data-table/dt-column-layout';
 import type { DataTableColumnDef } from '@/components/derived/data-table/dt-types';
 import { useDataTable } from '@/components/derived/data-table/hooks';
+import { dataTableColumnAlignClass } from '@/components/derived/data-table/dt-utils';
 import { Input } from '@/components/ui/input';
 import { cn } from '@/lib/utils';
-
-function cellAlignClass(align: DataTableColumnDef['align']): string {
-  if (align === 'center') {
-    return 'text-center';
-  }
-
-  if (align === 'right') {
-    return 'text-right';
-  }
-
-  return 'text-left';
-}
 
 type DtColumnFiltersProps = {
   layout: DataTableLayout;
   visibleDataColumns: DataTableColumnDef[];
   showActionsColumn: boolean;
+  actionsColumn: DataTableColumnDef | null;
 };
 
 export function DtColumnFilters({
   layout,
   visibleDataColumns,
   showActionsColumn,
+  actionsColumn,
 }: DtColumnFiltersProps) {
   const { columnFilters, setColumnFilter } = useDataTable();
 
@@ -39,7 +30,7 @@ export function DtColumnFilters({
       {visibleDataColumns.map((column) => (
         <th
           key={`filter-${column.id}`}
-          className={cn('py-2 px-2 font-normal', cellAlignClass(column.align))}
+          className={cn('py-2 px-2 font-normal', dataTableColumnAlignClass(column.align))}
           style={dataColumnStyle(layout, column.id)}
         >
           <Input
@@ -53,7 +44,11 @@ export function DtColumnFilters({
       ))}
       {showActionsColumn ? (
         <th
-          className={cn('py-2 px-2 font-normal', DT_STICKY_ACTIONS_HEAD_CLASS)}
+          className={cn(
+            'py-2 px-2 font-normal',
+            dataTableColumnAlignClass(actionsColumn?.align),
+            DT_STICKY_ACTIONS_HEAD_CLASS,
+          )}
           style={actionsColumnStyle(layout)}
         />
       ) : null}

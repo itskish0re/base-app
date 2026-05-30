@@ -1,0 +1,13 @@
+# Dependencies
+billing-frontend/node_modules/
+**/node_modules/
+
+# Tests (billing backend test projects)
+billing/tests/
+
+# EF Core generated migrations
+billing/src/Infrastructure/Persistence/Migrations/
+
+# Build output
+**/obj/
+**/bin/

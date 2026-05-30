@@ -1,5 +1,12 @@
 import { useCallback, useMemo } from 'react';
-import { DataTable, getPrimaryEntityColumns, mapScreenColumnsToDataTableColumns } from '@/components/derived/data-table';
+import {
+  DataTable,
+  getPrimaryEntityColumns,
+  mapScreenColumnsToDataTableColumns,
+  rowActionDelete,
+  rowActionEdit,
+  rowActionToggle,
+} from '@/components/derived/data-table';
 import { Button } from '@/components/ui/button';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
@@ -68,17 +75,25 @@ export function NameBoardsPage() {
       columns={columns}
       rowId={(row) => row.nameBoardId}
       searchPlaceholder="Search name boards…"
-      renderActionsColumn={({ rowId, mutations }) => (
-        <Button
-          type="button"
-          variant="ghost"
-          size="sm"
-          disabled={mutations.delete?.isPending}
-          onClick={() => mutations.delete?.mutate({ ids: [rowId] })}
-        >
-          Delete
-        </Button>
-      )}
+      renderRowActions={({ row, rowId, mutations }) => [
+        rowActionEdit({
+          onClick: () => {
+            // TODO: open edit sheet/dialog
+          },
+        }),
+        rowActionToggle({
+          checked: row.isEnabled,
+          disabled: mutations.toggle?.isPending,
+          onCheckedChange: (checked) =>
+            mutations.toggle?.mutate({
+              items: [{ nameBoardId: rowId, isEnabled: checked }],
+            }),
+        }),
+        rowActionDelete({
+          disabled: mutations.delete?.isPending,
+          onClick: () => mutations.delete?.mutate({ ids: [rowId] }),
+        }),
+      ]}
     />
   );
 }

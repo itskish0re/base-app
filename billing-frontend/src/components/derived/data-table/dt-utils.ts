@@ -5,6 +5,30 @@ import {
   type DataTableColumnDef,
 } from '@/components/derived/data-table/dt-types';
 
+export function dataTableColumnAlignClass(align: DataTableColumnDef['align']): string {
+  if (align === 'center') {
+    return 'text-center';
+  }
+
+  if (align === 'right') {
+    return 'text-right';
+  }
+
+  return 'text-left';
+}
+
+export function dataTableColumnFlexJustifyClass(align: DataTableColumnDef['align']): string {
+  if (align === 'center') {
+    return 'justify-center';
+  }
+
+  if (align === 'right') {
+    return 'justify-end';
+  }
+
+  return 'justify-start';
+}
+
 export function formatDataTableCellValue(value: unknown): string {
   if (value === null || value === undefined) {
     return '';
