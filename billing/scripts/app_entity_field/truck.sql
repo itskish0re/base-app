@@ -11,6 +11,7 @@ INSERT INTO app_entity_field (
     is_required,
     min_length,
     max_length,
+    default_value,
     created_at,
     updated_at)
 SELECT
@@ -24,24 +25,25 @@ SELECT
     v.is_required,
     v.min_length,
     v.max_length,
+    v.default_value,
     NOW(),
     NOW()
 FROM app_entity e
 CROSS JOIN (
     VALUES
-        ('truck_id', 'integer', true, true, true, false, false, NULL::int, NULL::int),
-        ('truck_number', 'text', true, true, true, true, true, NULL::int, 64),
-        ('name_board_id', 'integer', true, true, true, true, true, NULL::int, NULL::int),
-        ('is_enabled', 'boolean', true, true, true, true, false, NULL::int, NULL::int),
-        ('is_active', 'boolean', true, true, true, true, false, NULL::int, NULL::int),
-        ('is_deleted', 'boolean', true, false, false, false, false, NULL::int, NULL::int),
-        ('deleted_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
-        ('created_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
-        ('updated_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int),
-        ('created_by', 'integer', false, false, true, false, false, NULL::int, NULL::int),
-        ('updated_by', 'integer', false, false, true, false, false, NULL::int, NULL::int),
-        ('_actions', 'text', false, false, false, false, false, NULL::int, NULL::int)
-) AS v(field_name, type_code, filterable, sortable, selectable, writable, is_required, min_length, max_length)
+        ('truck_id', 'integer', true, true, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('truck_number', 'text', true, true, true, true, true, NULL::int, 64, ''::text),
+        ('name_board_id', 'integer', true, true, true, true, true, NULL::int, NULL::int, NULL::text),
+        ('is_enabled', 'boolean', true, true, true, true, false, NULL::int, NULL::int, 'true'::text),
+        ('is_active', 'boolean', true, true, true, true, false, NULL::int, NULL::int, 'true'::text),
+        ('is_deleted', 'boolean', true, false, false, false, false, NULL::int, NULL::int, 'false'::text),
+        ('deleted_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('created_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('updated_at', 'timestamptz', true, true, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('created_by', 'integer', false, false, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('updated_by', 'integer', false, false, true, false, false, NULL::int, NULL::int, NULL::text),
+        ('_actions', 'text', false, false, false, false, false, NULL::int, NULL::int, NULL::text)
+) AS v(field_name, type_code, filterable, sortable, selectable, writable, is_required, min_length, max_length, default_value)
 INNER JOIN app_field_data_type t ON t.type_code = v.type_code
 WHERE e.entity_name = 'truck'
 ON CONFLICT (entity_id, field_name) DO UPDATE
@@ -54,4 +56,5 @@ SET
     is_required = EXCLUDED.is_required,
     min_length = EXCLUDED.min_length,
     max_length = EXCLUDED.max_length,
+    default_value = EXCLUDED.default_value,
     updated_at = NOW();
