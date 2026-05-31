@@ -57,6 +57,10 @@ public static class DependencyInjection
         services.AddScoped<IEndpointAccessRepository, EndpointAccessRepository>();
         services.AddScoped<INameBoardRepository, NameBoardRepository>();
         services.AddScoped<ITruckRepository, TruckRepository>();
+        services.AddScoped<ILocationRepository, LocationRepository>();
+        services.AddScoped<IPartyRepository, PartyRepository>();
+        services.AddScoped<IGoodsRepository, GoodsRepository>();
+        services.AddScoped<IUnitRepository, UnitRepository>();
         services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
         services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();

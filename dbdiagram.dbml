@@ -299,6 +299,63 @@ Table truck {
   updated_by int [ref: > app_user.user_id]
 }
 
+Table location {
+  location_id int [pk, increment]
+  code varchar [not null, unique]
+  name varchar [not null]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table party {
+  party_id int [pk, increment]
+  code varchar [not null, unique]
+  name varchar [not null]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table goods {
+  goods_id int [pk, increment]
+  code varchar [not null, unique]
+  name varchar [not null]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
+Table unit {
+  unit_id int [pk, increment]
+  code varchar [not null, unique]
+  name varchar [not null]
+  is_fixed boolean [not null, default: false]
+  is_enabled boolean [not null, default: true]
+  is_active boolean [not null, default: true]
+  is_deleted boolean [not null, default: false]
+  deleted_at timestamptz
+  created_at timestamptz [not null, default: `now()`]
+  updated_at timestamptz [not null, default: `now()`]
+  created_by int [ref: > app_user.user_id]
+  updated_by int [ref: > app_user.user_id]
+}
+
 TableGroup auth {
   app_role
   app_user
@@ -327,4 +384,8 @@ TableGroup app_entity_ui {
 TableGroup business_masters {
   name_board
   truck
+  location
+  party
+  goods
+  unit
 }

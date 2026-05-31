@@ -12,8 +12,12 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
+import { Route as AuthenticatedMastersUnitRouteImport } from './routes/_authenticated/masters/unit'
 import { Route as AuthenticatedMastersTruckRouteImport } from './routes/_authenticated/masters/truck'
+import { Route as AuthenticatedMastersPartyRouteImport } from './routes/_authenticated/masters/party'
 import { Route as AuthenticatedMastersNameBoardRouteImport } from './routes/_authenticated/masters/name-board'
+import { Route as AuthenticatedMastersLocationRouteImport } from './routes/_authenticated/masters/location'
+import { Route as AuthenticatedMastersGoodsRouteImport } from './routes/_authenticated/masters/goods'
 import { Route as AuthenticatedMainDashboardRouteImport } from './routes/_authenticated/main/dashboard'
 import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin/menu'
 
@@ -31,16 +35,40 @@ const AuthenticatedIndexRoute = AuthenticatedIndexRouteImport.update({
   path: '/',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
+const AuthenticatedMastersUnitRoute =
+  AuthenticatedMastersUnitRouteImport.update({
+    id: '/masters/unit',
+    path: '/masters/unit',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedMastersTruckRoute =
   AuthenticatedMastersTruckRouteImport.update({
     id: '/masters/truck',
     path: '/masters/truck',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMastersPartyRoute =
+  AuthenticatedMastersPartyRouteImport.update({
+    id: '/masters/party',
+    path: '/masters/party',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedMastersNameBoardRoute =
   AuthenticatedMastersNameBoardRouteImport.update({
     id: '/masters/name-board',
     path: '/masters/name-board',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedMastersLocationRoute =
+  AuthenticatedMastersLocationRouteImport.update({
+    id: '/masters/location',
+    path: '/masters/location',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AuthenticatedMastersGoodsRoute =
+  AuthenticatedMastersGoodsRouteImport.update({
+    id: '/masters/goods',
+    path: '/masters/goods',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
 const AuthenticatedMainDashboardRoute =
@@ -60,16 +88,24 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/masters/goods': typeof AuthenticatedMastersGoodsRoute
+  '/masters/location': typeof AuthenticatedMastersLocationRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/masters/party': typeof AuthenticatedMastersPartyRoute
   '/masters/truck': typeof AuthenticatedMastersTruckRoute
+  '/masters/unit': typeof AuthenticatedMastersUnitRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
   '/': typeof AuthenticatedIndexRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/masters/goods': typeof AuthenticatedMastersGoodsRoute
+  '/masters/location': typeof AuthenticatedMastersLocationRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/masters/party': typeof AuthenticatedMastersPartyRoute
   '/masters/truck': typeof AuthenticatedMastersTruckRoute
+  '/masters/unit': typeof AuthenticatedMastersUnitRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -78,8 +114,12 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/_authenticated/masters/goods': typeof AuthenticatedMastersGoodsRoute
+  '/_authenticated/masters/location': typeof AuthenticatedMastersLocationRoute
   '/_authenticated/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
+  '/_authenticated/masters/party': typeof AuthenticatedMastersPartyRoute
   '/_authenticated/masters/truck': typeof AuthenticatedMastersTruckRoute
+  '/_authenticated/masters/unit': typeof AuthenticatedMastersUnitRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -88,16 +128,24 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/menu'
     | '/main/dashboard'
+    | '/masters/goods'
+    | '/masters/location'
     | '/masters/name-board'
+    | '/masters/party'
     | '/masters/truck'
+    | '/masters/unit'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
     | '/'
     | '/admin/menu'
     | '/main/dashboard'
+    | '/masters/goods'
+    | '/masters/location'
     | '/masters/name-board'
+    | '/masters/party'
     | '/masters/truck'
+    | '/masters/unit'
   id:
     | '__root__'
     | '/_authenticated'
@@ -105,8 +153,12 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/menu'
     | '/_authenticated/main/dashboard'
+    | '/_authenticated/masters/goods'
+    | '/_authenticated/masters/location'
     | '/_authenticated/masters/name-board'
+    | '/_authenticated/masters/party'
     | '/_authenticated/masters/truck'
+    | '/_authenticated/masters/unit'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -137,6 +189,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/masters/unit': {
+      id: '/_authenticated/masters/unit'
+      path: '/masters/unit'
+      fullPath: '/masters/unit'
+      preLoaderRoute: typeof AuthenticatedMastersUnitRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/masters/truck': {
       id: '/_authenticated/masters/truck'
       path: '/masters/truck'
@@ -144,11 +203,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMastersTruckRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/masters/party': {
+      id: '/_authenticated/masters/party'
+      path: '/masters/party'
+      fullPath: '/masters/party'
+      preLoaderRoute: typeof AuthenticatedMastersPartyRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/masters/name-board': {
       id: '/_authenticated/masters/name-board'
       path: '/masters/name-board'
       fullPath: '/masters/name-board'
       preLoaderRoute: typeof AuthenticatedMastersNameBoardRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/masters/location': {
+      id: '/_authenticated/masters/location'
+      path: '/masters/location'
+      fullPath: '/masters/location'
+      preLoaderRoute: typeof AuthenticatedMastersLocationRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/masters/goods': {
+      id: '/_authenticated/masters/goods'
+      path: '/masters/goods'
+      fullPath: '/masters/goods'
+      preLoaderRoute: typeof AuthenticatedMastersGoodsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/main/dashboard': {
@@ -172,16 +252,24 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedMainDashboardRoute: typeof AuthenticatedMainDashboardRoute
+  AuthenticatedMastersGoodsRoute: typeof AuthenticatedMastersGoodsRoute
+  AuthenticatedMastersLocationRoute: typeof AuthenticatedMastersLocationRoute
   AuthenticatedMastersNameBoardRoute: typeof AuthenticatedMastersNameBoardRoute
+  AuthenticatedMastersPartyRoute: typeof AuthenticatedMastersPartyRoute
   AuthenticatedMastersTruckRoute: typeof AuthenticatedMastersTruckRoute
+  AuthenticatedMastersUnitRoute: typeof AuthenticatedMastersUnitRoute
 }
 
 const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedMainDashboardRoute: AuthenticatedMainDashboardRoute,
+  AuthenticatedMastersGoodsRoute: AuthenticatedMastersGoodsRoute,
+  AuthenticatedMastersLocationRoute: AuthenticatedMastersLocationRoute,
   AuthenticatedMastersNameBoardRoute: AuthenticatedMastersNameBoardRoute,
+  AuthenticatedMastersPartyRoute: AuthenticatedMastersPartyRoute,
   AuthenticatedMastersTruckRoute: AuthenticatedMastersTruckRoute,
+  AuthenticatedMastersUnitRoute: AuthenticatedMastersUnitRoute,
 }
 
 const AuthenticatedRouteWithChildren = AuthenticatedRoute._addFileChildren(

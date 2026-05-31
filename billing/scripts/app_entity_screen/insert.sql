@@ -17,7 +17,11 @@ SELECT
 FROM (
     VALUES
         ('name_board', 'name_board', 'Name board master: grid + form'),
-        ('truck', 'truck', 'Truck master: grid + form')
+        ('truck', 'truck', 'Truck master: grid + form'),
+        ('location', 'location', 'Location master: grid + form'),
+        ('party', 'party', 'Party master: grid + form'),
+        ('goods', 'goods', 'Goods master: grid + form'),
+        ('unit', 'unit', 'Unit master: grid + form')
 ) AS v(entity_name, menu_code, description)
 INNER JOIN app_entity e ON e.entity_name = v.entity_name
 INNER JOIN app_menu m ON m.menu_code = v.menu_code AND m.is_active = true

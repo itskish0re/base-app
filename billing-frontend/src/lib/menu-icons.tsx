@@ -2,7 +2,10 @@ import {
   Circle,
   Home,
   LayoutDashboard,
+  MapPin,
+  Package,
   PanelLeft,
+  Ruler,
   Settings,
   Truck,
   User,
@@ -21,6 +24,12 @@ const iconMap: Record<string, LucideIcon> = {
   users: Users,
   nameboard: PanelLeft,
   nameboards: PanelLeft,
+  mappin: MapPin,
+  location: MapPin,
+  package: Package,
+  goods: Package,
+  ruler: Ruler,
+  unit: Ruler,
 };
 
 export function resolveMenuIcon(icon: string | null | undefined): LucideIcon {

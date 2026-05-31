@@ -15,6 +15,14 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
 
     public DbSet<Truck> Trucks => Set<Truck>();
 
+    public DbSet<Location> Locations => Set<Location>();
+
+    public DbSet<Party> Parties => Set<Party>();
+
+    public DbSet<Goods> Goods => Set<Goods>();
+
+    public DbSet<Unit> Units => Set<Unit>();
+
     public DbSet<AppFieldDataType> AppFieldDataTypes => Set<AppFieldDataType>();
 
     public DbSet<AppEntity> AppEntities => Set<AppEntity>();

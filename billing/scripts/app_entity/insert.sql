@@ -11,7 +11,11 @@ INSERT INTO app_entity (
     updated_at)
 VALUES
     ('name_board', 'master', 'ef_core', 'name_board', 'Name Board', 'Master: name boards', NOW(), NOW()),
-    ('truck', 'master', 'ef_core', 'truck', 'Truck', 'Master: trucks (belongs to name board)', NOW(), NOW())
+    ('truck', 'master', 'ef_core', 'truck', 'Truck', 'Master: trucks (belongs to name board)', NOW(), NOW()),
+    ('location', 'master', 'ef_core', 'location', 'Location', 'Master: locations', NOW(), NOW()),
+    ('party', 'master', 'ef_core', 'party', 'Party', 'Master: parties', NOW(), NOW()),
+    ('goods', 'master', 'ef_core', 'goods', 'Goods', 'Master: goods', NOW(), NOW()),
+    ('unit', 'master', 'ef_core', 'unit', 'Unit', 'Master: units of measure', NOW(), NOW())
 ON CONFLICT (entity_name) DO UPDATE
 SET
     entity_kind = EXCLUDED.entity_kind,
