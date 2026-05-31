@@ -219,6 +219,12 @@ export interface DataTableProps<TRow> {
 
   /** When false, list query is disabled; table structure still renders from `columns`. */
   enabled?: boolean;
+  /**
+   * When true, list queries include the selected financial year in the cache key
+   * and are invalidated when the global FY switcher changes.
+   * Transaction API calls should also set `applyFinancialYear: true` or register the controller segment.
+   */
+  financialYearScoped?: boolean;
   emptyMessage?: string;
   searchPlaceholder?: string;
 

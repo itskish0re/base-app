@@ -20,6 +20,7 @@ export function DataTableProvider<TRow extends object>({
   queryOptions,
   mutations,
   enabled = true,
+  financialYearScoped = false,
   children,
 }: DataTableProviderProps<TRow>) {
   const onChangeRef = useRef(onChange);
@@ -46,6 +47,7 @@ export function DataTableProvider<TRow extends object>({
       queryOptions,
       mutations,
       enabled,
+      financialYearScoped,
     });
 
   useEffect(() => {

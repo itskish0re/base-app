@@ -40,6 +40,7 @@ app.UseRequestContextLogging();
 app.UseSerilogRequestLogging();
 app.UseRouting();
 app.UseAuthentication();
+app.UseFinancialYearContext();
 app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("health", new HealthCheckOptions

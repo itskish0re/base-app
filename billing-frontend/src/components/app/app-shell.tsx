@@ -4,11 +4,13 @@ import { Separator } from '@/components/ui/separator';
 import { SidebarInset, SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { useMenuBootstrap } from '@/hooks/useMenuBootstrap';
+import { useFinancialYearBootstrap } from '@/hooks/useFinancialYearContext';
 import { useAppSelector } from '@/store/hooks';
 import { selectCurrentMenuTitle } from '@/store/global/menuSlice';
 
 export function AppShell() {
   useMenuBootstrap();
+  useFinancialYearBootstrap();
   const pageTitle = useAppSelector(selectCurrentMenuTitle);
 
   return (

@@ -12,6 +12,12 @@ import {
   type DataTableQueryOptionsFactory,
   type DataTableState,
 } from '@/components/derived/data-table/dt-types';
+import {
+  FINANCIAL_YEAR_SCOPED_QUERY_META,
+  withFinancialYearQueryKey,
+} from '@/lib/financialYearQueries';
+import { useAppSelector } from '@/store/hooks';
+import { selectSelectedFinancialYearId } from '@/store/global/financialYearContextSlice';
 
 /** Read bridged screen table state + runtime + actions from the per-instance Zustand store. */
 export function useDataTable<TRow = unknown>() {
@@ -90,12 +96,17 @@ export function useDataTableQuery<TRow>(
   value: DataTableState,
   queryOptions: DataTableQueryOptionsFactory<TRow>,
   enabled = true,
+  financialYearScoped = false,
 ): UseDataTableQueryResult<TRow> {
   const params = useDataTableListQueryParams(value);
+  const financialYearId = useAppSelector(selectSelectedFinancialYearId);
   const options = queryOptions(params);
+  const baseQueryKey = options.queryKey ?? ['data-table', 'list', params];
+  const queryKey = withFinancialYearQueryKey(baseQueryKey, financialYearId, financialYearScoped);
   const query = useQuery({
     ...options,
-    queryKey: options.queryKey ?? ['data-table', 'list', params],
+    queryKey,
+    meta: financialYearScoped ? FINANCIAL_YEAR_SCOPED_QUERY_META : options.meta,
     queryFn: options.queryFn ?? (async () => ({ items: [], page: 1, pageSize: 20, totalCount: 0 })),
     enabled,
     placeholderData: keepPreviousData,
@@ -151,9 +162,14 @@ export function useDataTableMutations(
 }
 
 export function useDataTableController<TRow>(
-  props: Pick<DataTableProps<TRow>, 'value' | 'queryOptions' | 'mutations' | 'enabled'>,
+  props: Pick<DataTableProps<TRow>, 'value' | 'queryOptions' | 'mutations' | 'enabled' | 'financialYearScoped'>,
 ) {
-  const query = useDataTableQuery(props.value, props.queryOptions, props.enabled ?? true);
+  const query = useDataTableQuery(
+    props.value,
+    props.queryOptions,
+    props.enabled ?? true,
+    props.financialYearScoped ?? false,
+  );
   const mutationsHandle = useDataTableMutations(props.mutations);
 
   return {

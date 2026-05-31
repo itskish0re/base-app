@@ -5,6 +5,8 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { endpoints } from '@/config/endpoints';
+import { FINANCIAL_YEAR_HEADER } from '@/constants/financialYearContext';
+import { shouldApplyFinancialYearHeader } from '@/lib/financialYearScope';
 import { store } from '@/store/store';
 import { clearAuth, setTokens } from '@/store/global/authSlice';
 import type { AuthTokens } from '@/types/auth';
@@ -47,6 +49,21 @@ function setAuthorizationHeader(
     headers.set('Authorization', `Bearer ${token}`);
   } else {
     headers.delete('Authorization');
+  }
+
+  config.headers = headers;
+}
+
+function setFinancialYearHeader(
+  config: InternalAxiosRequestConfig,
+  financialYearId: number | null,
+): void {
+  const headers = AxiosHeaders.from(config.headers ?? {});
+
+  if (financialYearId != null && financialYearId > 0) {
+    headers.set(FINANCIAL_YEAR_HEADER, String(financialYearId));
+  } else {
+    headers.delete(FINANCIAL_YEAR_HEADER);
   }
 
   config.headers = headers;
@@ -104,6 +121,18 @@ api.interceptors.request.use(async (config) => {
   }
 
   setAuthorizationHeader(config, store.getState().auth.accessToken);
+
+  if (
+    shouldApplyFinancialYearHeader(config.url, {
+      applyFinancialYear: config.applyFinancialYear,
+      skipFinancialYear: config.skipFinancialYear,
+    })
+  ) {
+    setFinancialYearHeader(config, store.getState().financialYearContext.selectedFinancialYearId);
+  } else {
+    setFinancialYearHeader(config, null);
+  }
+
   return config;
 });
 

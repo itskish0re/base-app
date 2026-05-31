@@ -1,3 +1,4 @@
+using Application.Abstractions.Context;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi;
 
@@ -6,6 +7,7 @@ namespace Web.Api.Extensions;
 internal static class SwaggerExtensions
 {
     private const string SecuritySchemeName = "Bearer";
+    private const string FinancialYearSchemeName = "FinancialYear";
 
     public static IServiceCollection AddBillingSwagger(this IServiceCollection services)
     {
@@ -28,9 +30,19 @@ internal static class SwaggerExtensions
                 BearerFormat = "JWT",
             });
 
+            options.AddSecurityDefinition(FinancialYearSchemeName, new OpenApiSecurityScheme
+            {
+                Name = FinancialYearContextKeys.HeaderName,
+                Description =
+                    "Optional. Active financial year id for transaction APIs (same header the app sends). Master APIs ignore this value.",
+                In = ParameterLocation.Header,
+                Type = SecuritySchemeType.ApiKey,
+            });
+
             options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
             {
                 [new OpenApiSecuritySchemeReference(SecuritySchemeName, document)] = [],
+                [new OpenApiSecuritySchemeReference(FinancialYearSchemeName, document)] = [],
             });
         });
 

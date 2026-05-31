@@ -1,4 +1,4 @@
-import type { AuthState, MenuState } from '@/types/store/global';
+import type { AuthState, MenuState, FinancialYearContextState } from '@/types/store/global';
 import type { ScreenCacheState } from '@/types/store/screenCache';
 import type { ScreenStateByKey } from '@/types/store/screens';
 
@@ -7,4 +7,5 @@ export type RootState = {
   auth: AuthState;
   menu: MenuState;
   screenCache: ScreenCacheState;
+  financialYearContext: FinancialYearContextState;
 } & Partial<ScreenStateByKey>;

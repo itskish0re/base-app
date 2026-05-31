@@ -3,6 +3,7 @@ import type { ScreenKey } from '@/constants/screenKeys';
 import { authReducer } from '@/store/global/authSlice';
 import { menuReducer } from '@/store/global/menuSlice';
 import { screenCacheReducer } from '@/store/global/screenCacheSlice';
+import { financialYearContextReducer } from '@/store/global/financialYearContextSlice';
 import { createReducerManager } from '@/store/reducerManager';
 import type { ScreenStateByKey } from '@/types/store/screens';
 import type { RootState } from '@/types/store/root';
@@ -11,6 +12,7 @@ const staticReducers = {
   auth: authReducer,
   menu: menuReducer,
   screenCache: screenCacheReducer,
+  financialYearContext: financialYearContextReducer,
 };
 
 const reducerManager = createReducerManager(staticReducers);

@@ -1,6 +1,7 @@
 const REFRESH_TOKEN_KEY = 'billing.refreshToken';
 const ACCESS_TOKEN_KEY = 'billing.accessToken';
 const ACCESS_EXPIRES_KEY = 'billing.accessTokenExpiresAt';
+const SELECTED_FINANCIAL_YEAR_ID_KEY = 'billing.selectedFinancialYearId';
 
 function readToken(key: string): string | null {
   const value = localStorage.getItem(key)?.trim();
@@ -34,4 +35,22 @@ export function clearTokens() {
   localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   localStorage.removeItem(ACCESS_EXPIRES_KEY);
+}
+
+export function loadSelectedFinancialYearId(): number | null {
+  const raw = localStorage.getItem(SELECTED_FINANCIAL_YEAR_ID_KEY)?.trim();
+  if (!raw) {
+    return null;
+  }
+
+  const parsed = Number.parseInt(raw, 10);
+  return Number.isNaN(parsed) || parsed <= 0 ? null : parsed;
+}
+
+export function saveSelectedFinancialYearId(financialYearId: number) {
+  localStorage.setItem(SELECTED_FINANCIAL_YEAR_ID_KEY, String(financialYearId));
+}
+
+export function clearSelectedFinancialYearId() {
+  localStorage.removeItem(SELECTED_FINANCIAL_YEAR_ID_KEY);
 }
