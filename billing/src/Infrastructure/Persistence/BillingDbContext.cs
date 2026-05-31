@@ -23,6 +23,8 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
 
     public DbSet<Unit> Units => Set<Unit>();
 
+    public DbSet<FinancialYear> FinancialYears => Set<FinancialYear>();
+
     public DbSet<AppFieldDataType> AppFieldDataTypes => Set<AppFieldDataType>();
 
     public DbSet<AppEntity> AppEntities => Set<AppEntity>();

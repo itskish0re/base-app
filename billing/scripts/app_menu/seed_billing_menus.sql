@@ -193,6 +193,20 @@ VALUES
         'secondary',
         true,
         NOW(),
+        NOW()),
+    (
+        'financial_year',
+        'Financial Year',
+        '/masters/financial-year',
+        'calendar',
+        NULL,
+        70,
+        NULL,
+        'Financial year master',
+        true,
+        'secondary',
+        true,
+        NOW(),
         NOW())
 ON CONFLICT (menu_code) DO UPDATE
 SET display_name = EXCLUDED.display_name,
@@ -215,7 +229,7 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'location', 'party', 'goods', 'unit')
+INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'location', 'party', 'goods', 'unit', 'financial_year')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE

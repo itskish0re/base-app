@@ -7,7 +7,8 @@ export type ScreenKeyWithMetadata =
   | typeof SCREEN_KEYS.location
   | typeof SCREEN_KEYS.party
   | typeof SCREEN_KEYS.goods
-  | typeof SCREEN_KEYS.unit;
+  | typeof SCREEN_KEYS.unit
+  | typeof SCREEN_KEYS.financialYear;
 
 const SCREEN_KEYS_WITH_METADATA = new Set<ScreenKeyWithMetadata>([
   SCREEN_KEYS.nameBoard,
@@ -16,6 +17,7 @@ const SCREEN_KEYS_WITH_METADATA = new Set<ScreenKeyWithMetadata>([
   SCREEN_KEYS.party,
   SCREEN_KEYS.goods,
   SCREEN_KEYS.unit,
+  SCREEN_KEYS.financialYear,
 ]);
 
 export function isScreenKeyWithMetadata(key: ScreenKey): key is ScreenKeyWithMetadata {

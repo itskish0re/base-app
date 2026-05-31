@@ -71,6 +71,15 @@ export const endpoints = {
     delete: () => buildApiPath(API_CONTROLLERS.units, 'delete'),
     toggle: () => buildApiPath(API_CONTROLLERS.units, 'toggle'),
   },
+  financialYears: {
+    list: () => buildApiPath(API_CONTROLLERS.financialYears),
+    byId: (id: number) => buildApiPath(API_CONTROLLERS.financialYears, String(id)),
+    lookup: () => buildApiPath(API_CONTROLLERS.financialYears, 'lookup'),
+    create: () => buildApiPath(API_CONTROLLERS.financialYears, 'create'),
+    update: () => buildApiPath(API_CONTROLLERS.financialYears, 'update'),
+    delete: () => buildApiPath(API_CONTROLLERS.financialYears, 'delete'),
+    toggle: () => buildApiPath(API_CONTROLLERS.financialYears, 'toggle'),
+  },
   menus: {
     list: () => buildApiPath(API_CONTROLLERS.menus),
     byId: (id: number) => buildApiPath(API_CONTROLLERS.menus, String(id)),

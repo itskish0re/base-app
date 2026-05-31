@@ -9,6 +9,7 @@ export const SCREEN_KEYS = {
   party: MENU_CODES.party,
   goods: MENU_CODES.goods,
   unit: MENU_CODES.unit,
+  financialYear: MENU_CODES.financialYear,
   menu: MENU_CODES.menu,
 } as const;
 

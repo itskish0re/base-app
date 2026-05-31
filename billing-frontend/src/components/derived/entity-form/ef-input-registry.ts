@@ -1,5 +1,6 @@
 import type { EntityFormFieldInputComponent } from '@/components/derived/entity-form/ef-field-types';
 import { EntityFormBadgeTextInput, EntityFormTextInput } from '@/components/derived/entity-form/ef-input-text';
+import { EntityFormYearInput } from '@/components/derived/entity-form/ef-input-year';
 import { EntityFormNumberInput } from '@/components/derived/entity-form/ef-input-number';
 import { EntityFormMobileInput } from '@/components/derived/entity-form/ef-input-mobile';
 import { EntityFormVehicleNumberInput } from '@/components/derived/entity-form/ef-input-vehicle-number';
@@ -13,6 +14,7 @@ const FIELD_INPUT_REGISTRY: Record<string, EntityFormFieldInputComponent> = {
   vehicle_number: EntityFormVehicleNumberInput,
   truck_number: EntityFormVehicleNumberInput,
   badge: EntityFormBadgeTextInput,
+  year: EntityFormYearInput,
 };
 
 export function resolveEntityFormFieldInput(

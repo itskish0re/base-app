@@ -61,6 +61,7 @@ public static class DependencyInjection
         services.AddScoped<IPartyRepository, PartyRepository>();
         services.AddScoped<IGoodsRepository, GoodsRepository>();
         services.AddScoped<IUnitRepository, UnitRepository>();
+        services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
         services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
         services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();

@@ -15,7 +15,8 @@ VALUES
     ('location', 'master', 'ef_core', 'location', 'Location', 'Master: locations', NOW(), NOW()),
     ('party', 'master', 'ef_core', 'party', 'Party', 'Master: parties', NOW(), NOW()),
     ('goods', 'master', 'ef_core', 'goods', 'Goods', 'Master: goods', NOW(), NOW()),
-    ('unit', 'master', 'ef_core', 'unit', 'Unit', 'Master: units of measure', NOW(), NOW())
+    ('unit', 'master', 'ef_core', 'unit', 'Unit', 'Master: units of measure', NOW(), NOW()),
+    ('financial_year', 'master', 'ef_core', 'financial_year', 'Financial Year', 'Master: financial years', NOW(), NOW())
 ON CONFLICT (entity_name) DO UPDATE
 SET
     entity_kind = EXCLUDED.entity_kind,

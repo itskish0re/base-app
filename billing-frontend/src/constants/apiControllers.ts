@@ -8,6 +8,7 @@ export const API_CONTROLLERS = {
   parties: 'parties',
   goods: 'goods',
   units: 'units',
+  financialYears: 'financial-years',
   menus: 'menus',
   screens: 'screens',
   health: 'health',

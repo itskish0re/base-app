@@ -145,3 +145,23 @@ export type {
   UnitLookupResponse,
   UpdateUnitItemRequest,
 } from './unit';
+
+export type {
+  BatchCreateFinancialYearsRequest,
+  BatchCreateFinancialYearsResponse,
+  BatchDeleteFinancialYearsRequest,
+  BatchDeleteFinancialYearsResponse,
+  BatchFinancialYearItemFailure,
+  BatchToggleFinancialYearsRequest,
+  BatchToggleFinancialYearsResponse,
+  BatchUpdateFinancialYearsRequest,
+  BatchUpdateFinancialYearsResponse,
+  CreateFinancialYearItemRequest,
+  FinancialYearDto,
+  FinancialYearLookupFieldMapping,
+  FinancialYearLookupResponse,
+  LookupFinancialYearsRequest,
+  PagedFinancialYearsResponse,
+  ToggleFinancialYearItemRequest,
+  UpdateFinancialYearItemRequest,
+} from './financialYear';

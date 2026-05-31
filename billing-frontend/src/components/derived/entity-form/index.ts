@@ -17,6 +17,11 @@ export { EntityFormBooleanInput } from '@/components/derived/entity-form/ef-inpu
 export { EntityFormMobileInput } from '@/components/derived/entity-form/ef-input-mobile';
 export { EntityFormNumberInput } from '@/components/derived/entity-form/ef-input-number';
 export { EntityFormTextInput, EntityFormBadgeTextInput } from '@/components/derived/entity-form/ef-input-text';
+export { EntityFormYearInput } from '@/components/derived/entity-form/ef-input-year';
+export {
+  buildFinancialYearOptions,
+  formatFinancialYearName,
+} from '@/components/derived/entity-form/ef-financial-year-name';
 export { EntityFormVehicleNumberInput } from '@/components/derived/entity-form/ef-input-vehicle-number';
 export type {
   EntityFormFieldInputComponent,

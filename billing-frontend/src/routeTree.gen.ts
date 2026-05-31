@@ -18,6 +18,7 @@ import { Route as AuthenticatedMastersPartyRouteImport } from './routes/_authent
 import { Route as AuthenticatedMastersNameBoardRouteImport } from './routes/_authenticated/masters/name-board'
 import { Route as AuthenticatedMastersLocationRouteImport } from './routes/_authenticated/masters/location'
 import { Route as AuthenticatedMastersGoodsRouteImport } from './routes/_authenticated/masters/goods'
+import { Route as AuthenticatedMastersFinancialYearRouteImport } from './routes/_authenticated/masters/financial-year'
 import { Route as AuthenticatedMainDashboardRouteImport } from './routes/_authenticated/main/dashboard'
 import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin/menu'
 
@@ -71,6 +72,12 @@ const AuthenticatedMastersGoodsRoute =
     path: '/masters/goods',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
+const AuthenticatedMastersFinancialYearRoute =
+  AuthenticatedMastersFinancialYearRouteImport.update({
+    id: '/masters/financial-year',
+    path: '/masters/financial-year',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
 const AuthenticatedMainDashboardRoute =
   AuthenticatedMainDashboardRouteImport.update({
     id: '/main/dashboard',
@@ -88,6 +95,7 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/masters/financial-year': typeof AuthenticatedMastersFinancialYearRoute
   '/masters/goods': typeof AuthenticatedMastersGoodsRoute
   '/masters/location': typeof AuthenticatedMastersLocationRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
@@ -100,6 +108,7 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/masters/financial-year': typeof AuthenticatedMastersFinancialYearRoute
   '/masters/goods': typeof AuthenticatedMastersGoodsRoute
   '/masters/location': typeof AuthenticatedMastersLocationRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
@@ -114,6 +123,7 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/main/dashboard': typeof AuthenticatedMainDashboardRoute
+  '/_authenticated/masters/financial-year': typeof AuthenticatedMastersFinancialYearRoute
   '/_authenticated/masters/goods': typeof AuthenticatedMastersGoodsRoute
   '/_authenticated/masters/location': typeof AuthenticatedMastersLocationRoute
   '/_authenticated/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
@@ -128,6 +138,7 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/menu'
     | '/main/dashboard'
+    | '/masters/financial-year'
     | '/masters/goods'
     | '/masters/location'
     | '/masters/name-board'
@@ -140,6 +151,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/menu'
     | '/main/dashboard'
+    | '/masters/financial-year'
     | '/masters/goods'
     | '/masters/location'
     | '/masters/name-board'
@@ -153,6 +165,7 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/menu'
     | '/_authenticated/main/dashboard'
+    | '/_authenticated/masters/financial-year'
     | '/_authenticated/masters/goods'
     | '/_authenticated/masters/location'
     | '/_authenticated/masters/name-board'
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMastersGoodsRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
+    '/_authenticated/masters/financial-year': {
+      id: '/_authenticated/masters/financial-year'
+      path: '/masters/financial-year'
+      fullPath: '/masters/financial-year'
+      preLoaderRoute: typeof AuthenticatedMastersFinancialYearRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
     '/_authenticated/main/dashboard': {
       id: '/_authenticated/main/dashboard'
       path: '/main/dashboard'
@@ -252,6 +272,7 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedMainDashboardRoute: typeof AuthenticatedMainDashboardRoute
+  AuthenticatedMastersFinancialYearRoute: typeof AuthenticatedMastersFinancialYearRoute
   AuthenticatedMastersGoodsRoute: typeof AuthenticatedMastersGoodsRoute
   AuthenticatedMastersLocationRoute: typeof AuthenticatedMastersLocationRoute
   AuthenticatedMastersNameBoardRoute: typeof AuthenticatedMastersNameBoardRoute
@@ -264,6 +285,8 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedMainDashboardRoute: AuthenticatedMainDashboardRoute,
+  AuthenticatedMastersFinancialYearRoute:
+    AuthenticatedMastersFinancialYearRoute,
   AuthenticatedMastersGoodsRoute: AuthenticatedMastersGoodsRoute,
   AuthenticatedMastersLocationRoute: AuthenticatedMastersLocationRoute,
   AuthenticatedMastersNameBoardRoute: AuthenticatedMastersNameBoardRoute,

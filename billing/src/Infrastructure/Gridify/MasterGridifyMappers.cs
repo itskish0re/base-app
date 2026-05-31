@@ -43,4 +43,10 @@ internal static class MasterGridifyMappers
             GridifyListFilter.GlobalSearchField,
             x => x.Name,
             x => x.Code);
+
+    public static readonly IGridifyMapper<FinancialYear> FinancialYear = new GridifyMapper<FinancialYear>()
+        .AddCompositeMap(
+            GridifyListFilter.GlobalSearchField,
+            x => x.Name,
+            x => x.Code);
 }

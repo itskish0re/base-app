@@ -1,5 +1,6 @@
 import {
   Circle,
+  Calendar,
   Home,
   LayoutDashboard,
   MapPin,
@@ -30,6 +31,8 @@ const iconMap: Record<string, LucideIcon> = {
   goods: Package,
   ruler: Ruler,
   unit: Ruler,
+  calendar: Calendar,
+  financialyear: Calendar,
 };
 
 export function resolveMenuIcon(icon: string | null | undefined): LucideIcon {

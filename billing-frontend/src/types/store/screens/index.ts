@@ -7,6 +7,7 @@ import type { NameBoardsScreenState } from './nameBoards';
 import type { PartiesScreenState } from './parties';
 import type { TrucksScreenState } from './trucks';
 import type { UnitsScreenState } from './units';
+import type { FinancialYearsScreenState } from './financialYears';
 
 export type { DashboardScreenState } from './dashboard';
 export type { GoodsScreenState } from './goods';
@@ -16,6 +17,7 @@ export type { NameBoardsScreenState } from './nameBoards';
 export type { PartiesScreenState } from './parties';
 export type { TrucksScreenState } from './trucks';
 export type { UnitsScreenState } from './units';
+export type { FinancialYearsScreenState } from './financialYears';
 
 export interface ScreenStateByKey {
   [SCREEN_KEYS.dashboard]: DashboardScreenState;
@@ -25,6 +27,7 @@ export interface ScreenStateByKey {
   [SCREEN_KEYS.party]: PartiesScreenState;
   [SCREEN_KEYS.goods]: GoodsScreenState;
   [SCREEN_KEYS.unit]: UnitsScreenState;
+  [SCREEN_KEYS.financialYear]: FinancialYearsScreenState;
   [SCREEN_KEYS.menu]: MenusScreenState;
 }
 
@@ -35,4 +38,5 @@ export type ScreenKeyWithTable =
   | typeof SCREEN_KEYS.location
   | typeof SCREEN_KEYS.party
   | typeof SCREEN_KEYS.goods
-  | typeof SCREEN_KEYS.unit;
+  | typeof SCREEN_KEYS.unit
+  | typeof SCREEN_KEYS.financialYear;

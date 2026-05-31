@@ -52,6 +52,13 @@ export const queryKeys = {
     lookup: (valueColumn: string, labelColumn: string) =>
       [...queryKeys.units.all, 'lookup', valueColumn, labelColumn] as const,
   },
+  financialYears: {
+    all: ['financial-years'] as const,
+    list: (params?: ListQueryParams) => [...queryKeys.financialYears.all, 'list', params] as const,
+    detail: (id: number) => [...queryKeys.financialYears.all, 'detail', id] as const,
+    lookup: (valueColumn: string, labelColumn: string) =>
+      [...queryKeys.financialYears.all, 'lookup', valueColumn, labelColumn] as const,
+  },
   menus: {
     all: ['menus'] as const,
     list: (params?: ListMenusParams) => [...queryKeys.menus.all, 'list', params] as const,
