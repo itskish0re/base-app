@@ -1,4 +1,8 @@
 import type { ReactNode } from 'react';
+import {
+  EntityFormFieldError,
+  EntityFormRequiredMark,
+} from '@/components/derived/entity-form/ef-form-ui';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
@@ -24,16 +28,11 @@ export function EntityFormFieldControl({
       {id && label ? (
         <Label htmlFor={id}>
           {label}
-          {required ? (
-            <span className="text-destructive" aria-hidden="true">
-              {' '}
-              *
-            </span>
-          ) : null}
+          {required ? <EntityFormRequiredMark /> : null}
         </Label>
       ) : null}
       {children}
-      {error ? <p className="text-sm text-destructive">{error}</p> : null}
+      <EntityFormFieldError message={error} />
     </div>
   );
 }

@@ -1,6 +1,10 @@
 import type { ReactFormExtendedApi } from '@tanstack/react-form';
 import { buildFormFieldValidator } from '@/components/derived/entity-form/ef-field-validator';
 import { EntityFormFieldSkeleton } from '@/components/derived/entity-form/ef-field-skeleton';
+import {
+  EntityFormFieldError,
+  EntityFormRequiredMark,
+} from '@/components/derived/entity-form/ef-form-ui';
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { resolveEntityFieldLookup } from '@/components/derived/entity-form/ef-lookup-registry';
 import type { MappedEntityFormField } from '@/components/derived/entity-form/ef-map-screen-fields';
@@ -37,12 +41,7 @@ export function EntityFormLookupField({ entityName, field, form }: EntityFormLoo
           <div className="space-y-2">
             <Label htmlFor={fieldApi.name}>
               {field.displayLabel ?? field.fieldName}
-              {field.entityField.isRequired ? (
-                <span className="text-destructive" aria-hidden="true">
-                  {' '}
-                  *
-                </span>
-              ) : null}
+              {field.entityField.isRequired ? <EntityFormRequiredMark /> : null}
             </Label>
             <EntityFormLookupCombobox
               id={fieldApi.name}
@@ -56,9 +55,7 @@ export function EntityFormLookupField({ entityName, field, form }: EntityFormLoo
               isLoading={lookupQuery.isLoading}
               isError={lookupQuery.isError}
             />
-            {fieldApi.state.meta.errors[0] ? (
-              <p className="text-sm text-destructive">{fieldApi.state.meta.errors[0]}</p>
-            ) : null}
+            <EntityFormFieldError message={fieldApi.state.meta.errors[0]} />
           </div>
         )
       }

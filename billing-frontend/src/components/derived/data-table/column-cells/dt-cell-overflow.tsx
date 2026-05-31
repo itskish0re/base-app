@@ -1,4 +1,11 @@
-import { useCallback, useEffect, useRef, useState, type ReactNode } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ReactNode,
+  type RefObject,
+} from 'react';
 import {
   Popover,
   PopoverContent,
@@ -11,6 +18,10 @@ type DtCellOverflowProps = {
   label: string;
   children: ReactNode;
   className?: string;
+  /** Optional ref to the truncating element (e.g. badge inner span). */
+  measureRef?: RefObject<HTMLElement | null>;
+  /** When true, visible content sizes to its children instead of filling the cell width. */
+  shrinkWrap?: boolean;
   align?: 'left' | 'center' | 'right';
 };
 
@@ -26,38 +37,62 @@ function alignClass(align: DtCellOverflowProps['align']): string {
   return 'text-left';
 }
 
-export function DtCellOverflow({ label, children, className, align = 'left' }: DtCellOverflowProps) {
-  const measureRef = useRef<HTMLDivElement>(null);
+export function DtCellOverflow({
+  label,
+  children,
+  className,
+  measureRef,
+  shrinkWrap = false,
+  align = 'left',
+}: DtCellOverflowProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const [isOverflowing, setIsOverflowing] = useState(false);
 
   const measure = useCallback(() => {
-    const element = measureRef.current;
+    const element = measureRef?.current ?? contentRef.current;
+    const container = containerRef.current;
     if (!element) {
       return;
     }
 
-    setIsOverflowing(element.scrollWidth > element.clientWidth + 1);
-  }, []);
+    const elementOverflow = element.scrollWidth > element.clientWidth + 1;
+    const containerOverflow =
+      container != null && element.scrollWidth > container.clientWidth + 1;
+
+    setIsOverflowing(elementOverflow || containerOverflow);
+  }, [measureRef]);
 
   useEffect(() => {
     measure();
-    const element = measureRef.current;
-    if (!element) {
-      return;
+
+    const observed = new Set<Element>();
+    const observer = new ResizeObserver(measure);
+
+    for (const element of [measureRef?.current, contentRef.current, containerRef.current]) {
+      if (element && !observed.has(element)) {
+        observer.observe(element);
+        observed.add(element);
+      }
     }
 
-    const observer = new ResizeObserver(measure);
-    observer.observe(element);
-
     return () => observer.disconnect();
-  }, [label, measure, children]);
+  }, [label, measure, measureRef]);
 
   const content = (
     <div
-      ref={measureRef}
-      className={cn('min-w-0 max-w-full truncate', alignClass(align), className)}
+      ref={containerRef}
+      className={cn('relative min-w-0 max-w-full', alignClass(align), className)}
     >
-      {children}
+      <div
+        ref={contentRef}
+        className={cn(
+          'min-w-0 max-w-full',
+          shrinkWrap ? 'inline-block' : 'truncate',
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 
@@ -68,17 +103,17 @@ export function DtCellOverflow({ label, children, className, align = 'left' }: D
   return (
     <Popover>
       <PopoverTrigger
-        render={
-          <button
-            type="button"
-            className={cn(
-              'block w-full min-w-0 max-w-full cursor-pointer rounded-sm text-inherit',
-              'hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
-              alignClass(align),
-            )}
-            aria-label={`View full value: ${label}`}
-          />
-        }
+        type="button"
+        className={cn(
+          'min-w-0 max-w-full cursor-pointer rounded-sm border-0 bg-transparent p-0 text-inherit shadow-none',
+          shrinkWrap ? 'inline-block' : 'block w-full',
+          'hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring',
+          alignClass(align),
+        )}
+        aria-label={`View full value: ${label}`}
+        onClick={(event) => {
+          event.stopPropagation();
+        }}
       >
         {content}
       </PopoverTrigger>

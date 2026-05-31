@@ -1,4 +1,5 @@
 import type { EntityFormFieldInputProps } from '@/components/derived/entity-form/ef-field-types';
+import { EntityFormRequiredMark } from '@/components/derived/entity-form/ef-form-ui';
 import { Label } from '@/components/ui/label';
 import { cn } from '@/lib/utils';
 
@@ -37,12 +38,7 @@ export function EntityFormBooleanInput({
       />
       <Label htmlFor={id} className="font-normal">
         {label}
-        {required ? (
-          <span className="text-destructive" aria-hidden="true">
-            {' '}
-            *
-          </span>
-        ) : null}
+        {required ? <EntityFormRequiredMark /> : null}
       </Label>
     </div>
   );

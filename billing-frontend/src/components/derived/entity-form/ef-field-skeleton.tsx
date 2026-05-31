@@ -1,3 +1,4 @@
+import { EntityFormRequiredMark } from '@/components/derived/entity-form/ef-form-ui';
 import { cn } from '@/lib/utils';
 
 type EntityFormFieldSkeletonProps = {
@@ -17,12 +18,7 @@ export function EntityFormFieldSkeleton({
       {label ? (
         <div className="text-sm font-medium leading-none">
           {label}
-          {required ? (
-            <span className="text-destructive" aria-hidden="true">
-              {' '}
-              *
-            </span>
-          ) : null}
+          {required ? <EntityFormRequiredMark /> : null}
         </div>
       ) : (
         <div className={cn('h-4 w-28 rounded-md ef-shimmer', className)} />
