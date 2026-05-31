@@ -1,6 +1,5 @@
 import { ENTITY_LOOKUP_STALE_TIME_MS } from '@/components/derived/entity-form/ef-constants';
 import { queryKeys } from '@/constants/queryKeys';
-import { lookupDrivers } from '@/service/api/functions/drivers';
 import { lookupNameBoards } from '@/service/api/functions/nameBoards';
 import { lookupTrucks } from '@/service/api/functions/trucks';
 import type { LookupFieldMapping, LookupResponse } from '@/types/common';
@@ -22,12 +21,6 @@ const ENTITY_FIELD_LOOKUPS: Record<string, Record<string, Omit<EntityLookupDefin
       valueColumn: 'name_board_id',
       labelColumn: 'name',
       fields: [{ keyName: 'code', columnName: 'code' }],
-    },
-  },
-  driver: {
-    truckId: {
-      valueColumn: 'truck_id',
-      labelColumn: 'truck_number',
     },
   },
 };
@@ -62,21 +55,6 @@ function buildTruckLookupDefinition(
   };
 }
 
-function buildDriverLookupDefinition(
-  config: Omit<EntityLookupDefinition, 'fetchOptions' | 'queryKey'>,
-): EntityLookupDefinition {
-  return {
-    ...config,
-    queryKey: queryKeys.drivers.lookup(config.valueColumn, config.labelColumn),
-    fetchOptions: () =>
-      lookupDrivers({
-        value: config.valueColumn,
-        label: config.labelColumn,
-        fields: config.fields,
-      }),
-  };
-}
-
 export function resolveEntityFieldLookup(
   entityName: string,
   fieldName: string,
@@ -92,10 +70,6 @@ export function resolveEntityFieldLookup(
 
   if (config.valueColumn === 'truck_id') {
     return buildTruckLookupDefinition(config);
-  }
-
-  if (config.valueColumn === 'driver_id') {
-    return buildDriverLookupDefinition(config);
   }
 
   return null;

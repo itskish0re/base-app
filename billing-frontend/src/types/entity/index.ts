@@ -1,24 +1,4 @@
 export type {
-  BatchCreateDriversRequest,
-  BatchCreateDriversResponse,
-  BatchDeleteDriversRequest,
-  BatchDeleteDriversResponse,
-  BatchDriverItemFailure,
-  BatchToggleDriversRequest,
-  BatchToggleDriversResponse,
-  BatchUpdateDriversRequest,
-  BatchUpdateDriversResponse,
-  CreateDriverItemRequest,
-  DriverDto,
-  DriverLookupFieldMapping,
-  DriverLookupResponse,
-  LookupDriversRequest,
-  PagedDriversResponse,
-  ToggleDriverItemRequest,
-  UpdateDriverItemRequest,
-} from './driver';
-
-export type {
   BatchCreateMenusRequest,
   BatchCreateMenusResponse,
   BatchDeleteMenusRequest,

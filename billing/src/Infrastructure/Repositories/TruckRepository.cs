@@ -71,10 +71,5 @@ internal sealed class TruckRepository(BillingDbContext context) : ITruckReposito
             .ThenBy(x => x.TruckId)
             .ToListAsync(cancellationToken);
 
-    public async Task<bool> HasActiveDriversAsync(int truckId, CancellationToken cancellationToken = default) =>
-        await context.Drivers.AnyAsync(
-            x => x.TruckId == truckId && !x.IsDeleted,
-            cancellationToken);
-
     public void Add(Truck truck) => context.Trucks.Add(truck);
 }

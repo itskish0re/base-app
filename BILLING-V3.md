@@ -74,7 +74,7 @@ base-app/
 | Auth (`app_user`, `refresh_token`) | Dapper |
 | Menus / role-menu (admin) | EF |
 | Registry + UI metadata (`app_entity*`, `app_entity_screen*`) | EF |
-| Masters (`name_board`, `truck`, `driver`, …) | EF + domain repos |
+| Masters (`name_board`, `truck`, …) | EF + domain repos |
 
 ### CQRS flow
 
@@ -117,8 +117,8 @@ Open **`dbdiagram.dbml`** for tables, indexes, and groups.
 
 - Clean Architecture solution + tests
 - Auth, navigation, menu admin, endpoint access middleware
-- EF migrations through platform + masters (name board, truck, driver)
-- **Masters:** Name boards, trucks, drivers — CRUD/list/batch/toggle/lookup
+- EF migrations through platform + masters (name board, truck)
+- **Masters:** Name boards, trucks — CRUD/list/batch/toggle/lookup
 - **Screen metadata:** `GET /api/screens/by-menu/{menuCode}`
 - Gridify list filters; global search normalized (`GridifyListFilter`)
 - `column_width_percent` on screen columns (replaced `column_width` / `min_width`)
@@ -129,8 +129,7 @@ Open **`dbdiagram.dbml`** for tables, indexes, and groups.
 - Auth, sidebar from `GET /api/access/navigation`, protected routes
 - **Per-screen Redux slices** (dynamic inject) + `useScreenSlice` / `useScreenMetadata`
 - **Shared `DataTable`** module — metadata-driven columns, width layout, actions column, column cells, skeleton loading
-- **Name Boards** master page wired end-to-end
-- Trucks / Drivers pages: slice + metadata hook; grid UI still placeholder
+- **Name Boards** and **Trucks** master pages wired end-to-end
 
 Details: **[`docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md`](./docs/BILLING-V3-IMPLEMENTATION-CONTEXT.md)**
 
@@ -187,7 +186,7 @@ psql "$CONN" -f scripts/app_entity/insert.sql
 
 ## 9. Backlog (near term)
 
-- Wire **Trucks** and **Drivers** master pages to `DataTable` (copy Name Boards pattern)
+- Wire remaining master pages to `DataTable` (copy Name Boards pattern)
 - Form UI from `app_entity_screen_field` metadata
 - Server-side per-column filters (optional; today client-side on loaded rows)
 - Additional masters / transactions per product roadmap

@@ -41,21 +41,18 @@ psql "$CONN" -f scripts/app_field_data_type/insert.sql
 psql "$CONN" -f scripts/app_entity/insert.sql
 psql "$CONN" -f scripts/app_entity_field/name_board.sql
 psql "$CONN" -f scripts/app_entity_field/truck.sql
-psql "$CONN" -f scripts/app_entity_field/driver.sql
 ```
 
 ### 3. UI screen layout (screen → columns → form fields)
 
-Requires steps 1–2. Links `name_board` / `truck` / `driver` menus to grid + form metadata.
+Requires steps 1–2. Links `name_board` / `truck` menus to grid + form metadata.
 
 ```bash
 psql "$CONN" -f scripts/app_entity_screen/insert.sql
 psql "$CONN" -f scripts/app_entity_screen_column/name_boards.sql
 psql "$CONN" -f scripts/app_entity_screen_column/trucks.sql
-psql "$CONN" -f scripts/app_entity_screen_column/drivers.sql
 psql "$CONN" -f scripts/app_entity_screen_field/name_boards.sql
 psql "$CONN" -f scripts/app_entity_screen_field/trucks.sql
-psql "$CONN" -f scripts/app_entity_screen_field/drivers.sql
 ```
 
 ### 4. API endpoint registry
@@ -65,7 +62,7 @@ psql "$CONN" -f scripts/app_entity_screen_field/drivers.sql
 ```bash
 psql "$CONN" -f scripts/app_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_endpoint/name_boards.sql
-psql "$CONN" -f scripts/app_endpoint/trucks_drivers.sql
+psql "$CONN" -f scripts/app_endpoint/trucks.sql
 psql "$CONN" -f scripts/app_endpoint/menus.sql
 ```
 
@@ -76,7 +73,7 @@ psql "$CONN" -f scripts/app_endpoint/menus.sql
 ```bash
 psql "$CONN" -f scripts/app_role_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_role_endpoint/name_boards_admin.sql
-psql "$CONN" -f scripts/app_role_endpoint/trucks_drivers_admin.sql
+psql "$CONN" -f scripts/app_role_endpoint/trucks_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
 ```
 
@@ -111,6 +108,12 @@ python scripts/_generate_trucks_seed.py
 psql "$CONN" -f scripts/app_endpoint/remove_masters_lookup.sql
 ```
 
+Remove driver master from an existing database (metadata, menus, endpoints, `driver` table):
+
+```bash
+psql "$CONN" -f scripts/driver/remove_driver.sql
+```
+
 Manual DDL upgrade (only if not using EF migrations):
 
 ```bash
@@ -124,7 +127,6 @@ After steps 1–3, verify:
 ```http
 GET /api/screens/by-menu/name_board  → `{ screen, entities: [{ entity, entityFields, columns, formFields }] }`
 GET /api/screens/by-menu/truck
-GET /api/screens/by-menu/driver
 ```
 
 Endpoint code: `screens.get-by-menu` (seeded in `app_endpoint/auth_access.sql`, granted in `app_role_endpoint/auth_access.sql`).
@@ -143,24 +145,21 @@ psql "$CONN" -f scripts/app_field_data_type/insert.sql
 psql "$CONN" -f scripts/app_entity/insert.sql
 psql "$CONN" -f scripts/app_entity_field/name_board.sql
 psql "$CONN" -f scripts/app_entity_field/truck.sql
-psql "$CONN" -f scripts/app_entity_field/driver.sql
 
 psql "$CONN" -f scripts/app_entity_screen/insert.sql
 psql "$CONN" -f scripts/app_entity_screen_column/name_boards.sql
 psql "$CONN" -f scripts/app_entity_screen_column/trucks.sql
-psql "$CONN" -f scripts/app_entity_screen_column/drivers.sql
 psql "$CONN" -f scripts/app_entity_screen_field/name_boards.sql
 psql "$CONN" -f scripts/app_entity_screen_field/trucks.sql
-psql "$CONN" -f scripts/app_entity_screen_field/drivers.sql
 
 psql "$CONN" -f scripts/app_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_endpoint/name_boards.sql
-psql "$CONN" -f scripts/app_endpoint/trucks_drivers.sql
+psql "$CONN" -f scripts/app_endpoint/trucks.sql
 psql "$CONN" -f scripts/app_endpoint/menus.sql
 
 psql "$CONN" -f scripts/app_role_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_role_endpoint/name_boards_admin.sql
-psql "$CONN" -f scripts/app_role_endpoint/trucks_drivers_admin.sql
+psql "$CONN" -f scripts/app_role_endpoint/trucks_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
 
 psql "$CONN" -f scripts/name_board/seed_from_trucks_csv.sql

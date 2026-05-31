@@ -38,9 +38,9 @@ In Development, open Swagger at `/swagger`, call `POST /api/auth/login`, then cl
 
 | Rule | Example |
 |------|---------|
-| Primary key | `{table}_id` → `truck_id`, `driver_id` |
+| Primary key | `{table}_id` → `truck_id`, `name_board_id` |
 | Foreign key | `{referenced_table}_id` → `name_board_id`, `truck_id` |
-| Domain navigations | `Truck.NameBoard`, `Driver.Truck`, `NameBoard.Trucks` |
+| Domain navigations | `Truck.NameBoard`, `NameBoard.Trucks` |
 | EF mapping | `Infrastructure/Persistence/Configurations/*Configuration.cs` |
 | DTO mapping | [Mapster](https://github.com/MapsterMapper/Mapster) (`Application/Mappings/`) |
 
@@ -65,14 +65,13 @@ CONN="<connection-string>"
 psql "$CONN" -f scripts/app_entity/insert.sql
 psql "$CONN" -f scripts/app_entity_field/name_board.sql
 psql "$CONN" -f scripts/app_entity_field/truck.sql
-psql "$CONN" -f scripts/app_entity_field/driver.sql
 psql "$CONN" -f scripts/app_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_endpoint/name_boards.sql
-psql "$CONN" -f scripts/app_endpoint/trucks_drivers.sql
+psql "$CONN" -f scripts/app_endpoint/trucks.sql
 psql "$CONN" -f scripts/app_endpoint/menus.sql
 psql "$CONN" -f scripts/app_role_endpoint/auth_access.sql
 psql "$CONN" -f scripts/app_role_endpoint/name_boards_admin.sql
-psql "$CONN" -f scripts/app_role_endpoint/trucks_drivers_admin.sql
+psql "$CONN" -f scripts/app_role_endpoint/trucks_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
 ```
 
@@ -232,21 +231,5 @@ Allowed columns are derived from the domain entity’s scalar properties (snake_
 | POST | `/api/trucks/toggle` | `trucks.toggle` |
 
 **Create** body example: `{ "items": [{ "truckNumber": "TN-01", "nameBoardId": 1 }] }`
-
-Delete is blocked when the truck has active drivers (`Truck.HasDrivers`).
-
-### Driver API
-
-| Method | Route | Endpoint code |
-|--------|-------|----------------|
-| GET | `/api/drivers` | `drivers.list` |
-| GET | `/api/drivers/{id}` | `drivers.get` |
-| POST | `/api/drivers/lookup` | `drivers.lookup` |
-| POST | `/api/drivers/create` | `drivers.create` |
-| POST | `/api/drivers/update` | `drivers.update` |
-| POST | `/api/drivers/delete` | `drivers.delete` |
-| POST | `/api/drivers/toggle` | `drivers.toggle` |
-
-**Create** body example: `{ "items": [{ "name": "John", "mobile": "+15551234567", "truckId": 1 }] }`
 
 Name board delete is blocked when active trucks exist (`NameBoard.HasTrucks`).

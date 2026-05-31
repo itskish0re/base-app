@@ -1,5 +1,4 @@
 export * from '@/service/query/access';
-export * from '@/service/query/drivers';
 export * from '@/service/query/menus';
 export * from '@/service/query/nameBoards';
 export * from '@/service/query/screens';

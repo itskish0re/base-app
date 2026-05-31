@@ -5,7 +5,6 @@ export const SCREEN_KEYS = {
   dashboard: MENU_CODES.dashboard,
   nameBoard: MENU_CODES.nameBoard,
   truck: MENU_CODES.truck,
-  driver: MENU_CODES.driver,
   menu: MENU_CODES.menu,
 } as const;
 

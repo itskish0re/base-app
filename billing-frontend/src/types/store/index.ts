@@ -1,7 +1,6 @@
 export type { AuthState, MenuState } from '@/types/store/global';
 export type {
   DashboardScreenState,
-  DriversScreenState,
   MenusScreenState,
   NameBoardsScreenState,
   ScreenStateByKey,

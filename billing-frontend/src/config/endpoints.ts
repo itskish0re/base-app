@@ -35,15 +35,6 @@ export const endpoints = {
     delete: () => buildApiPath(API_CONTROLLERS.trucks, 'delete'),
     toggle: () => buildApiPath(API_CONTROLLERS.trucks, 'toggle'),
   },
-  drivers: {
-    list: () => buildApiPath(API_CONTROLLERS.drivers),
-    byId: (id: number) => buildApiPath(API_CONTROLLERS.drivers, String(id)),
-    lookup: () => buildApiPath(API_CONTROLLERS.drivers, 'lookup'),
-    create: () => buildApiPath(API_CONTROLLERS.drivers, 'create'),
-    update: () => buildApiPath(API_CONTROLLERS.drivers, 'update'),
-    delete: () => buildApiPath(API_CONTROLLERS.drivers, 'delete'),
-    toggle: () => buildApiPath(API_CONTROLLERS.drivers, 'toggle'),
-  },
   menus: {
     list: () => buildApiPath(API_CONTROLLERS.menus),
     byId: (id: number) => buildApiPath(API_CONTROLLERS.menus, String(id)),

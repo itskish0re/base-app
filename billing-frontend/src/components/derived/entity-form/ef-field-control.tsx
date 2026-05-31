@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 type EntityFormFieldControlProps = {
   id?: string;
-  label: string;
+  label?: string;
   required?: boolean;
   error?: string;
   className?: string;
@@ -21,7 +21,7 @@ export function EntityFormFieldControl({
 }: EntityFormFieldControlProps) {
   return (
     <div className={cn('space-y-2', className)}>
-      {id ? (
+      {id && label ? (
         <Label htmlFor={id}>
           {label}
           {required ? (

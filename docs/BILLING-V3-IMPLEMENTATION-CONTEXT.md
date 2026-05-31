@@ -22,7 +22,7 @@ base-app/
     └── src/
         ├── components/derived/data-table/   # Shared master grid
         ├── components/derived/data-table/column-cells/
-        ├── pages/masters/                   # name-boards wired; trucks/drivers placeholder
+        ├── pages/masters/                   # name-boards + trucks wired
         ├── hooks/useScreenSlice.ts
         └── store/screens/
 ```
@@ -43,7 +43,7 @@ base-app/
 - `Application/Common/FieldNameConverter.cs` — `ToCamelCase` / `ToPascalCase`
 - `Infrastructure/Repositories/AppEntityScreenRepository.cs` — applied to entity fields, grid columns, form fields after load
 
-**Sorting:** UI sends camelCase `orderBy` (e.g. `ownerName asc`). Repositories normalize to PascalCase for Gridify via `Application/Common/Gridify/GridifyOrderByNormalizer.cs` (name boards, trucks, drivers).
+**Sorting:** UI sends camelCase `orderBy` (e.g. `ownerName asc`). Repositories normalize to PascalCase for Gridify via `Application/Common/Gridify/GridifyOrderByNormalizer.cs` (name boards, trucks).
 
 ---
 
@@ -67,8 +67,7 @@ base-app/
 | Screen | `menu_code` | `SCREEN_KEYS` | Page |
 |--------|-------------|---------------|------|
 | Name boards | `name_board` | `nameBoard` | `pages/masters/name-boards/index.tsx` |
-| Trucks | `truck` | `truck` | placeholder |
-| Drivers | `driver` | `driver` | placeholder |
+| Trucks | `truck` | `truck` | `pages/masters/trucks/index.tsx` |
 
 ---
 
@@ -124,8 +123,7 @@ Overflow: `column-cells/dt-cell-overflow.tsx` — ellipsis + click popover for f
 ### Current seed mapping (re-run seeds after changes)
 
 **name_boards:** `code`→`badge`, `owner_phone`→`mobile`  
-**trucks:** `truck_number`→`vehicle_number`  
-**drivers:** `mobile`→`mobile`
+**trucks:** `truck_number`→`vehicle_number`
 
 ---
 
@@ -224,7 +222,6 @@ See `billing/scripts/README.md`. Summary:
 |--------|------------|------------------|
 | Name boards | `NameBoardsController` | Gridify + `MasterGridifyMappers.NameBoard` |
 | Trucks | `TrucksController` | Gridify |
-| Drivers | `DriversController` | Gridify |
 
 DTOs: camelCase JSON (`NameBoardDto.ownerName`, etc.).
 
@@ -242,7 +239,6 @@ DTOs: camelCase JSON (`NameBoardDto.ownerName`, etc.).
 
 ## 9. Next work (suggested)
 
-- Wire **Trucks** / **Drivers** pages like Name Boards (`renderActionsColumn`, metadata gate).
 - Server-side column filters (today: client-side on current page rows only).
 - Form screens from `app_entity_screen_field` metadata.
 - Unit tests for `computeDataTableLayout` and `FieldNameConverter`.

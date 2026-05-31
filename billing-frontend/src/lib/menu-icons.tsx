@@ -21,8 +21,6 @@ const iconMap: Record<string, LucideIcon> = {
   users: Users,
   nameboard: PanelLeft,
   nameboards: PanelLeft,
-  driver: User,
-  drivers: Users,
 };
 
 export function resolveMenuIcon(icon: string | null | undefined): LucideIcon {

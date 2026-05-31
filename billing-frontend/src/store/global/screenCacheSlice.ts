@@ -8,7 +8,6 @@ import {
 } from '@/types/store/screen';
 import {
   createInitialScreenCacheState,
-  type ScreenCacheState,
 } from '@/types/store/screenCache';
 import type { RootState } from '@/types/store/root';
 

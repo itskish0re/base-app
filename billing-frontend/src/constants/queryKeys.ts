@@ -24,13 +24,6 @@ export const queryKeys = {
     lookup: (valueColumn: string, labelColumn: string) =>
       [...queryKeys.trucks.all, 'lookup', valueColumn, labelColumn] as const,
   },
-  drivers: {
-    all: ['drivers'] as const,
-    list: (params?: ListQueryParams) => [...queryKeys.drivers.all, 'list', params] as const,
-    detail: (id: number) => [...queryKeys.drivers.all, 'detail', id] as const,
-    lookup: (valueColumn: string, labelColumn: string) =>
-      [...queryKeys.drivers.all, 'lookup', valueColumn, labelColumn] as const,
-  },
   menus: {
     all: ['menus'] as const,
     list: (params?: ListMenusParams) => [...queryKeys.menus.all, 'list', params] as const,

@@ -1,4 +1,3 @@
-using Application.Masters.Driver;
 using Application.Masters.NameBoard;
 using Application.Masters.Truck;
 using Domain.Masters;
@@ -19,9 +18,5 @@ public sealed class MasterMappingRegister : IRegister
             .Map(dest => dest.NameBoardId, src => src.NameBoardId)
             .Map(dest => dest.NameBoardCode, src => src.NameBoard != null ? src.NameBoard.Code : null)
             .Map(dest => dest.NameBoardName, src => src.NameBoard != null ? src.NameBoard.Name : null);
-
-        config.NewConfig<Driver, DriverResponse>()
-            .Map(dest => dest.TruckId, src => src.TruckId)
-            .Map(dest => dest.TruckNumber, src => src.Truck != null ? src.Truck.TruckNumber : null);
     }
 }

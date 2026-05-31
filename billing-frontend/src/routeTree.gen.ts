@@ -14,7 +14,6 @@ import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as AuthenticatedIndexRouteImport } from './routes/_authenticated/index'
 import { Route as AuthenticatedMastersTruckRouteImport } from './routes/_authenticated/masters/truck'
 import { Route as AuthenticatedMastersNameBoardRouteImport } from './routes/_authenticated/masters/name-board'
-import { Route as AuthenticatedMastersDriverRouteImport } from './routes/_authenticated/masters/driver'
 import { Route as AuthenticatedMainDashboardRouteImport } from './routes/_authenticated/main/dashboard'
 import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin/menu'
 
@@ -44,12 +43,6 @@ const AuthenticatedMastersNameBoardRoute =
     path: '/masters/name-board',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const AuthenticatedMastersDriverRoute =
-  AuthenticatedMastersDriverRouteImport.update({
-    id: '/masters/driver',
-    path: '/masters/driver',
-    getParentRoute: () => AuthenticatedRoute,
-  } as any)
 const AuthenticatedMainDashboardRoute =
   AuthenticatedMainDashboardRouteImport.update({
     id: '/main/dashboard',
@@ -67,7 +60,6 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/masters/driver': typeof AuthenticatedMastersDriverRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
   '/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
@@ -76,7 +68,6 @@ export interface FileRoutesByTo {
   '/': typeof AuthenticatedIndexRoute
   '/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/masters/driver': typeof AuthenticatedMastersDriverRoute
   '/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
   '/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
@@ -87,7 +78,6 @@ export interface FileRoutesById {
   '/_authenticated/': typeof AuthenticatedIndexRoute
   '/_authenticated/admin/menu': typeof AuthenticatedAdminMenuRoute
   '/_authenticated/main/dashboard': typeof AuthenticatedMainDashboardRoute
-  '/_authenticated/masters/driver': typeof AuthenticatedMastersDriverRoute
   '/_authenticated/masters/name-board': typeof AuthenticatedMastersNameBoardRoute
   '/_authenticated/masters/truck': typeof AuthenticatedMastersTruckRoute
 }
@@ -98,7 +88,6 @@ export interface FileRouteTypes {
     | '/login'
     | '/admin/menu'
     | '/main/dashboard'
-    | '/masters/driver'
     | '/masters/name-board'
     | '/masters/truck'
   fileRoutesByTo: FileRoutesByTo
@@ -107,7 +96,6 @@ export interface FileRouteTypes {
     | '/'
     | '/admin/menu'
     | '/main/dashboard'
-    | '/masters/driver'
     | '/masters/name-board'
     | '/masters/truck'
   id:
@@ -117,7 +105,6 @@ export interface FileRouteTypes {
     | '/_authenticated/'
     | '/_authenticated/admin/menu'
     | '/_authenticated/main/dashboard'
-    | '/_authenticated/masters/driver'
     | '/_authenticated/masters/name-board'
     | '/_authenticated/masters/truck'
   fileRoutesById: FileRoutesById
@@ -164,13 +151,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedMastersNameBoardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/masters/driver': {
-      id: '/_authenticated/masters/driver'
-      path: '/masters/driver'
-      fullPath: '/masters/driver'
-      preLoaderRoute: typeof AuthenticatedMastersDriverRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
     '/_authenticated/main/dashboard': {
       id: '/_authenticated/main/dashboard'
       path: '/main/dashboard'
@@ -192,7 +172,6 @@ interface AuthenticatedRouteChildren {
   AuthenticatedIndexRoute: typeof AuthenticatedIndexRoute
   AuthenticatedAdminMenuRoute: typeof AuthenticatedAdminMenuRoute
   AuthenticatedMainDashboardRoute: typeof AuthenticatedMainDashboardRoute
-  AuthenticatedMastersDriverRoute: typeof AuthenticatedMastersDriverRoute
   AuthenticatedMastersNameBoardRoute: typeof AuthenticatedMastersNameBoardRoute
   AuthenticatedMastersTruckRoute: typeof AuthenticatedMastersTruckRoute
 }
@@ -201,7 +180,6 @@ const AuthenticatedRouteChildren: AuthenticatedRouteChildren = {
   AuthenticatedIndexRoute: AuthenticatedIndexRoute,
   AuthenticatedAdminMenuRoute: AuthenticatedAdminMenuRoute,
   AuthenticatedMainDashboardRoute: AuthenticatedMainDashboardRoute,
-  AuthenticatedMastersDriverRoute: AuthenticatedMastersDriverRoute,
   AuthenticatedMastersNameBoardRoute: AuthenticatedMastersNameBoardRoute,
   AuthenticatedMastersTruckRoute: AuthenticatedMastersTruckRoute,
 }

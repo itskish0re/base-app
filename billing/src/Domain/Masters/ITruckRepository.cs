@@ -12,8 +12,6 @@ public interface ITruckRepository
 
     Task<IReadOnlyList<Truck>> ListForLookupAsync(CancellationToken cancellationToken = default);
 
-    Task<bool> HasActiveDriversAsync(int truckId, CancellationToken cancellationToken = default);
-
     void Add(Truck truck);
 }
 

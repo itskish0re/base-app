@@ -15,8 +15,6 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
 
     public DbSet<Truck> Trucks => Set<Truck>();
 
-    public DbSet<Driver> Drivers => Set<Driver>();
-
     public DbSet<AppFieldDataType> AppFieldDataTypes => Set<AppFieldDataType>();
 
     public DbSet<AppEntity> AppEntities => Set<AppEntity>();

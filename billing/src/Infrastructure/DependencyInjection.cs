@@ -57,7 +57,6 @@ public static class DependencyInjection
         services.AddScoped<IEndpointAccessRepository, EndpointAccessRepository>();
         services.AddScoped<INameBoardRepository, NameBoardRepository>();
         services.AddScoped<ITruckRepository, TruckRepository>();
-        services.AddScoped<IDriverRepository, DriverRepository>();
         services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
         services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();

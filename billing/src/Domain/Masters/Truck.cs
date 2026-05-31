@@ -11,6 +11,4 @@ public sealed class Truck : AuditableEntity
     public int NameBoardId { get; set; }
 
     public NameBoard? NameBoard { get; set; }
-
-    public ICollection<Driver> Drivers { get; set; } = [];
 }

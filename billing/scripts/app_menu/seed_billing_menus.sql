@@ -1,5 +1,5 @@
 -- Sidebar menus for Billing v3 masters + menu admin.
--- Groups: secondary (name board, truck, driver), config (menus screen).
+-- Groups: secondary (name board, truck), config (menus screen).
 -- Run after drop_group_label.sql / migration DropAppMenuGroupLabel.
 
 -- Retire legacy demo entries (invoices, customers, settings).
@@ -137,20 +137,6 @@ VALUES
         'secondary',
         true,
         NOW(),
-        NOW()),
-    (
-        'driver',
-        'Driver',
-        '/masters/driver',
-        'driver',
-        NULL,
-        30,
-        NULL,
-        'Driver master',
-        true,
-        'secondary',
-        true,
-        NOW(),
         NOW())
 ON CONFLICT (menu_code) DO UPDATE
 SET display_name = EXCLUDED.display_name,
@@ -173,7 +159,7 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'driver')
+INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE

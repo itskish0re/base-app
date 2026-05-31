@@ -6,7 +6,6 @@ export const ROUTES = {
   dashboard: DASHBOARD_ROUTE,
   nameBoard: '/masters/name-board',
   truck: '/masters/truck',
-  driver: '/masters/driver',
   menuAdmin: '/admin/menu',
 } as const;
 

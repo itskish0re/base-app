@@ -19,11 +19,4 @@ internal static class MasterGridifyMappers
             x => x.TruckNumber,
             x => x.NameBoard!.Name,
             x => x.NameBoard!.Code);
-
-    public static readonly IGridifyMapper<Driver> Driver = new GridifyMapper<Driver>()
-        .AddCompositeMap(
-            GridifyListFilter.GlobalSearchField,
-            x => x.Name,
-            x => x.Mobile,
-            x => x.Truck!.TruckNumber);
 }

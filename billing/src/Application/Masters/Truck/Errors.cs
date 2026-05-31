@@ -15,8 +15,4 @@ internal static class TruckErrors
     public static readonly Error NameBoardNotFound = Error.NotFound(
         "Truck.NameBoardNotFound",
         "Name board was not found.");
-
-    public static readonly Error HasDrivers = Error.Conflict(
-        "Truck.HasDrivers",
-        "Cannot delete a truck that has active drivers.");
 }

@@ -4,7 +4,6 @@ export const API_CONTROLLERS = {
   access: 'access',
   nameBoards: 'name-boards',
   trucks: 'trucks',
-  drivers: 'drivers',
   menus: 'menus',
   screens: 'screens',
   health: 'health',

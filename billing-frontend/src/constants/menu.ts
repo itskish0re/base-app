@@ -3,7 +3,6 @@ export const MENU_CODES = {
   dashboard: 'dashboard',
   nameBoard: 'name_board',
   truck: 'truck',
-  driver: 'driver',
   menu: 'menu',
 } as const;
 

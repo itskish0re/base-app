@@ -37,15 +37,6 @@ internal sealed class BatchDeleteTrucksCommandHandler(
                 continue;
             }
 
-            if (await truckRepository.HasActiveDriversAsync(id, cancellationToken))
-            {
-                failures.Add(new BatchTruckItemFailure(
-                    index,
-                    TruckErrors.HasDrivers.Code,
-                    TruckErrors.HasDrivers.Description));
-                continue;
-            }
-
             entity.IsDeleted = true;
             entity.DeletedAt = utcNow;
             entity.UpdatedAt = utcNow;
