@@ -207,6 +207,34 @@ VALUES
         'secondary',
         true,
         NOW(),
+        NOW()),
+    (
+        'bills',
+        'Bills',
+        '/transactions/bills',
+        'receipt',
+        NULL,
+        10,
+        NULL,
+        'Freight bills',
+        true,
+        'main',
+        true,
+        NOW(),
+        NOW()),
+    (
+        'loads',
+        'Loads',
+        '/transactions/loads',
+        'package',
+        NULL,
+        20,
+        NULL,
+        'Bill line items',
+        true,
+        'main',
+        true,
+        NOW(),
         NOW())
 ON CONFLICT (menu_code) DO UPDATE
 SET display_name = EXCLUDED.display_name,
@@ -229,7 +257,7 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'location', 'party', 'goods', 'unit', 'financial_year')
+INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'location', 'party', 'goods', 'unit', 'financial_year', 'bills', 'loads')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE

@@ -1099,6 +1099,484 @@ namespace Infrastructure.Persistence.Migrations
                     b.ToTable("app_field_data_type", "public");
                 });
 
+            modelBuilder.Entity("Domain.Transactions.Bill", b =>
+                {
+                    b.Property<int>("BillId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("bill_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("BillId"));
+
+                    b.Property<DateOnly>("BillDate")
+                        .HasColumnType("date")
+                        .HasColumnName("bill_date");
+
+                    b.Property<string>("BillNumber")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)")
+                        .HasColumnName("bill_number");
+
+                    b.Property<decimal>("Commission")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("commission");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<decimal>("Crossing")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("crossing");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<decimal>("Diesel")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("diesel");
+
+                    b.Property<string>("DriverMobile")
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)")
+                        .HasColumnName("driver_mobile");
+
+                    b.Property<string>("DriverName")
+                        .IsRequired()
+                        .HasMaxLength(256)
+                        .HasColumnType("character varying(256)")
+                        .HasColumnName("driver_name");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year_id");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("integer")
+                        .HasColumnName("from_id");
+
+                    b.Property<decimal>("HandLoan")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("hand_loan");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsCancelled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_cancelled");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_enabled");
+
+                    b.Property<decimal>("OfficeMamul")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("office_mamul");
+
+                    b.Property<decimal>("Others")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("others");
+
+                    b.Property<decimal>("TapalMamul")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("tapal_mamul");
+
+                    b.Property<decimal>("Total")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total");
+
+                    b.Property<decimal>("TotalFreight")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("total_freight");
+
+                    b.Property<int>("TruckId")
+                        .HasColumnType("integer")
+                        .HasColumnName("truck_id");
+
+                    b.Property<decimal>("TruckLoan")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("truck_loan");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.HasKey("BillId")
+                        .HasName("pk_bills");
+
+                    b.HasIndex("FinancialYearId")
+                        .HasDatabaseName("ix_bills_financial_year_id");
+
+                    b.HasIndex("FromId")
+                        .HasDatabaseName("ix_bills_from_id");
+
+                    b.HasIndex("TruckId")
+                        .HasDatabaseName("ix_bills_truck_id");
+
+                    b.HasIndex("FinancialYearId", "BillNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_bills_financial_year_id_bill_number");
+
+                    b.ToTable("bills", "public");
+                });
+
+            modelBuilder.Entity("Domain.Transactions.BillListRow", b =>
+                {
+                    b.Property<DateOnly>("BillDate")
+                        .HasColumnType("date")
+                        .HasColumnName("bill_date");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("integer")
+                        .HasColumnName("bill_id");
+
+                    b.Property<string>("BillNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("bill_number");
+
+                    b.Property<decimal>("Commission")
+                        .HasColumnType("numeric")
+                        .HasColumnName("commission");
+
+                    b.Property<decimal>("Crossing")
+                        .HasColumnType("numeric")
+                        .HasColumnName("crossing");
+
+                    b.Property<decimal>("Diesel")
+                        .HasColumnType("numeric")
+                        .HasColumnName("diesel");
+
+                    b.Property<string>("DriverMobile")
+                        .HasColumnType("text")
+                        .HasColumnName("driver_mobile");
+
+                    b.Property<string>("DriverName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("driver_name");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year_id");
+
+                    b.Property<int>("FromId")
+                        .HasColumnType("integer")
+                        .HasColumnName("from_id");
+
+                    b.Property<string>("FromLocationName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("from_location_name");
+
+                    b.Property<decimal>("HandLoan")
+                        .HasColumnType("numeric")
+                        .HasColumnName("hand_loan");
+
+                    b.Property<bool>("IsCancelled")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_cancelled");
+
+                    b.Property<string>("NameBoardName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("name_board_name");
+
+                    b.Property<decimal>("OfficeMamul")
+                        .HasColumnType("numeric")
+                        .HasColumnName("office_mamul");
+
+                    b.Property<decimal>("Others")
+                        .HasColumnType("numeric")
+                        .HasColumnName("others");
+
+                    b.Property<string>("OwnerMobile")
+                        .HasColumnType("text")
+                        .HasColumnName("owner_mobile");
+
+                    b.Property<string>("OwnerName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("owner_name");
+
+                    b.Property<decimal>("TapalMamul")
+                        .HasColumnType("numeric")
+                        .HasColumnName("tapal_mamul");
+
+                    b.Property<decimal>("Total")
+                        .HasColumnType("numeric")
+                        .HasColumnName("total");
+
+                    b.Property<decimal>("TotalFreight")
+                        .HasColumnType("numeric")
+                        .HasColumnName("total_freight");
+
+                    b.Property<int>("TruckId")
+                        .HasColumnType("integer")
+                        .HasColumnName("truck_id");
+
+                    b.Property<decimal>("TruckLoan")
+                        .HasColumnType("numeric")
+                        .HasColumnName("truck_loan");
+
+                    b.Property<string>("TruckNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("truck_number");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("v_bills", "public");
+                });
+
+            modelBuilder.Entity("Domain.Transactions.Load", b =>
+                {
+                    b.Property<int>("LoadId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("load_id");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("LoadId"));
+
+                    b.Property<decimal>("Advance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("advance");
+
+                    b.Property<decimal>("Balance")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("balance");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("integer")
+                        .HasColumnName("bill_id");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("created_at");
+
+                    b.Property<int?>("CreatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("created_by");
+
+                    b.Property<DateTime?>("DeletedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("deleted_at");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year_id");
+
+                    b.Property<decimal>("Freight")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("freight");
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("goods_id");
+
+                    b.Property<bool>("IsActive")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_active");
+
+                    b.Property<bool>("IsDeleted")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("is_deleted");
+
+                    b.Property<bool>("IsEnabled")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(true)
+                        .HasColumnName("is_enabled");
+
+                    b.Property<int>("LoadNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("load_number");
+
+                    b.Property<int>("PartyId")
+                        .HasColumnType("integer")
+                        .HasColumnName("party_id");
+
+                    b.Property<decimal>("RatePerUnit")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("rate_per_unit");
+
+                    b.Property<int>("ToId")
+                        .HasColumnType("integer")
+                        .HasColumnName("to_id");
+
+                    b.Property<decimal>("Topay")
+                        .HasPrecision(18, 2)
+                        .HasColumnType("numeric(18,2)")
+                        .HasColumnName("topay");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unit_id");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("updated_at");
+
+                    b.Property<int?>("UpdatedBy")
+                        .HasColumnType("integer")
+                        .HasColumnName("updated_by");
+
+                    b.Property<decimal>("WeightOrQuantity")
+                        .HasPrecision(18, 3)
+                        .HasColumnType("numeric(18,3)")
+                        .HasColumnName("weight_or_quantity");
+
+                    b.HasKey("LoadId")
+                        .HasName("pk_loads");
+
+                    b.HasIndex("BillId")
+                        .HasDatabaseName("ix_loads_bill_id");
+
+                    b.HasIndex("FinancialYearId")
+                        .HasDatabaseName("ix_loads_financial_year_id");
+
+                    b.HasIndex("BillId", "LoadNumber")
+                        .IsUnique()
+                        .HasDatabaseName("ux_loads_bill_id_load_number_active")
+                        .HasFilter("is_active = true");
+
+                    b.ToTable("loads", "public");
+                });
+
+            modelBuilder.Entity("Domain.Transactions.LoadListRow", b =>
+                {
+                    b.Property<decimal>("Advance")
+                        .HasColumnType("numeric")
+                        .HasColumnName("advance");
+
+                    b.Property<decimal>("Balance")
+                        .HasColumnType("numeric")
+                        .HasColumnName("balance");
+
+                    b.Property<int>("BillId")
+                        .HasColumnType("integer")
+                        .HasColumnName("bill_id");
+
+                    b.Property<string>("BillNumber")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("bill_number");
+
+                    b.Property<int>("FinancialYearId")
+                        .HasColumnType("integer")
+                        .HasColumnName("financial_year_id");
+
+                    b.Property<decimal>("Freight")
+                        .HasColumnType("numeric")
+                        .HasColumnName("freight");
+
+                    b.Property<int>("GoodsId")
+                        .HasColumnType("integer")
+                        .HasColumnName("goods_id");
+
+                    b.Property<string>("GoodsName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("goods_name");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_active");
+
+                    b.Property<int>("LoadId")
+                        .HasColumnType("integer")
+                        .HasColumnName("load_id");
+
+                    b.Property<int>("LoadNumber")
+                        .HasColumnType("integer")
+                        .HasColumnName("load_number");
+
+                    b.Property<int>("PartyId")
+                        .HasColumnType("integer")
+                        .HasColumnName("party_id");
+
+                    b.Property<string>("PartyName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("party_name");
+
+                    b.Property<decimal>("RatePerUnit")
+                        .HasColumnType("numeric")
+                        .HasColumnName("rate_per_unit");
+
+                    b.Property<int>("ToId")
+                        .HasColumnType("integer")
+                        .HasColumnName("to_id");
+
+                    b.Property<string>("ToLocationName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("to_location_name");
+
+                    b.Property<decimal>("Topay")
+                        .HasColumnType("numeric")
+                        .HasColumnName("topay");
+
+                    b.Property<int>("UnitId")
+                        .HasColumnType("integer")
+                        .HasColumnName("unit_id");
+
+                    b.Property<string>("UnitName")
+                        .IsRequired()
+                        .HasColumnType("text")
+                        .HasColumnName("unit_name");
+
+                    b.Property<decimal>("WeightOrQuantity")
+                        .HasColumnType("numeric")
+                        .HasColumnName("weight_or_quantity");
+
+                    b.ToTable((string)null);
+
+                    b.ToView("v_loads", "public");
+                });
+
             modelBuilder.Entity("Domain.Access.AppMenu", b =>
                 {
                     b.HasOne("Domain.Access.AppMenu", null)
@@ -1195,6 +1673,18 @@ namespace Infrastructure.Persistence.Migrations
                     b.Navigation("Screen");
                 });
 
+            modelBuilder.Entity("Domain.Transactions.Load", b =>
+                {
+                    b.HasOne("Domain.Transactions.Bill", "Bill")
+                        .WithMany("Loads")
+                        .HasForeignKey("BillId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired()
+                        .HasConstraintName("fk_loads_bills_bill_id");
+
+                    b.Navigation("Bill");
+                });
+
             modelBuilder.Entity("Domain.Masters.NameBoard", b =>
                 {
                     b.Navigation("Trucks");
@@ -1215,6 +1705,11 @@ namespace Infrastructure.Persistence.Migrations
             modelBuilder.Entity("Domain.Registry.AppFieldDataType", b =>
                 {
                     b.Navigation("EntityFields");
+                });
+
+            modelBuilder.Entity("Domain.Transactions.Bill", b =>
+                {
+                    b.Navigation("Loads");
                 });
 #pragma warning restore 612, 618
         }

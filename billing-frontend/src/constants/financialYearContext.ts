@@ -7,9 +7,7 @@ export const FINANCIAL_YEAR_STORAGE_KEY = 'billing.selectedFinancialYearId';
  * API path segments (after /api/) that receive the financial year header.
  * Add transaction controller segments here as they are introduced.
  */
-export const TRANSACTION_API_SEGMENTS: readonly string[] = [
-  // e.g. 'invoices', 'vouchers'
-];
+export const TRANSACTION_API_SEGMENTS: readonly string[] = ['bills', 'loads'];
 
 /** Master / shared APIs that never receive the financial year header. */
 export const MASTER_API_SEGMENTS: readonly string[] = [

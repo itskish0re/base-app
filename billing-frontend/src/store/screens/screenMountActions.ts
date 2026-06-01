@@ -9,6 +9,8 @@ import { partiesScreenActions } from '@/store/screens/partiesSlice';
 import { trucksScreenActions } from '@/store/screens/trucksSlice';
 import { unitsScreenActions } from '@/store/screens/unitsSlice';
 import { financialYearsScreenActions } from '@/store/screens/financialYearsSlice';
+import { billsScreenActions } from '@/store/screens/billsSlice';
+import { loadsScreenActions } from '@/store/screens/loadsSlice';
 
 /** Dispatched once when a screen slice is mounted so Redux state exists before selectors run. */
 export const screenMountActionsByKey: Record<ScreenKey, () => UnknownAction> = {
@@ -21,4 +23,6 @@ export const screenMountActionsByKey: Record<ScreenKey, () => UnknownAction> = {
   [SCREEN_KEYS.unit]: () => unitsScreenActions.resetScreenState(),
   [SCREEN_KEYS.financialYear]: () => financialYearsScreenActions.resetScreenState(),
   [SCREEN_KEYS.menu]: () => menusScreenActions.resetScreenState(),
+  [SCREEN_KEYS.bills]: () => billsScreenActions.resetScreenState(),
+  [SCREEN_KEYS.loads]: () => loadsScreenActions.resetScreenState(),
 };

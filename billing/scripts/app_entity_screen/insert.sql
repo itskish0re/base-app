@@ -22,7 +22,9 @@ FROM (
         ('party', 'party', 'Party master: grid + form'),
         ('goods', 'goods', 'Goods master: grid + form'),
         ('unit', 'unit', 'Unit master: grid + form'),
-        ('financial_year', 'financial_year', 'Financial year master: grid + form')
+        ('financial_year', 'financial_year', 'Financial year master: grid + form'),
+        ('bills', 'bills', 'Bills transaction: grid list'),
+        ('loads', 'loads', 'Loads transaction: grid list')
 ) AS v(entity_name, menu_code, description)
 INNER JOIN app_entity e ON e.entity_name = v.entity_name
 INNER JOIN app_menu m ON m.menu_code = v.menu_code AND m.is_active = true

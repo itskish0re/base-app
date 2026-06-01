@@ -2,6 +2,7 @@ using System.Data;
 using Application.Abstractions.Data;
 using Domain.Access;
 using Domain.Masters;
+using Domain.Transactions;
 using Domain.Registry;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
@@ -24,6 +25,14 @@ public sealed class BillingDbContext(DbContextOptions<BillingDbContext> options)
     public DbSet<Unit> Units => Set<Unit>();
 
     public DbSet<FinancialYear> FinancialYears => Set<FinancialYear>();
+
+    public DbSet<Bill> Bills => Set<Bill>();
+
+    public DbSet<Load> Loads => Set<Load>();
+
+    public DbSet<BillListRow> BillListRows => Set<BillListRow>();
+
+    public DbSet<LoadListRow> LoadListRows => Set<LoadListRow>();
 
     public DbSet<AppFieldDataType> AppFieldDataTypes => Set<AppFieldDataType>();
 

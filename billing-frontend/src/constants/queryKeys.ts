@@ -64,4 +64,13 @@ export const queryKeys = {
     list: (params?: ListMenusParams) => [...queryKeys.menus.all, 'list', params] as const,
     detail: (id: number) => [...queryKeys.menus.all, 'detail', id] as const,
   },
+  bills: {
+    all: ['bills'] as const,
+    list: (params?: ListQueryParams) => [...queryKeys.bills.all, 'list', params] as const,
+    detail: (id: number) => [...queryKeys.bills.all, 'detail', id] as const,
+  },
+  loads: {
+    all: ['loads'] as const,
+    list: (params?: ListQueryParams) => [...queryKeys.loads.all, 'list', params] as const,
+  },
 } as const;

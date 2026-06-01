@@ -30,6 +30,8 @@ if (app.Environment.IsDevelopment())
     app.ApplyMigrations();
 }
 
+app.ValidateRequiredDatabaseViews();
+
 if (!app.Environment.IsDevelopment())
 {
     app.UseHttpsRedirection();

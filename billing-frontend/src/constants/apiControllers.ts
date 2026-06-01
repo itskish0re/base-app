@@ -9,6 +9,8 @@ export const API_CONTROLLERS = {
   goods: 'goods',
   units: 'units',
   financialYears: 'financial-years',
+  bills: 'bills',
+  loads: 'loads',
   menus: 'menus',
   screens: 'screens',
   health: 'health',

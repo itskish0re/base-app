@@ -80,6 +80,16 @@ export const endpoints = {
     delete: () => buildApiPath(API_CONTROLLERS.financialYears, 'delete'),
     toggle: () => buildApiPath(API_CONTROLLERS.financialYears, 'toggle'),
   },
+  bills: {
+    list: () => buildApiPath(API_CONTROLLERS.bills),
+    nextNumber: () => buildApiPath(API_CONTROLLERS.bills, 'next-number'),
+    byId: (id: number) => buildApiPath(API_CONTROLLERS.bills, String(id)),
+    save: () => buildApiPath(API_CONTROLLERS.bills, 'save'),
+    cancel: () => buildApiPath(API_CONTROLLERS.bills, 'cancel'),
+  },
+  loads: {
+    list: () => buildApiPath(API_CONTROLLERS.loads),
+  },
   menus: {
     list: () => buildApiPath(API_CONTROLLERS.menus),
     byId: (id: number) => buildApiPath(API_CONTROLLERS.menus, String(id)),

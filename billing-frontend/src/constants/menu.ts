@@ -8,6 +8,8 @@ export const MENU_CODES = {
   goods: 'goods',
   unit: 'unit',
   financialYear: 'financial_year',
+  bills: 'bills',
+  loads: 'loads',
   menu: 'menu',
 } as const;
 

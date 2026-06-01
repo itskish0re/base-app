@@ -77,6 +77,37 @@ psql "$CONN" -f scripts/app_role_endpoint/trucks_admin.sql
 psql "$CONN" -f scripts/app_role_endpoint/menus_admin.sql
 ```
 
+### 5b. Transaction tables + views
+
+After EF migration `AddBillsAndLoads` (creates `bills` / `loads`):
+
+```bash
+psql "$CONN" -f scripts/views/v_bills.sql
+psql "$CONN" -f scripts/views/v_loads.sql
+```
+
+Or one-shot temp seeds (run once, then delete):
+
+```bash
+psql "$CONN" -f scripts/temp/bills_entity_seed.sql
+psql "$CONN" -f scripts/temp/loads_entity_seed.sql
+```
+
+Registry scripts (incremental):
+
+```bash
+psql "$CONN" -f scripts/app_entity_field/bills.sql
+psql "$CONN" -f scripts/app_entity_field/loads.sql
+psql "$CONN" -f scripts/app_entity_screen_column/bills.sql
+psql "$CONN" -f scripts/app_entity_screen_column/loads.sql
+psql "$CONN" -f scripts/app_endpoint/bills.sql
+psql "$CONN" -f scripts/app_endpoint/loads.sql
+psql "$CONN" -f scripts/app_role_endpoint/bills_admin.sql
+psql "$CONN" -f scripts/app_role_endpoint/loads_admin.sql
+```
+
+The API fails on startup if `v_bills` or `v_loads` is missing.
+
 ### 6. Restart API
 
 Restart the API (or wait ~5 minutes) after changing `app_endpoint` rows so `EndpointAccessCache` refreshes.

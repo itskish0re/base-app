@@ -9,6 +9,8 @@ import { partiesScreenReducer } from '@/store/screens/partiesSlice';
 import { trucksScreenReducer } from '@/store/screens/trucksSlice';
 import { unitsScreenReducer } from '@/store/screens/unitsSlice';
 import { financialYearsScreenReducer } from '@/store/screens/financialYearsSlice';
+import { billsScreenReducer } from '@/store/screens/billsSlice';
+import { loadsScreenReducer } from '@/store/screens/loadsSlice';
 import type { ScreenStateByKey } from '@/types/store/screens';
 
 export const screenReducerRegistry: { [K in ScreenKey]: Reducer<ScreenStateByKey[K]> } = {
@@ -21,4 +23,6 @@ export const screenReducerRegistry: { [K in ScreenKey]: Reducer<ScreenStateByKey
   [SCREEN_KEYS.unit]: unitsScreenReducer,
   [SCREEN_KEYS.financialYear]: financialYearsScreenReducer,
   [SCREEN_KEYS.menu]: menusScreenReducer,
+  [SCREEN_KEYS.bills]: billsScreenReducer,
+  [SCREEN_KEYS.loads]: loadsScreenReducer,
 };

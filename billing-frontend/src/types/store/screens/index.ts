@@ -8,6 +8,8 @@ import type { PartiesScreenState } from './parties';
 import type { TrucksScreenState } from './trucks';
 import type { UnitsScreenState } from './units';
 import type { FinancialYearsScreenState } from './financialYears';
+import type { BillsScreenState } from './bills';
+import type { LoadsScreenState } from './loads';
 
 export type { DashboardScreenState } from './dashboard';
 export type { GoodsScreenState } from './goods';
@@ -18,6 +20,8 @@ export type { PartiesScreenState } from './parties';
 export type { TrucksScreenState } from './trucks';
 export type { UnitsScreenState } from './units';
 export type { FinancialYearsScreenState } from './financialYears';
+export type { BillsScreenState } from './bills';
+export type { LoadsScreenState } from './loads';
 
 export interface ScreenStateByKey {
   [SCREEN_KEYS.dashboard]: DashboardScreenState;
@@ -29,6 +33,8 @@ export interface ScreenStateByKey {
   [SCREEN_KEYS.unit]: UnitsScreenState;
   [SCREEN_KEYS.financialYear]: FinancialYearsScreenState;
   [SCREEN_KEYS.menu]: MenusScreenState;
+  [SCREEN_KEYS.bills]: BillsScreenState;
+  [SCREEN_KEYS.loads]: LoadsScreenState;
 }
 
 /** Screen keys whose slice includes `table` (data grid state). */
@@ -39,4 +45,6 @@ export type ScreenKeyWithTable =
   | typeof SCREEN_KEYS.party
   | typeof SCREEN_KEYS.goods
   | typeof SCREEN_KEYS.unit
-  | typeof SCREEN_KEYS.financialYear;
+  | typeof SCREEN_KEYS.financialYear
+  | typeof SCREEN_KEYS.bills
+  | typeof SCREEN_KEYS.loads;

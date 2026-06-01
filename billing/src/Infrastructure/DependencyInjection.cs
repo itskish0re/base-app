@@ -63,6 +63,9 @@ public static class DependencyInjection
         services.AddScoped<IGoodsRepository, GoodsRepository>();
         services.AddScoped<IUnitRepository, UnitRepository>();
         services.AddScoped<IFinancialYearRepository, FinancialYearRepository>();
+        services.AddScoped<Domain.Transactions.IBillRepository, BillRepository>();
+        services.AddScoped<Domain.Transactions.ILoadRepository, LoadRepository>();
+        services.AddSingleton<IViewSchemaValidator, ViewSchemaValidator>();
         services.AddScoped<IAppEntityRegistryRepository, AppEntityRegistryRepository>();
         services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();

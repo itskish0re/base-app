@@ -1,0 +1,46 @@
+using Domain.Platform;
+
+namespace Domain.Transactions;
+
+public sealed class Bill : AuditableEntity
+{
+    public int BillId { get; set; }
+
+    public string BillNumber { get; set; } = null!;
+
+    public DateOnly BillDate { get; set; }
+
+    public int FromId { get; set; }
+
+    public int TruckId { get; set; }
+
+    public string DriverName { get; set; } = null!;
+
+    public string? DriverMobile { get; set; }
+
+    public decimal TotalFreight { get; set; }
+
+    public decimal Commission { get; set; }
+
+    public decimal Crossing { get; set; }
+
+    public decimal HandLoan { get; set; }
+
+    public decimal TruckLoan { get; set; }
+
+    public decimal OfficeMamul { get; set; }
+
+    public decimal TapalMamul { get; set; }
+
+    public decimal Diesel { get; set; }
+
+    public decimal Others { get; set; }
+
+    public decimal Total { get; set; }
+
+    public bool IsCancelled { get; set; }
+
+    public int FinancialYearId { get; set; }
+
+    public ICollection<Load> Loads { get; set; } = [];
+}
