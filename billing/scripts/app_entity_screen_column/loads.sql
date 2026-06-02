@@ -33,19 +33,19 @@ INNER JOIN app_menu m ON m.menu_id = s.menu_id
 INNER JOIN app_entity e ON e.entity_id = s.entity_id
 CROSS JOIN (
     VALUES
-        ('bill_number', 'Bill number', true, 10, 10, true, 'left', 'text'),
-        ('load_number', 'Load number', true, 20, 7, false, 'center', 'text'),
+        ('bill_number', 'Bill', true, 10, 5, true, 'left', 'text'),
+        ('load_number', 'Load', true, 20, 5, false, 'left', 'text'),
         ('party_name', 'Party', true, 30, 12, false, 'left', 'text'),
-        ('to_location_name', 'To', true, 40, 10, false, 'left', 'text'),
-        ('goods_name', 'Goods', true, 50, 10, false, 'left', 'text'),
+        ('to_location_name', 'To', true, 40, 12, false, 'left', 'text'),
+        ('goods_name', 'Goods', true, 50, 12, false, 'left', 'text'),
         ('unit_name', 'Unit', true, 60, 8, false, 'left', 'text'),
-        ('weight_or_quantity', 'Weight / qty', true, 70, 9, false, 'right', 'text'),
+        ('weight_or_quantity', 'Weight / Quantity', true, 70, 12, false, 'right', 'text'),
         ('rate_per_unit', 'Rate', true, 80, 8, false, 'right', 'text'),
         ('freight', 'Freight', true, 90, 8, false, 'right', 'text'),
         ('advance', 'Advance', true, 100, 8, false, 'right', 'text'),
-        ('topay', 'To pay', true, 110, 8, false, 'right', 'text'),
+        ('topay', 'To Pay', true, 110, 8, false, 'right', 'text'),
         ('balance', 'Balance', true, 120, 8, false, 'right', 'text'),
-        ('_actions', 'Actions', true, 999, 10, true, 'right', 'actions')
+        ('_actions', 'Actions', true, 999, 5, true, 'left', 'actions')
 ) AS v(field_name, display_label, is_visible, display_order, column_width_percent, is_pinned, align, column_component)
 INNER JOIN app_entity_field f ON f.entity_id = e.entity_id AND f.field_name = v.field_name
 WHERE m.menu_code = 'loads'
