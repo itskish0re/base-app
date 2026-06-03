@@ -1,6 +1,7 @@
 import { createSelector, createSlice, type PayloadAction } from '@reduxjs/toolkit';
 import { MENU_LOAD_STATUS } from '@/constants/menu';
 import { clearAuth } from '@/store/global/authSlice';
+import { ROUTES } from '@/constants/routes';
 import { partitionNavigationMenus } from '@/lib/navigationTree';
 import type { NavigationMenu } from '@/types/access';
 import type { MenuState } from '@/types/store/global/menu';
@@ -20,11 +21,25 @@ export function findMenuForPath(
     .sort((a, b) => b.routePath.length - a.routePath.length)
     .find((menu) => {
       const path = menu.routePath;
+      if (!path || path === '#') {
+        return false;
+      }
+
       if (path === '/') {
         return pathname === '/';
       }
 
-      return pathname === path || pathname.startsWith(`${path}/`);
+      const normalizedPathname = pathname.replace(/\/+$/, '') || '/';
+      const normalizedMenuPath = path.replace(/\/+$/, '') || '/';
+
+      if (normalizedMenuPath === ROUTES.bills) {
+        return normalizedPathname === normalizedMenuPath;
+      }
+
+      return (
+        normalizedPathname === normalizedMenuPath ||
+        normalizedPathname.startsWith(`${normalizedMenuPath}/`)
+      );
     });
 }
 

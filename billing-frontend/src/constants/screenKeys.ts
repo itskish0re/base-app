@@ -11,6 +11,8 @@ export const SCREEN_KEYS = {
   unit: MENU_CODES.unit,
   financialYear: MENU_CODES.financialYear,
   bills: MENU_CODES.bills,
+  billsCreate: MENU_CODES.billsCreate,
+  billsEdit: MENU_CODES.billsEdit,
   loads: MENU_CODES.loads,
   menu: MENU_CODES.menu,
 } as const;

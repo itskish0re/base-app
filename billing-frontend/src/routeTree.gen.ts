@@ -23,7 +23,10 @@ import { Route as AuthenticatedMastersGoodsRouteImport } from './routes/_authent
 import { Route as AuthenticatedMastersFinancialYearRouteImport } from './routes/_authenticated/masters/financial-year'
 import { Route as AuthenticatedMainDashboardRouteImport } from './routes/_authenticated/main/dashboard'
 import { Route as AuthenticatedAdminMenuRouteImport } from './routes/_authenticated/admin/menu'
-import { Route as AuthenticatedTransactionsBillsBillIdEditRouteImport } from './routes/_authenticated/transactions/bills/$billId.edit'
+import { Route as AuthenticatedTransactionsBillsIndexRouteImport } from './routes/_authenticated/transactions/bills/index'
+import { Route as AuthenticatedTransactionsBillsCreateRouteImport } from './routes/_authenticated/transactions/bills/create'
+import { Route as AuthenticatedTransactionsBillsEditIndexRouteImport } from './routes/_authenticated/transactions/bills/edit/index'
+import { Route as AuthenticatedTransactionsBillsEditBillIdRouteImport } from './routes/_authenticated/transactions/bills/edit/$billId'
 
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
@@ -104,10 +107,28 @@ const AuthenticatedAdminMenuRoute = AuthenticatedAdminMenuRouteImport.update({
   path: '/admin/menu',
   getParentRoute: () => AuthenticatedRoute,
 } as any)
-const AuthenticatedTransactionsBillsBillIdEditRoute =
-  AuthenticatedTransactionsBillsBillIdEditRouteImport.update({
-    id: '/$billId/edit',
-    path: '/$billId/edit',
+const AuthenticatedTransactionsBillsIndexRoute =
+  AuthenticatedTransactionsBillsIndexRouteImport.update({
+    id: '/',
+    path: '/',
+    getParentRoute: () => AuthenticatedTransactionsBillsRoute,
+  } as any)
+const AuthenticatedTransactionsBillsCreateRoute =
+  AuthenticatedTransactionsBillsCreateRouteImport.update({
+    id: '/create',
+    path: '/create',
+    getParentRoute: () => AuthenticatedTransactionsBillsRoute,
+  } as any)
+const AuthenticatedTransactionsBillsEditIndexRoute =
+  AuthenticatedTransactionsBillsEditIndexRouteImport.update({
+    id: '/edit/',
+    path: '/edit/',
+    getParentRoute: () => AuthenticatedTransactionsBillsRoute,
+  } as any)
+const AuthenticatedTransactionsBillsEditBillIdRoute =
+  AuthenticatedTransactionsBillsEditBillIdRouteImport.update({
+    id: '/edit/$billId',
+    path: '/edit/$billId',
     getParentRoute: () => AuthenticatedTransactionsBillsRoute,
   } as any)
 
@@ -125,7 +146,10 @@ export interface FileRoutesByFullPath {
   '/masters/unit': typeof AuthenticatedMastersUnitRoute
   '/transactions/bills': typeof AuthenticatedTransactionsBillsRouteWithChildren
   '/transactions/loads': typeof AuthenticatedTransactionsLoadsRoute
-  '/transactions/bills/$billId/edit': typeof AuthenticatedTransactionsBillsBillIdEditRoute
+  '/transactions/bills/create': typeof AuthenticatedTransactionsBillsCreateRoute
+  '/transactions/bills/': typeof AuthenticatedTransactionsBillsIndexRoute
+  '/transactions/bills/edit/$billId': typeof AuthenticatedTransactionsBillsEditBillIdRoute
+  '/transactions/bills/edit/': typeof AuthenticatedTransactionsBillsEditIndexRoute
 }
 export interface FileRoutesByTo {
   '/login': typeof LoginRoute
@@ -139,9 +163,11 @@ export interface FileRoutesByTo {
   '/masters/party': typeof AuthenticatedMastersPartyRoute
   '/masters/truck': typeof AuthenticatedMastersTruckRoute
   '/masters/unit': typeof AuthenticatedMastersUnitRoute
-  '/transactions/bills': typeof AuthenticatedTransactionsBillsRouteWithChildren
   '/transactions/loads': typeof AuthenticatedTransactionsLoadsRoute
-  '/transactions/bills/$billId/edit': typeof AuthenticatedTransactionsBillsBillIdEditRoute
+  '/transactions/bills/create': typeof AuthenticatedTransactionsBillsCreateRoute
+  '/transactions/bills': typeof AuthenticatedTransactionsBillsIndexRoute
+  '/transactions/bills/edit/$billId': typeof AuthenticatedTransactionsBillsEditBillIdRoute
+  '/transactions/bills/edit': typeof AuthenticatedTransactionsBillsEditIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -159,7 +185,10 @@ export interface FileRoutesById {
   '/_authenticated/masters/unit': typeof AuthenticatedMastersUnitRoute
   '/_authenticated/transactions/bills': typeof AuthenticatedTransactionsBillsRouteWithChildren
   '/_authenticated/transactions/loads': typeof AuthenticatedTransactionsLoadsRoute
-  '/_authenticated/transactions/bills/$billId/edit': typeof AuthenticatedTransactionsBillsBillIdEditRoute
+  '/_authenticated/transactions/bills/create': typeof AuthenticatedTransactionsBillsCreateRoute
+  '/_authenticated/transactions/bills/': typeof AuthenticatedTransactionsBillsIndexRoute
+  '/_authenticated/transactions/bills/edit/$billId': typeof AuthenticatedTransactionsBillsEditBillIdRoute
+  '/_authenticated/transactions/bills/edit/': typeof AuthenticatedTransactionsBillsEditIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -177,7 +206,10 @@ export interface FileRouteTypes {
     | '/masters/unit'
     | '/transactions/bills'
     | '/transactions/loads'
-    | '/transactions/bills/$billId/edit'
+    | '/transactions/bills/create'
+    | '/transactions/bills/'
+    | '/transactions/bills/edit/$billId'
+    | '/transactions/bills/edit/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/login'
@@ -191,9 +223,11 @@ export interface FileRouteTypes {
     | '/masters/party'
     | '/masters/truck'
     | '/masters/unit'
-    | '/transactions/bills'
     | '/transactions/loads'
-    | '/transactions/bills/$billId/edit'
+    | '/transactions/bills/create'
+    | '/transactions/bills'
+    | '/transactions/bills/edit/$billId'
+    | '/transactions/bills/edit'
   id:
     | '__root__'
     | '/_authenticated'
@@ -210,7 +244,10 @@ export interface FileRouteTypes {
     | '/_authenticated/masters/unit'
     | '/_authenticated/transactions/bills'
     | '/_authenticated/transactions/loads'
-    | '/_authenticated/transactions/bills/$billId/edit'
+    | '/_authenticated/transactions/bills/create'
+    | '/_authenticated/transactions/bills/'
+    | '/_authenticated/transactions/bills/edit/$billId'
+    | '/_authenticated/transactions/bills/edit/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -318,24 +355,54 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminMenuRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/transactions/bills/$billId/edit': {
-      id: '/_authenticated/transactions/bills/$billId/edit'
-      path: '/$billId/edit'
-      fullPath: '/transactions/bills/$billId/edit'
-      preLoaderRoute: typeof AuthenticatedTransactionsBillsBillIdEditRouteImport
+    '/_authenticated/transactions/bills/': {
+      id: '/_authenticated/transactions/bills/'
+      path: '/'
+      fullPath: '/transactions/bills/'
+      preLoaderRoute: typeof AuthenticatedTransactionsBillsIndexRouteImport
+      parentRoute: typeof AuthenticatedTransactionsBillsRoute
+    }
+    '/_authenticated/transactions/bills/create': {
+      id: '/_authenticated/transactions/bills/create'
+      path: '/create'
+      fullPath: '/transactions/bills/create'
+      preLoaderRoute: typeof AuthenticatedTransactionsBillsCreateRouteImport
+      parentRoute: typeof AuthenticatedTransactionsBillsRoute
+    }
+    '/_authenticated/transactions/bills/edit/': {
+      id: '/_authenticated/transactions/bills/edit/'
+      path: '/edit'
+      fullPath: '/transactions/bills/edit/'
+      preLoaderRoute: typeof AuthenticatedTransactionsBillsEditIndexRouteImport
+      parentRoute: typeof AuthenticatedTransactionsBillsRoute
+    }
+    '/_authenticated/transactions/bills/edit/$billId': {
+      id: '/_authenticated/transactions/bills/edit/$billId'
+      path: '/edit/$billId'
+      fullPath: '/transactions/bills/edit/$billId'
+      preLoaderRoute: typeof AuthenticatedTransactionsBillsEditBillIdRouteImport
       parentRoute: typeof AuthenticatedTransactionsBillsRoute
     }
   }
 }
 
 interface AuthenticatedTransactionsBillsRouteChildren {
-  AuthenticatedTransactionsBillsBillIdEditRoute: typeof AuthenticatedTransactionsBillsBillIdEditRoute
+  AuthenticatedTransactionsBillsCreateRoute: typeof AuthenticatedTransactionsBillsCreateRoute
+  AuthenticatedTransactionsBillsIndexRoute: typeof AuthenticatedTransactionsBillsIndexRoute
+  AuthenticatedTransactionsBillsEditBillIdRoute: typeof AuthenticatedTransactionsBillsEditBillIdRoute
+  AuthenticatedTransactionsBillsEditIndexRoute: typeof AuthenticatedTransactionsBillsEditIndexRoute
 }
 
 const AuthenticatedTransactionsBillsRouteChildren: AuthenticatedTransactionsBillsRouteChildren =
   {
-    AuthenticatedTransactionsBillsBillIdEditRoute:
-      AuthenticatedTransactionsBillsBillIdEditRoute,
+    AuthenticatedTransactionsBillsCreateRoute:
+      AuthenticatedTransactionsBillsCreateRoute,
+    AuthenticatedTransactionsBillsIndexRoute:
+      AuthenticatedTransactionsBillsIndexRoute,
+    AuthenticatedTransactionsBillsEditBillIdRoute:
+      AuthenticatedTransactionsBillsEditBillIdRoute,
+    AuthenticatedTransactionsBillsEditIndexRoute:
+      AuthenticatedTransactionsBillsEditIndexRoute,
   }
 
 const AuthenticatedTransactionsBillsRouteWithChildren =

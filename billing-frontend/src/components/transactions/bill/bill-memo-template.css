@@ -1,0 +1,273 @@
+/* Truck memo print layout — A4 portrait (~794×1123px at 96dpi) */
+
+.bill-memo {
+  --bill-memo-blue: #1e4a8c;
+  --bill-memo-red: #c41e3a;
+  --bill-memo-border: 2px solid var(--bill-memo-blue);
+  box-sizing: border-box;
+  width: 794px;
+  min-height: 1123px;
+  padding: 10px 12px 14px;
+  background: #fff;
+  color: #111;
+  font-family: 'Times New Roman', Times, Georgia, serif;
+  font-size: 13px;
+  line-height: 1.25;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.bill-preview-canvas__viewport {
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.bill-memo--cancelled {
+  opacity: 0.72;
+}
+
+.bill-memo--cancelled .bill-memo__memo-no {
+  text-decoration: line-through;
+}
+
+.bill-memo__outer {
+  border: var(--bill-memo-border);
+  min-height: calc(1123px - 28px);
+  padding: 8px 10px 10px;
+}
+
+.bill-memo__top {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: start;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.bill-memo__motto {
+  font-size: 11px;
+  letter-spacing: 0.02em;
+}
+
+.bill-memo__phone {
+  text-align: right;
+  font-weight: 600;
+  font-size: 12px;
+}
+
+.bill-memo__banner {
+  background: var(--bill-memo-blue);
+  color: #fff;
+  text-align: center;
+  padding: 4px 16px;
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  line-height: 1.2;
+}
+
+.bill-memo__header-main {
+  display: grid;
+  grid-template-columns: 72px 1fr 140px;
+  gap: 10px;
+  align-items: start;
+  margin: 8px 0 10px;
+}
+
+.bill-memo__logo {
+  width: 64px;
+  height: 64px;
+  border: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #666;
+  text-align: center;
+}
+
+.bill-memo__company-name {
+  color: var(--bill-memo-red);
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.05;
+  margin: 0 0 4px;
+}
+
+.bill-memo__address {
+  margin: 0;
+  font-size: 12px;
+}
+
+.bill-memo__truck-box {
+  border: 1px solid #333;
+  padding: 6px 8px;
+  font-size: 12px;
+}
+
+.bill-memo__truck-box dt {
+  font-weight: 600;
+  margin: 0;
+}
+
+.bill-memo__truck-box dd {
+  margin: 4px 0 0;
+  min-height: 1.1em;
+  border-bottom: 1px solid #333;
+}
+
+.bill-memo__parties {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #333;
+  margin-bottom: 8px;
+}
+
+.bill-memo__party-col {
+  padding: 6px 8px;
+}
+
+.bill-memo__party-col + .bill-memo__party-col {
+  border-left: 1px solid #333;
+}
+
+.bill-memo__field {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px;
+  align-items: end;
+  margin-bottom: 6px;
+  font-size: 12px;
+}
+
+.bill-memo__field-label {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.bill-memo__field-value {
+  border-bottom: 1px solid #333;
+  min-height: 1.1em;
+  padding: 0 2px 1px;
+}
+
+.bill-memo__memo-no {
+  color: var(--bill-memo-red);
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.bill-memo__loads {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 11px;
+  margin-bottom: 0;
+}
+
+.bill-memo__loads th,
+.bill-memo__loads td {
+  border: 1px solid #333;
+  padding: 4px 3px;
+  text-align: center;
+  vertical-align: middle;
+  word-break: break-word;
+}
+
+.bill-memo__loads th {
+  font-weight: 700;
+  background: #f8f8f8;
+}
+
+.bill-memo__loads td.bill-memo__loads-cell--left {
+  text-align: left;
+}
+
+.bill-memo__loads-footer {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  border: 1px solid #333;
+  border-top: none;
+  font-size: 12px;
+}
+
+.bill-memo__loads-footer > div {
+  padding: 5px 8px;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 6px;
+  align-items: end;
+}
+
+.bill-memo__loads-footer > div + div {
+  border-left: 1px solid #333;
+}
+
+.bill-memo__footer {
+  display: grid;
+  grid-template-columns: 1.2fr 0.8fr;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: start;
+}
+
+.bill-memo__terms {
+  font-size: 9.5px;
+  line-height: 1.35;
+  margin: 0;
+  padding-right: 6px;
+}
+
+.bill-memo__terms p {
+  margin: 0 0 4px;
+}
+
+.bill-memo__summary {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+}
+
+.bill-memo__summary th,
+.bill-memo__summary td {
+  border: 1px solid #333;
+  padding: 4px 6px;
+}
+
+.bill-memo__summary th {
+  text-align: left;
+  font-weight: 600;
+  width: 58%;
+}
+
+.bill-memo__summary td {
+  text-align: right;
+  min-width: 4.5em;
+}
+
+.bill-memo__summary tr.bill-memo__summary-total th,
+.bill-memo__summary tr.bill-memo__summary-total td {
+  border-top: 2px solid #333;
+  font-weight: 700;
+}
+
+.bill-memo__signatures {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--bill-memo-red);
+  font-weight: 600;
+}
+
+.bill-memo__signatures > div:last-child {
+  text-align: right;
+}
+
+@media print {
+  .bill-memo {
+    width: 210mm;
+    min-height: 297mm;
+  }
+}

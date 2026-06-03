@@ -23,7 +23,9 @@ FROM (
         ('goods', 'goods', 'Goods master: grid + form'),
         ('unit', 'unit', 'Unit master: grid + form'),
         ('financial_year', 'financial_year', 'Financial year master: grid + form'),
-        ('bills', 'bills', 'Bills transaction: grid list'),
+        ('bills', 'bills', 'Bills transaction: list grid'),
+        ('bills', 'bills_create', 'Bills transaction: create screen'),
+        ('bills', 'bills_edit', 'Bills transaction: edit screen'),
         ('loads', 'loads', 'Loads transaction: grid list')
 ) AS v(entity_name, menu_code, description)
 INNER JOIN app_entity e ON e.entity_name = v.entity_name

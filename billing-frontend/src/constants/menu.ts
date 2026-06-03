@@ -9,6 +9,8 @@ export const MENU_CODES = {
   unit: 'unit',
   financialYear: 'financial_year',
   bills: 'bills',
+  billsCreate: 'bills_create',
+  billsEdit: 'bills_edit',
   loads: 'loads',
   menu: 'menu',
 } as const;

@@ -1,10 +1,14 @@
+import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useMemo } from 'react';
 import {
   DataTable,
   getPrimaryEntityColumns,
   mapScreenColumnsToDataTableColumns,
+  rowActionEdit,
 } from '@/components/derived/data-table';
 import { ScreenDataTableSkeleton } from '@/components/derived/screen-page';
+import { Button } from '@/components/ui/button';
+import { ROUTES } from '@/constants/routes';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
@@ -16,6 +20,7 @@ import { SCREEN_METADATA_LOAD_STATUS } from '@/types/store/screen';
 
 export function BillsPage() {
   useScreenSlice(SCREEN_KEYS.bills);
+  const navigate = useNavigate();
 
   const dispatch = useAppDispatch();
   const table = useScreenTableSelector(SCREEN_KEYS.bills);
@@ -46,8 +51,18 @@ export function BillsPage() {
   }
 
   return (
+    <div className="flex min-h-0 flex-1 flex-col">
     <DataTable<BillListRowDto>
       title="Bills"
+      headerActions={
+        <Button
+          type="button"
+          size="sm"
+          onClick={() => void navigate({ to: ROUTES.billsCreate })}
+        >
+          New bill
+        </Button>
+      }
       value={table}
       onChange={onTableChange}
       queryOptions={listBillsQueryOptions}
@@ -56,6 +71,17 @@ export function BillsPage() {
       columns={columns}
       rowId={(row) => row.billId}
       searchPlaceholder="Search bills…"
+      renderRowActions={({ row, rowId }) => [
+        rowActionEdit({
+          row,
+          onClick: () =>
+            void navigate({
+              to: ROUTES.billsEdit,
+              params: { billId: String(rowId) },
+            }),
+        }),
+      ]}
     />
+    </div>
   );
 }

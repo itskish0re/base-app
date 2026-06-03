@@ -7,6 +7,7 @@ import {
   rowActionCustom,
 } from '@/components/derived/data-table';
 import { ScreenDataTableSkeleton } from '@/components/derived/screen-page';
+import { ROUTES } from '@/constants/routes';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
@@ -64,7 +65,7 @@ export function LoadsPage() {
           label: 'Open bill',
           onClick: () => {
             void navigate({
-              to: '/transactions/bills/$billId/edit',
+              to: ROUTES.billsEdit,
               params: { billId: String(row.billId) },
             });
           },

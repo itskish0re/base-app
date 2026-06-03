@@ -11,6 +11,11 @@ export const ROUTES = {
   goods: '/masters/goods',
   unit: '/masters/unit',
   menuAdmin: '/admin/menu',
+  bills: '/transactions/bills',
+  billsCreate: '/transactions/bills/create',
+  billsEdit: '/transactions/bills/edit/$billId',
+  billsEditIndex: '/transactions/bills/edit',
+  loads: '/transactions/loads',
 } as const;
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];

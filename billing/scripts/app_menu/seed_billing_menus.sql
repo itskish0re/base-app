@@ -223,6 +223,34 @@ VALUES
         NOW(),
         NOW()),
     (
+        'bills_create',
+        'Create bill',
+        '/transactions/bills/create',
+        'receipt',
+        NULL,
+        11,
+        NULL,
+        'Create bill',
+        true,
+        'main',
+        true,
+        NOW(),
+        NOW()),
+    (
+        'bills_edit',
+        'Edit bill',
+        '/transactions/bills/edit',
+        'receipt',
+        NULL,
+        12,
+        NULL,
+        'Edit bill',
+        true,
+        'main',
+        true,
+        NOW(),
+        NOW()),
+    (
         'loads',
         'Loads',
         '/transactions/loads',
@@ -257,7 +285,20 @@ SELECT r.role_id,
        NOW(),
        NOW()
 FROM app_role r
-INNER JOIN app_menu m ON m.menu_code IN ('dashboard', 'menu', 'name_board', 'truck', 'location', 'party', 'goods', 'unit', 'financial_year', 'bills', 'loads')
+INNER JOIN app_menu m ON m.menu_code IN (
+    'dashboard',
+    'menu',
+    'name_board',
+    'truck',
+    'location',
+    'party',
+    'goods',
+    'unit',
+    'financial_year',
+    'bills',
+    'bills_create',
+    'bills_edit',
+    'loads')
 WHERE r.role_code = 'admin'
   AND m.is_active = true
 ON CONFLICT (role_id, menu_id) DO UPDATE

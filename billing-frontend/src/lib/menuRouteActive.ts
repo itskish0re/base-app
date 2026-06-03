@@ -1,5 +1,8 @@
 import { useRouterState } from '@tanstack/react-router';
-import { DASHBOARD_ROUTE } from '@/constants/routes';
+import { DASHBOARD_ROUTE, ROUTES } from '@/constants/routes';
+
+/** List routes that have their own sidebar entries under the same URL prefix. */
+const EXACT_MATCH_MENU_ROUTES = new Set<string>([ROUTES.bills]);
 
 function normalizePath(path: string): string {
   if (!path || path === '/') {
@@ -15,6 +18,10 @@ export function isMenuRouteActive(pathname: string, routePath: string): boolean 
 
   if (target === '/' || target === DASHBOARD_ROUTE) {
     return current === '/' || current === DASHBOARD_ROUTE;
+  }
+
+  if (EXACT_MATCH_MENU_ROUTES.has(target)) {
+    return current === target;
   }
 
   return current === target || current.startsWith(`${target}/`);
