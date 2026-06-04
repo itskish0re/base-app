@@ -10,7 +10,11 @@ public sealed class Load : AuditableEntity
 
     public int LoadNumber { get; set; }
 
-    public int PartyId { get; set; }
+    public int ConsignorId { get; set; }
+
+    public int ConsigneeId { get; set; }
+
+    public bool AsPerBill { get; set; }
 
     public int ToId { get; set; }
 

@@ -1,8 +1,11 @@
-/** Bill + load line values edited on create/edit screens (client-side totals). */
+import type { BillOtherItem } from '@/types/billOther';
 export type BillLoadFormLine = {
   loadId?: number | null;
-  partyId: number | null;
-  partyName: string;
+  consignorId: number | null;
+  consignorName: string;
+  consigneeId: number | null;
+  consigneeName: string;
+  asPerBill: boolean;
   toId: number | null;
   toLocationName: string;
   goodsId: number | null;
@@ -38,7 +41,7 @@ export type BillFormValues = {
   officeMamul: number | '';
   tapalMamul: number | '';
   diesel: number | '';
-  others: number | '';
+  others: BillOtherItem[];
   total: number | '';
   isCancelled: boolean;
   loads: BillLoadFormLine[];

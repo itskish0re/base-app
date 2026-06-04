@@ -13,6 +13,7 @@ The API validates these exist on startup (`BillingViews.Required`).
 
 ```bash
 CONN="<connection-string>"
+psql "$CONN" -f scripts/functions/bill_others_total.sql
 psql "$CONN" -f scripts/views/v_bills.sql
 psql "$CONN" -f scripts/views/v_loads.sql
 ```

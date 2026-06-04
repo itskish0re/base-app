@@ -1,4 +1,5 @@
 import type { PagedResponse } from '@/types/common';
+import type { BillOtherItem } from '@/types/billOther';
 
 export type BillListRowDto = {
   billId: number;
@@ -45,7 +46,7 @@ export type BillDto = {
   officeMamul: number;
   tapalMamul: number;
   diesel: number;
-  others: number;
+  others: BillOtherItem[];
   total: number;
   isCancelled: boolean;
   financialYearId: number;
@@ -57,7 +58,9 @@ export type LoadLineDto = {
   loadId: number;
   billId: number;
   loadNumber: number;
-  partyId: number;
+  consignorId: number;
+  consigneeId: number;
+  asPerBill: boolean;
   toId: number;
   goodsId: number;
   unitId: number;
@@ -82,7 +85,9 @@ export type NextBillNumberResponse = {
 
 export type SaveBillLoadItem = {
   loadId?: number | null;
-  partyId: number;
+  consignorId: number;
+  consigneeId: number;
+  asPerBill: boolean;
   toId: number;
   goodsId: number;
   unitId: number;
@@ -110,7 +115,7 @@ export type SaveBillItem = {
   officeMamul: number;
   tapalMamul: number;
   diesel: number;
-  others: number;
+  others: BillOtherItem[];
   total: number;
   isCancelled?: boolean;
 };

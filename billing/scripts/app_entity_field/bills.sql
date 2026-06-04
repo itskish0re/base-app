@@ -51,7 +51,7 @@ CROSS JOIN (
         ('office_mamul', 'numeric', true, true, true, true, false, NULL::int, NULL::int, NULL::text),
         ('tapal_mamul', 'numeric', true, true, true, true, false, NULL::int, NULL::int, NULL::text),
         ('diesel', 'numeric', true, true, true, true, false, NULL::int, NULL::int, NULL::text),
-        ('others', 'numeric', true, true, true, true, false, NULL::int, NULL::int, NULL::text),
+        ('others', 'jsonb', true, false, true, true, false, NULL::int, NULL::int, '[]'::text),
         ('total', 'numeric', true, true, true, true, false, NULL::int, NULL::int, NULL::text),
         ('is_cancelled', 'boolean', true, true, true, true, false, NULL::int, NULL::int, 'false'::text),
         ('financial_year_id', 'integer', true, false, true, false, false, NULL::int, NULL::int, NULL::text),

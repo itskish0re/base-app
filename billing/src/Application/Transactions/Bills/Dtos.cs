@@ -16,7 +16,7 @@ public sealed record BillResponse(
     decimal OfficeMamul,
     decimal TapalMamul,
     decimal Diesel,
-    decimal Others,
+    IReadOnlyList<BillOtherItemDto> Others,
     decimal Total,
     bool IsCancelled,
     int FinancialYearId,
@@ -27,7 +27,9 @@ public sealed record LoadLineResponse(
     int LoadId,
     int BillId,
     int LoadNumber,
-    int PartyId,
+    int ConsignorId,
+    int ConsigneeId,
+    bool AsPerBill,
     int ToId,
     int GoodsId,
     int UnitId,
@@ -80,7 +82,9 @@ public sealed record NextBillNumberResponse(string BillNumber);
 
 public sealed record SaveBillLoadItem(
     int? LoadId,
-    int PartyId,
+    int ConsignorId,
+    int ConsigneeId,
+    bool AsPerBill,
     int ToId,
     int GoodsId,
     int UnitId,
@@ -107,7 +111,7 @@ public sealed record SaveBillItem(
     decimal OfficeMamul,
     decimal TapalMamul,
     decimal Diesel,
-    decimal Others,
+    IReadOnlyList<BillOtherItemDto> Others,
     decimal Total,
     bool IsCancelled);
 

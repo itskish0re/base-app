@@ -15,7 +15,7 @@ type BillMemoTemplateProps = {
 /**
  * HTML/CSS truck memo matching the sample bill layout.
  * Maps app fields → print columns:
- * - Consignor: party | Consignee: to location | Description: goods
+ * - Consignor / Consignee: party | Description: goods
  * - Weight + unit | Per Ton: rate | Total Freight | Advance | Balance
  */
 export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
@@ -120,8 +120,8 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           <tbody>
             {loadRows.map((row) => (
               <tr key={row.loadNumber}>
-                <td className="bill-memo__loads-cell--left">{row.partyName}</td>
-                <td className="bill-memo__loads-cell--left">{row.toLocationName}</td>
+                <td className="bill-memo__loads-cell--left">{row.consignorName}</td>
+                <td className="bill-memo__loads-cell--left">{row.consigneeName}</td>
                 <td className="bill-memo__loads-cell--left">{row.goodsName}</td>
                 <td>
                   {formatBillPreviewWeight(row.weightOrQuantity, row.unitName)}
@@ -191,10 +191,12 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
                 <th>Diesel</th>
                 <td>{formatBillPreviewAmount(data.diesel)}</td>
               </tr>
-              <tr>
-                <th>Extra</th>
-                <td>{formatBillPreviewAmount(data.others)}</td>
-              </tr>
+              {data.others.map((item, index) => (
+                <tr key={`other-${index}-${item.key}`}>
+                  <th>{item.key.trim() || 'Other'}</th>
+                  <td>{formatBillPreviewAmount(item.value)}</td>
+                </tr>
+              ))}
               <tr>
                 <th>Total Freight</th>
                 <td>{formatBillPreviewAmount(data.totalFreight)}</td>

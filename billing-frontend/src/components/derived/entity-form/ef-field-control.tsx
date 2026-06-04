@@ -25,7 +25,7 @@ export function EntityFormFieldControl({
 }: EntityFormFieldControlProps) {
   return (
     <div className={cn('space-y-2', className)}>
-      {id && label ? (
+      {label ? (
         <Label htmlFor={id}>
           {label}
           {required ? <EntityFormRequiredMark /> : null}

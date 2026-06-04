@@ -1,4 +1,9 @@
 import { DEFAULT_BILL_PREVIEW_COMPANY } from '@/lib/billPreview';
+import {
+  createEmptyBillOtherItem,
+  sumBillOtherItems,
+  type BillOtherItem,
+} from '@/types/billOther';
 import type { BillDetailResponse, SaveBillLoadItem, SaveBillRequest } from '@/types/entity/bill';
 import type { BillFormValues, BillLoadFormLine } from '@/types/billForm';
 import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
@@ -16,8 +21,11 @@ export function todayIsoDate(): string {
 
 export function createEmptyLoadLine(loadNumber = 1): BillLoadFormLine {
   return {
-    partyId: null,
-    partyName: '',
+    consignorId: null,
+    consignorName: '',
+    consigneeId: null,
+    consigneeName: '',
+    asPerBill: false,
     toId: null,
     toLocationName: '',
     goodsId: null,
@@ -55,7 +63,7 @@ export function createInitialBillFormValues(): BillFormValues {
     officeMamul: '',
     tapalMamul: '',
     diesel: '',
-    others: '',
+    others: [createEmptyBillOtherItem()],
     total: '',
     isCancelled: false,
     loads: [createEmptyLoadLine()],
@@ -104,7 +112,7 @@ export function recalculateBillForm(values: BillFormValues): BillFormValues {
     (toFormNumber(values.officeMamul) ?? 0) +
     (toFormNumber(values.tapalMamul) ?? 0) +
     (toFormNumber(values.diesel) ?? 0) +
-    (toFormNumber(values.others) ?? 0);
+    sumBillOtherItems(values.others);
 
   const deductions =
     (toFormNumber(values.handLoan) ?? 0) + (toFormNumber(values.truckLoan) ?? 0);
@@ -166,7 +174,9 @@ export function mapBillDetailToFormValues(
     officeMamul: bill.officeMamul,
     tapalMamul: bill.tapalMamul,
     diesel: bill.diesel,
-    others: bill.others,
+    others: bill.others?.length
+      ? bill.others.map((o) => ({ key: o.key, value: o.value }))
+      : [createEmptyBillOtherItem()],
     total: bill.total,
     isCancelled: bill.isCancelled,
     loads:
@@ -174,8 +184,11 @@ export function mapBillDetailToFormValues(
         ? loads.map((line) =>
             recalculateLoadLine({
               loadId: line.loadId,
-              partyId: line.partyId,
-              partyName: lookupItemLabel(lookups.parties, line.partyId),
+              consignorId: line.consignorId,
+              consignorName: lookupItemLabel(lookups.parties, line.consignorId),
+              consigneeId: line.consigneeId,
+              consigneeName: lookupItemLabel(lookups.parties, line.consigneeId),
+              asPerBill: line.asPerBill,
               toId: line.toId,
               toLocationName: lookupItemLabel(lookups.locations, line.toId),
               goodsId: line.goodsId,
@@ -197,8 +210,8 @@ export function mapBillDetailToFormValues(
 export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
   const loads: BillPreviewLoadLine[] = values.loads.map((line, index) => ({
     loadNumber: index + 1,
-    partyName: line.partyName,
-    toLocationName: line.toLocationName,
+    consignorName: line.consignorName,
+    consigneeName: line.consigneeName,
     goodsName: line.goodsName,
     unitName: line.unitName,
     weightOrQuantity: toFormNumber(line.weightOrQuantity),
@@ -228,7 +241,12 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
     crossing: toFormNumber(values.crossing),
     handLoan: toFormNumber(values.handLoan),
     diesel: toFormNumber(values.diesel),
-    others: toFormNumber(values.others),
+    others: values.others
+      .filter((o) => o.key.trim() || o.value !== '')
+      .map((o) => ({
+        key: o.key.trim(),
+        value: toFormNumber(o.value),
+      })),
     total: toFormNumber(values.total),
     totalFreight: toFormNumber(values.totalFreight),
     isCancelled: values.isCancelled,
@@ -237,8 +255,10 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
 
 function isLoadLineSavable(line: BillLoadFormLine): boolean {
   return (
-    line.partyId != null &&
-    line.partyId > 0 &&
+    line.consignorId != null &&
+    line.consignorId > 0 &&
+    line.consigneeId != null &&
+    line.consigneeId > 0 &&
     line.toId != null &&
     line.toId > 0 &&
     line.goodsId != null &&
@@ -248,10 +268,21 @@ function isLoadLineSavable(line: BillLoadFormLine): boolean {
   );
 }
 
+function mapOthersToSave(items: BillOtherItem[]) {
+  return items
+    .filter((o) => o.key.trim() && o.value !== '')
+    .map((o) => ({
+      key: o.key.trim(),
+      value: toFormNumberOrZero(o.value),
+    }));
+}
+
 export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillRequest {
   const loads: SaveBillLoadItem[] = values.loads.filter(isLoadLineSavable).map((line) => ({
     loadId: line.loadId ?? null,
-    partyId: line.partyId!,
+    consignorId: line.consignorId!,
+    consigneeId: line.consigneeId!,
+    asPerBill: line.asPerBill,
     toId: line.toId!,
     goodsId: line.goodsId!,
     unitId: line.unitId!,
@@ -280,7 +311,7 @@ export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillReques
       officeMamul: toFormNumberOrZero(values.officeMamul),
       tapalMamul: toFormNumberOrZero(values.tapalMamul),
       diesel: toFormNumberOrZero(values.diesel),
-      others: toFormNumberOrZero(values.others),
+      others: mapOthersToSave(values.others),
       total: toFormNumberOrZero(values.total),
       isCancelled: values.isCancelled,
     },
@@ -307,7 +338,7 @@ export function validateBillForm(values: BillFormValues): string | null {
 
   const savableLoads = values.loads.filter(isLoadLineSavable);
   if (savableLoads.length === 0) {
-    return 'Add at least one load line with party, destination, goods, and unit.';
+    return 'Add at least one load line with consignor, consignee, destination, goods, and unit.';
   }
 
   return null;

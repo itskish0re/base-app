@@ -19,7 +19,8 @@ internal static class TransactionGridifyMappers
         .AddCompositeMap(
             GridifyListFilter.GlobalSearchField,
             x => x.BillNumber,
-            x => x.PartyName,
+            x => x.ConsignorName,
+            x => x.ConsigneeName,
             x => x.ToLocationName,
             x => x.GoodsName,
             x => x.UnitName);

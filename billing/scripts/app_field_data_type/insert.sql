@@ -16,7 +16,8 @@ VALUES
     ('numeric', 'Numeric', 'Arbitrary-precision decimal', 50, true, NOW(), NOW()),
     ('timestamptz', 'Timestamp (TZ)', 'Timestamp with time zone', 60, true, NOW(), NOW()),
     ('uuid', 'UUID', 'Universally unique identifier', 70, true, NOW(), NOW()),
-    ('date', 'Date', 'Calendar date without time', 80, true, NOW(), NOW())
+    ('date', 'Date', 'Calendar date without time', 80, true, NOW(), NOW()),
+    ('jsonb', 'JSON', 'JSON document (e.g. key/value arrays)', 90, true, NOW(), NOW())
 ON CONFLICT (type_code) DO UPDATE
 SET
     display_name = EXCLUDED.display_name,

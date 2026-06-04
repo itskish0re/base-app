@@ -19,7 +19,9 @@ internal sealed class LoadConfiguration : IEntityTypeConfiguration<Load>
         builder.Property(x => x.BillId).HasColumnName("bill_id");
         builder.Property(x => x.LoadNumber).HasColumnName("load_number");
 
-        builder.Property(x => x.PartyId).HasColumnName("party_id");
+        builder.Property(x => x.ConsignorId).HasColumnName("consignor_id");
+        builder.Property(x => x.ConsigneeId).HasColumnName("consignee_id");
+        builder.Property(x => x.AsPerBill).HasColumnName("as_per_bill").HasDefaultValue(false);
         builder.Property(x => x.ToId).HasColumnName("to_id");
         builder.Property(x => x.GoodsId).HasColumnName("goods_id");
         builder.Property(x => x.UnitId).HasColumnName("unit_id");

@@ -1,5 +1,6 @@
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
+import { BillOtherCharges } from '@/components/transactions/bill/bill-other-charges';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -57,22 +58,25 @@ export function BillForm({
       <section className="space-y-4">
         <h3 className="text-sm font-semibold">Bill header</h3>
         <div className="grid gap-3 sm:grid-cols-2">
-          <EntityFormFieldControl label="Bill number" required>
+          <EntityFormFieldControl id="bill-number" label="Bill number" required>
             <Input
+              id="bill-number"
               value={values.billNumber}
               readOnly={billNumberReadOnly}
               onChange={(e) => patch({ billNumber: e.target.value })}
             />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Bill date" required>
+          <EntityFormFieldControl id="bill-date" label="Bill date" required>
             <Input
+              id="bill-date"
               type="date"
               value={values.billDate}
               onChange={(e) => patch({ billDate: e.target.value })}
             />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="From" required>
+          <EntityFormFieldControl id="bill-from" label="From" required>
             <EntityFormLookupCombobox
+              id="bill-from"
               value={values.fromId}
               onChange={(value) => {
                 const fromId = value == null ? null : Number(value);
@@ -86,8 +90,9 @@ export function BillForm({
               searchPlaceholder="Search location…"
             />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Truck" required>
+          <EntityFormFieldControl id="bill-truck" label="Truck" required>
             <EntityFormLookupCombobox
+              id="bill-truck"
               value={values.truckId}
               onChange={(value) => {
                 const truckId = value == null ? null : Number(value);
@@ -115,23 +120,25 @@ export function BillForm({
         </div>
 
         <div className="grid gap-3 sm:grid-cols-2">
-          <EntityFormFieldControl label="Name board">
-            <Input value={values.nameBoardName} readOnly className="bg-muted/50" />
+          <EntityFormFieldControl id="bill-name-board" label="Name board">
+            <Input id="bill-name-board" value={values.nameBoardName} readOnly className="bg-muted/50" />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Owner name">
-            <Input value={values.ownerName} readOnly className="bg-muted/50" />
+          <EntityFormFieldControl id="bill-owner-name" label="Owner name">
+            <Input id="bill-owner-name" value={values.ownerName} readOnly className="bg-muted/50" />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Owner mobile">
-            <Input value={values.ownerMobile} readOnly className="bg-muted/50" />
+          <EntityFormFieldControl id="bill-owner-mobile" label="Owner mobile">
+            <Input id="bill-owner-mobile" value={values.ownerMobile} readOnly className="bg-muted/50" />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Driver name" required>
+          <EntityFormFieldControl id="bill-driver-name" label="Driver name" required>
             <Input
+              id="bill-driver-name"
               value={values.driverName}
               onChange={(e) => patch({ driverName: e.target.value })}
             />
           </EntityFormFieldControl>
-          <EntityFormFieldControl label="Driver mobile">
+          <EntityFormFieldControl id="bill-driver-mobile" label="Driver mobile">
             <Input
+              id="bill-driver-mobile"
               value={values.driverMobile}
               onChange={(e) => patch({ driverMobile: e.target.value })}
             />
@@ -161,12 +168,12 @@ export function BillForm({
               ['officeMamul', 'Office mamul'],
               ['tapalMamul', 'Tapal mamul'],
               ['diesel', 'Diesel'],
-              ['others', 'Others'],
               ['total', 'Total'],
             ] as const
           ).map(([key, label]) => (
-            <EntityFormFieldControl key={key} label={label}>
+            <EntityFormFieldControl key={key} id={`bill-${key}`} label={label}>
               <Input
+                id={`bill-${key}`}
                 type="number"
                 inputMode="decimal"
                 value={values[key] === '' ? '' : values[key]}
@@ -177,6 +184,11 @@ export function BillForm({
             </EntityFormFieldControl>
           ))}
         </div>
+
+        <BillOtherCharges
+          items={values.others}
+          onChange={(others) => patch({ others })}
+        />
 
         <div className="flex items-center gap-2">
           <Switch

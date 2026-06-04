@@ -115,7 +115,7 @@ internal sealed class SaveBillCommandHandler(
         bill.OfficeMamul = item.OfficeMamul;
         bill.TapalMamul = item.TapalMamul;
         bill.Diesel = item.Diesel;
-        bill.Others = item.Others;
+        bill.Others = BillOtherItemDtoExtensions.ToDomain(item.Others);
         bill.Total = item.Total;
         bill.IsCancelled = item.IsCancelled;
     }
@@ -176,7 +176,9 @@ internal sealed class SaveBillCommandHandler(
     private static void ApplyLoadFields(Load load, SaveBillLoadItem line, int loadNumber, int financialYearId)
     {
         load.LoadNumber = loadNumber;
-        load.PartyId = line.PartyId;
+        load.ConsignorId = line.ConsignorId;
+        load.ConsigneeId = line.ConsigneeId;
+        load.AsPerBill = line.AsPerBill;
         load.ToId = line.ToId;
         load.GoodsId = line.GoodsId;
         load.UnitId = line.UnitId;
@@ -200,7 +202,8 @@ internal sealed class SaveBillCommandValidator : AbstractValidator<SaveBillComma
         RuleFor(x => x.Bill.DriverName).NotEmpty().MaximumLength(256);
         RuleForEach(x => x.Loads).ChildRules(load =>
         {
-            load.RuleFor(l => l.PartyId).GreaterThan(0);
+            load.RuleFor(l => l.ConsignorId).GreaterThan(0);
+            load.RuleFor(l => l.ConsigneeId).GreaterThan(0);
             load.RuleFor(l => l.ToId).GreaterThan(0);
             load.RuleFor(l => l.GoodsId).GreaterThan(0);
             load.RuleFor(l => l.UnitId).GreaterThan(0);

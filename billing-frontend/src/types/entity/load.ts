@@ -5,8 +5,11 @@ export type LoadListRowDto = {
   billId: number;
   billNumber: string;
   loadNumber: number;
-  partyId: number;
-  partyName: string;
+  consignorId: number;
+  consignorName: string;
+  consigneeId: number;
+  consigneeName: string;
+  asPerBill: boolean;
   toId: number;
   toLocationName: string;
   goodsId: number;

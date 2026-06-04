@@ -45,7 +45,10 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         ConfigureMoney(builder.Property(x => x.OfficeMamul), "office_mamul");
         ConfigureMoney(builder.Property(x => x.TapalMamul), "tapal_mamul");
         ConfigureMoney(builder.Property(x => x.Diesel), "diesel");
-        ConfigureMoney(builder.Property(x => x.Others), "others");
+        builder.Property(x => x.Others)
+            .HasColumnName("others")
+            .HasColumnType("jsonb")
+            .HasDefaultValueSql("'[]'::jsonb");
         ConfigureMoney(builder.Property(x => x.Total), "total");
 
         builder.Property(x => x.IsCancelled)

@@ -1,8 +1,13 @@
 /** Display model for the truck memo HTML preview (form → preview mapping). */
+export type BillPreviewOtherItem = {
+  key: string;
+  value: number | null;
+};
+
 export type BillPreviewLoadLine = {
   loadNumber: number;
-  partyName: string;
-  toLocationName: string;
+  consignorName: string;
+  consigneeName: string;
   goodsName: string;
   unitName: string;
   weightOrQuantity: number | null;
@@ -45,8 +50,8 @@ export type BillPreviewModel = {
   crossing: number | null;
   handLoan: number | null;
   diesel: number | null;
-  /** Shown as "Extra" on memo */
-  others: number | null;
+  /** Shown as dynamic rows on memo (replaces single Extra). */
+  others: BillPreviewOtherItem[];
   total: number | null;
   totalFreight: number | null;
   isCancelled: boolean;

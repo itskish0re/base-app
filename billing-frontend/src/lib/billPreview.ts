@@ -59,8 +59,8 @@ function padLoadRows(loads: BillPreviewLoadLine[], minRows: number): BillPreview
   while (rows.length < minRows) {
     rows.push({
       loadNumber: rows.length + 1,
-      partyName: '',
-      toLocationName: '',
+      consignorName: '',
+      consigneeName: '',
       goodsName: '',
       unitName: '',
       weightOrQuantity: null,
@@ -91,8 +91,8 @@ export function createSampleBillPreview(): BillPreviewModel {
       [
         {
           loadNumber: 1,
-          partyName: 'ABC Traders',
-          toLocationName: 'Rajkot',
+          consignorName: 'ABC Traders',
+          consigneeName: 'XYZ Stores',
           goodsName: 'Ceramic Tiles',
           unitName: 'Ton',
           weightOrQuantity: 12,
@@ -112,7 +112,7 @@ export function createSampleBillPreview(): BillPreviewModel {
     crossing: null,
     handLoan: null,
     diesel: null,
-    others: 100,
+    others: [{ key: 'Parking', value: 100 }],
     total: 11150,
     totalFreight: 10200,
     isCancelled: false,

@@ -15,8 +15,11 @@ internal sealed class LoadListRowConfiguration : IEntityTypeConfiguration<LoadLi
         builder.Property(x => x.BillId).HasColumnName("bill_id");
         builder.Property(x => x.BillNumber).HasColumnName("bill_number");
         builder.Property(x => x.LoadNumber).HasColumnName("load_number");
-        builder.Property(x => x.PartyId).HasColumnName("party_id");
-        builder.Property(x => x.PartyName).HasColumnName("party_name");
+        builder.Property(x => x.ConsignorId).HasColumnName("consignor_id");
+        builder.Property(x => x.ConsignorName).HasColumnName("consignor_name");
+        builder.Property(x => x.ConsigneeId).HasColumnName("consignee_id");
+        builder.Property(x => x.ConsigneeName).HasColumnName("consignee_name");
+        builder.Property(x => x.AsPerBill).HasColumnName("as_per_bill");
         builder.Property(x => x.ToId).HasColumnName("to_id");
         builder.Property(x => x.ToLocationName).HasColumnName("to_location_name");
         builder.Property(x => x.GoodsId).HasColumnName("goods_id");

@@ -1,6 +1,7 @@
 -- v_bills — list/read model for bills grid (no is_cancelled filter).
+-- Requires public.bill_others_total() — run scripts/functions/bill_others_total.sql first.
 
-CREATE OR REPLACE VIEW v_bills AS
+CREATE OR REPLACE VIEW public.v_bills AS
 SELECT
     b.bill_id,
     b.bill_number,
@@ -22,12 +23,12 @@ SELECT
     b.office_mamul,
     b.tapal_mamul,
     b.diesel,
-    b.others,
+    public.bill_others_total(b.others) AS others,
     b.total,
     b.is_cancelled,
     b.financial_year_id
-FROM bills b
-INNER JOIN location loc ON loc.location_id = b.from_id
-INNER JOIN truck t ON t.truck_id = b.truck_id
-INNER JOIN name_board nb ON nb.name_board_id = t.name_board_id
+FROM public.bills b
+INNER JOIN public.location loc ON loc.location_id = b.from_id
+INNER JOIN public.truck t ON t.truck_id = b.truck_id
+INNER JOIN public.name_board nb ON nb.name_board_id = t.name_board_id
 WHERE NOT b.is_deleted;

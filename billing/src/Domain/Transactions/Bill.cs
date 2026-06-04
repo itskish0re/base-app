@@ -34,7 +34,7 @@ public sealed class Bill : AuditableEntity
 
     public decimal Diesel { get; set; }
 
-    public decimal Others { get; set; }
+    public List<BillOtherItem> Others { get; set; } = [];
 
     public decimal Total { get; set; }
 

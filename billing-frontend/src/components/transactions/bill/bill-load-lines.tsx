@@ -3,8 +3,10 @@ import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lo
 import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { lookupItemLabel } from '@/lib/billForm';
-import type { BillFormValues, BillLoadFormLine } from '@/types/billForm';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
+import { createEmptyLoadLine, lookupItemLabel } from '@/lib/billForm';
+import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
 
 type BillLoadLinesProps = {
@@ -38,26 +40,7 @@ export function BillLoadLines({
   };
 
   const addLine = () => {
-    onChange([
-      ...loads,
-      {
-        partyId: null,
-        partyName: '',
-        toId: null,
-        toLocationName: '',
-        goodsId: null,
-        goodsName: '',
-        unitId: null,
-        unitName: '',
-        weightOrQuantity: '',
-        ratePerUnit: '',
-        freight: '',
-        advance: '',
-        topay: '',
-        balance: '',
-        loadId: null,
-      },
-    ]);
+    onChange([...loads, createEmptyLoadLine()]);
   };
 
   const removeLine = (index: number) => {
@@ -98,24 +81,43 @@ export function BillLoadLines({
           </div>
 
           <div className="grid gap-3 sm:grid-cols-2">
-            <EntityFormFieldControl label="Party" required>
+            <EntityFormFieldControl id={`load-${index}-consignor`} label="Consignor" required>
               <EntityFormLookupCombobox
-                value={line.partyId}
+                id={`load-${index}-consignor`}
+                value={line.consignorId}
                 onChange={(value) => {
-                  const partyId = value == null ? null : Number(value);
+                  const consignorId = value == null ? null : Number(value);
                   updateLine(index, {
-                    partyId: Number.isFinite(partyId) ? partyId : null,
-                    partyName: lookupItemLabel(parties, partyId),
+                    consignorId: Number.isFinite(consignorId) ? consignorId : null,
+                    consignorName: lookupItemLabel(parties, consignorId),
                   });
                 }}
                 items={parties}
-                placeholder="Select party…"
+                placeholder="Select consignor…"
                 searchPlaceholder="Search party…"
               />
             </EntityFormFieldControl>
 
-            <EntityFormFieldControl label="To" required>
+            <EntityFormFieldControl id={`load-${index}-consignee`} label="Consignee" required>
               <EntityFormLookupCombobox
+                id={`load-${index}-consignee`}
+                value={line.consigneeId}
+                onChange={(value) => {
+                  const consigneeId = value == null ? null : Number(value);
+                  updateLine(index, {
+                    consigneeId: Number.isFinite(consigneeId) ? consigneeId : null,
+                    consigneeName: lookupItemLabel(parties, consigneeId),
+                  });
+                }}
+                items={parties}
+                placeholder="Select consignee…"
+                searchPlaceholder="Search party…"
+              />
+            </EntityFormFieldControl>
+
+            <EntityFormFieldControl id={`load-${index}-to`} label="To" required>
+              <EntityFormLookupCombobox
+                id={`load-${index}-to`}
                 value={line.toId}
                 onChange={(value) => {
                   const toId = value == null ? null : Number(value);
@@ -130,8 +132,18 @@ export function BillLoadLines({
               />
             </EntityFormFieldControl>
 
-            <EntityFormFieldControl label="Goods" required>
+            <div className="flex items-end gap-2 pb-1 sm:col-span-2">
+              <Switch
+                id={`load-${index}-as-per-bill`}
+                checked={line.asPerBill}
+                onCheckedChange={(checked) => updateLine(index, { asPerBill: checked })}
+              />
+              <Label htmlFor={`load-${index}-as-per-bill`}>As per bill</Label>
+            </div>
+
+            <EntityFormFieldControl id={`load-${index}-goods`} label="Goods" required>
               <EntityFormLookupCombobox
+                id={`load-${index}-goods`}
                 value={line.goodsId}
                 onChange={(value) => {
                   const goodsId = value == null ? null : Number(value);
@@ -146,8 +158,9 @@ export function BillLoadLines({
               />
             </EntityFormFieldControl>
 
-            <EntityFormFieldControl label="Unit" required>
+            <EntityFormFieldControl id={`load-${index}-unit`} label="Unit" required>
               <EntityFormLookupCombobox
+                id={`load-${index}-unit`}
                 value={line.unitId}
                 onChange={(value) => {
                   const unitId = value == null ? null : Number(value);
@@ -164,8 +177,9 @@ export function BillLoadLines({
           </div>
 
           <div className="grid gap-3 sm:grid-cols-3">
-            <EntityFormFieldControl label="Weight / Qty">
+            <EntityFormFieldControl id={`load-${index}-weight`} label="Weight / Qty">
               <Input
+                id={`load-${index}-weight`}
                 type="number"
                 inputMode="decimal"
                 value={line.weightOrQuantity === '' ? '' : line.weightOrQuantity}
@@ -174,8 +188,9 @@ export function BillLoadLines({
                 }
               />
             </EntityFormFieldControl>
-            <EntityFormFieldControl label="Rate">
+            <EntityFormFieldControl id={`load-${index}-rate`} label="Rate per unit">
               <Input
+                id={`load-${index}-rate`}
                 type="number"
                 inputMode="decimal"
                 value={line.ratePerUnit === '' ? '' : line.ratePerUnit}
@@ -184,8 +199,9 @@ export function BillLoadLines({
                 }
               />
             </EntityFormFieldControl>
-            <EntityFormFieldControl label="Freight">
+            <EntityFormFieldControl id={`load-${index}-freight`} label="Freight">
               <Input
+                id={`load-${index}-freight`}
                 type="number"
                 inputMode="decimal"
                 value={line.freight === '' ? '' : line.freight}
@@ -194,8 +210,9 @@ export function BillLoadLines({
                 }
               />
             </EntityFormFieldControl>
-            <EntityFormFieldControl label="Advance">
+            <EntityFormFieldControl id={`load-${index}-advance`} label="Advance">
               <Input
+                id={`load-${index}-advance`}
                 type="number"
                 inputMode="decimal"
                 value={line.advance === '' ? '' : line.advance}
@@ -204,16 +221,18 @@ export function BillLoadLines({
                 }
               />
             </EntityFormFieldControl>
-            <EntityFormFieldControl label="To pay">
+            <EntityFormFieldControl id={`load-${index}-topay`} label="To pay">
               <Input
+                id={`load-${index}-topay`}
                 type="number"
                 inputMode="decimal"
                 value={line.topay === '' ? '' : line.topay}
                 onChange={(e) => updateLine(index, { topay: parseNumericInput(e.target.value) })}
               />
             </EntityFormFieldControl>
-            <EntityFormFieldControl label="Balance">
+            <EntityFormFieldControl id={`load-${index}-balance`} label="Balance">
               <Input
+                id={`load-${index}-balance`}
                 type="number"
                 inputMode="decimal"
                 value={line.balance === '' ? '' : line.balance}

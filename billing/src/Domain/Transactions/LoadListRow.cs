@@ -11,9 +11,15 @@ public sealed class LoadListRow
 
     public int LoadNumber { get; set; }
 
-    public int PartyId { get; set; }
+    public int ConsignorId { get; set; }
 
-    public string PartyName { get; set; } = null!;
+    public string ConsignorName { get; set; } = null!;
+
+    public int ConsigneeId { get; set; }
+
+    public string ConsigneeName { get; set; } = null!;
+
+    public bool AsPerBill { get; set; }
 
     public int ToId { get; set; }
 

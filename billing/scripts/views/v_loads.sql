@@ -6,8 +6,11 @@ SELECT
     l.bill_id,
     b.bill_number,
     l.load_number,
-    l.party_id,
-    p.name AS party_name,
+    l.consignor_id,
+    consignor.name AS consignor_name,
+    l.consignee_id,
+    consignee.name AS consignee_name,
+    l.as_per_bill,
     l.to_id,
     loc.name AS to_location_name,
     l.goods_id,
@@ -24,7 +27,8 @@ SELECT
     l.financial_year_id
 FROM loads l
 INNER JOIN bills b ON b.bill_id = l.bill_id
-INNER JOIN party p ON p.party_id = l.party_id
+INNER JOIN party consignor ON consignor.party_id = l.consignor_id
+INNER JOIN party consignee ON consignee.party_id = l.consignee_id
 INNER JOIN location loc ON loc.location_id = l.to_id
 INNER JOIN goods g ON g.goods_id = l.goods_id
 INNER JOIN unit u ON u.unit_id = l.unit_id
