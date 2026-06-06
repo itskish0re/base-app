@@ -9,7 +9,7 @@ import type { BillFormValues, BillLoadFormLine } from '@/types/billForm';
 import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
 import type { LookupItem } from '@/types/common';
 
-export const BILL_FORM_MIN_LOAD_ROWS = 6;
+export const BILL_FORM_MAX_LOAD_ROWS = 3;
 
 export function todayIsoDate(): string {
   const now = new Date();
@@ -21,6 +21,7 @@ export function todayIsoDate(): string {
 
 export function createEmptyLoadLine(loadNumber = 1): BillLoadFormLine {
   return {
+    loadNumber,
     consignorId: null,
     consignorName: '',
     consigneeId: null,
@@ -181,13 +182,19 @@ export function mapBillDetailToFormValues(
     isCancelled: bill.isCancelled,
     loads:
       loads.length > 0
-        ? loads.map((line) =>
+        ? loads
+            .slice()
+            .sort((a, b) => a.loadNumber - b.loadNumber)
+            .map((line) =>
             recalculateLoadLine({
               loadId: line.loadId,
+              loadNumber: line.loadNumber,
               consignorId: line.consignorId,
               consignorName: lookupItemLabel(lookups.parties, line.consignorId),
-              consigneeId: line.consigneeId,
-              consigneeName: lookupItemLabel(lookups.parties, line.consigneeId),
+              consigneeId: line.asPerBill ? null : line.consigneeId,
+              consigneeName: line.asPerBill
+                ? ''
+                : lookupItemLabel(lookups.parties, line.consigneeId),
               asPerBill: line.asPerBill,
               toId: line.toId,
               toLocationName: lookupItemLabel(lookups.locations, line.toId),
@@ -209,9 +216,11 @@ export function mapBillDetailToFormValues(
 
 export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
   const loads: BillPreviewLoadLine[] = values.loads.map((line, index) => ({
-    loadNumber: index + 1,
+    loadNumber: line.loadNumber || index + 1,
     consignorName: line.consignorName,
     consigneeName: line.consigneeName,
+    asPerBill: line.asPerBill,
+    toLocationName: line.toLocationName,
     goodsName: line.goodsName,
     unitName: line.unitName,
     weightOrQuantity: toFormNumber(line.weightOrQuantity),
@@ -221,19 +230,26 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
     balance: toFormNumber(line.balance),
   }));
 
+  const primaryLoad = values.loads
+    .map((line, index) => ({
+      loadNumber: line.loadNumber || index + 1,
+      toLocationName: line.toLocationName,
+    }))
+    .sort((a, b) => a.loadNumber - b.loadNumber)[0];
+
   return {
     company: DEFAULT_BILL_PREVIEW_COMPANY,
     billNumber: values.billNumber,
     billDate: values.billDate,
     fromLocationName: values.fromLocationName,
+    toLocationName: primaryLoad?.toLocationName ?? '',
     truckNumber: values.truckNumber,
     nameBoardName: values.nameBoardName,
     ownerName: values.ownerName,
     ownerMobile: values.ownerMobile,
     driverName: values.driverName,
     driverMobile: values.driverMobile,
-    loads,
-    minLoadRows: BILL_FORM_MIN_LOAD_ROWS,
+    loads: loads.slice(0, BILL_FORM_MAX_LOAD_ROWS),
     truckLoan: toFormNumber(values.truckLoan),
     commission: toFormNumber(values.commission),
     officeMamul: toFormNumber(values.officeMamul),
@@ -254,11 +270,12 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
 }
 
 function isLoadLineSavable(line: BillLoadFormLine): boolean {
+  const hasConsignee = line.asPerBill || (line.consigneeId != null && line.consigneeId > 0);
+
   return (
     line.consignorId != null &&
     line.consignorId > 0 &&
-    line.consigneeId != null &&
-    line.consigneeId > 0 &&
+    hasConsignee &&
     line.toId != null &&
     line.toId > 0 &&
     line.goodsId != null &&
@@ -281,7 +298,7 @@ export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillReques
   const loads: SaveBillLoadItem[] = values.loads.filter(isLoadLineSavable).map((line) => ({
     loadId: line.loadId ?? null,
     consignorId: line.consignorId!,
-    consigneeId: line.consigneeId!,
+    consigneeId: line.asPerBill ? null : line.consigneeId,
     asPerBill: line.asPerBill,
     toId: line.toId!,
     goodsId: line.goodsId!,
@@ -338,7 +355,7 @@ export function validateBillForm(values: BillFormValues): string | null {
 
   const savableLoads = values.loads.filter(isLoadLineSavable);
   if (savableLoads.length === 0) {
-    return 'Add at least one load line with consignor, consignee, destination, goods, and unit.';
+    return 'Add at least one load line with consignor, destination, goods, and unit (consignee required unless as per bill).';
   }
 
   return null;

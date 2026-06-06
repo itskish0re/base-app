@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { createEmptyLoadLine, lookupItemLabel } from '@/lib/billForm';
+import { BILL_FORM_MAX_LOAD_ROWS, createEmptyLoadLine, lookupItemLabel } from '@/lib/billForm';
 import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
 
@@ -40,7 +40,11 @@ export function BillLoadLines({
   };
 
   const addLine = () => {
-    onChange([...loads, createEmptyLoadLine()]);
+    if (loads.length >= BILL_FORM_MAX_LOAD_ROWS) {
+      return;
+    }
+
+    onChange([...loads, createEmptyLoadLine(Math.max(...loads.map((l) => l.loadNumber), 0) + 1)]);
   };
 
   const removeLine = (index: number) => {
@@ -55,7 +59,13 @@ export function BillLoadLines({
     <div className="space-y-4">
       <div className="flex items-center justify-between gap-2">
         <h3 className="text-sm font-semibold">Loads</h3>
-        <Button type="button" variant="outline" size="sm" onClick={addLine}>
+        <Button
+          type="button"
+          variant="outline"
+          size="sm"
+          onClick={addLine}
+          disabled={loads.length >= BILL_FORM_MAX_LOAD_ROWS}
+        >
           <Plus className="mr-1 size-4" />
           Add line
         </Button>
@@ -98,10 +108,15 @@ export function BillLoadLines({
               />
             </EntityFormFieldControl>
 
-            <EntityFormFieldControl id={`load-${index}-consignee`} label="Consignee" required>
+            <EntityFormFieldControl
+              id={`load-${index}-consignee`}
+              label="Consignee"
+              required={!line.asPerBill}
+            >
               <EntityFormLookupCombobox
                 id={`load-${index}-consignee`}
                 value={line.consigneeId}
+                disabled={line.asPerBill}
                 onChange={(value) => {
                   const consigneeId = value == null ? null : Number(value);
                   updateLine(index, {
@@ -136,7 +151,14 @@ export function BillLoadLines({
               <Switch
                 id={`load-${index}-as-per-bill`}
                 checked={line.asPerBill}
-                onCheckedChange={(checked) => updateLine(index, { asPerBill: checked })}
+                onCheckedChange={(checked) =>
+                  updateLine(index, {
+                    asPerBill: checked,
+                    ...(checked
+                      ? { consigneeId: null, consigneeName: '' }
+                      : {}),
+                  })
+                }
               />
               <Label htmlFor={`load-${index}-as-per-bill`}>As per bill</Label>
             </div>

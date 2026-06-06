@@ -1,6 +1,7 @@
 import type { BillOtherItem } from '@/types/billOther';
 export type BillLoadFormLine = {
   loadId?: number | null;
+  loadNumber: number;
   consignorId: number | null;
   consignorName: string;
   consigneeId: number | null;

@@ -1394,7 +1394,7 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("integer")
                         .HasColumnName("bill_id");
 
-                    b.Property<int>("ConsigneeId")
+                    b.Property<int?>("ConsigneeId")
                         .HasColumnType("integer")
                         .HasColumnName("consignee_id");
 
@@ -1520,12 +1520,11 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("text")
                         .HasColumnName("bill_number");
 
-                    b.Property<int>("ConsigneeId")
+                    b.Property<int?>("ConsigneeId")
                         .HasColumnType("integer")
                         .HasColumnName("consignee_id");
 
                     b.Property<string>("ConsigneeName")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("consignee_name");
 

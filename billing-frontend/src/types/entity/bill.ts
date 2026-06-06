@@ -59,7 +59,7 @@ export type LoadLineDto = {
   billId: number;
   loadNumber: number;
   consignorId: number;
-  consigneeId: number;
+  consigneeId: number | null;
   asPerBill: boolean;
   toId: number;
   goodsId: number;
@@ -86,7 +86,7 @@ export type NextBillNumberResponse = {
 export type SaveBillLoadItem = {
   loadId?: number | null;
   consignorId: number;
-  consigneeId: number;
+  consigneeId: number | null;
   asPerBill: boolean;
   toId: number;
   goodsId: number;

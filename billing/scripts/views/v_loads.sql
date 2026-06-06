@@ -28,7 +28,7 @@ SELECT
 FROM loads l
 INNER JOIN bills b ON b.bill_id = l.bill_id
 INNER JOIN party consignor ON consignor.party_id = l.consignor_id
-INNER JOIN party consignee ON consignee.party_id = l.consignee_id
+LEFT JOIN party consignee ON consignee.party_id = l.consignee_id
 INNER JOIN location loc ON loc.location_id = l.to_id
 INNER JOIN goods g ON g.goods_id = l.goods_id
 INNER JOIN unit u ON u.unit_id = l.unit_id

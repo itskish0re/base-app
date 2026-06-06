@@ -8,6 +8,8 @@ export type BillPreviewLoadLine = {
   loadNumber: number;
   consignorName: string;
   consigneeName: string;
+  asPerBill: boolean;
+  toLocationName: string;
   goodsName: string;
   unitName: string;
   weightOrQuantity: number | null;
@@ -21,10 +23,15 @@ export type BillPreviewCompany = {
   motto: string;
   titleTop: string;
   titleBottom: string;
-  companyName: string;
+  /** Primary script line (e.g. "Shiv Krupa"). */
+  companyNameMain: string;
+  /** Secondary script line on same row (e.g. "Transport"). */
+  companyNameSub: string;
   addressLines: string[];
   phone: string;
   signatureLabel: string;
+  /** Numbered disclaimer lines at the bottom-left of the memo. */
+  terms: string[];
 };
 
 export type BillPreviewModel = {
@@ -32,6 +39,8 @@ export type BillPreviewModel = {
   billNumber: string;
   billDate: string;
   fromLocationName: string;
+  /** Primary destination — `to` of the load with the lowest load number. */
+  toLocationName: string;
   truckNumber: string;
   nameBoardName: string;
   ownerName: string;
@@ -39,8 +48,6 @@ export type BillPreviewModel = {
   driverName: string;
   driverMobile: string;
   loads: BillPreviewLoadLine[];
-  /** Minimum empty rows on the memo (pad for handwriting). */
-  minLoadRows: number;
   truckLoan: number | null;
   commission: number | null;
   /** Shown as "Loading Charges" on memo */

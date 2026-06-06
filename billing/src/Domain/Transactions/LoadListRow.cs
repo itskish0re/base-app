@@ -15,9 +15,9 @@ public sealed class LoadListRow
 
     public string ConsignorName { get; set; } = null!;
 
-    public int ConsigneeId { get; set; }
+    public int? ConsigneeId { get; set; }
 
-    public string ConsigneeName { get; set; } = null!;
+    public string? ConsigneeName { get; set; }
 
     public bool AsPerBill { get; set; }
 

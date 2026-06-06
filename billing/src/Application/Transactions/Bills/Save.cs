@@ -177,8 +177,8 @@ internal sealed class SaveBillCommandHandler(
     {
         load.LoadNumber = loadNumber;
         load.ConsignorId = line.ConsignorId;
-        load.ConsigneeId = line.ConsigneeId;
         load.AsPerBill = line.AsPerBill;
+        load.ConsigneeId = line.AsPerBill ? null : line.ConsigneeId;
         load.ToId = line.ToId;
         load.GoodsId = line.GoodsId;
         load.UnitId = line.UnitId;
@@ -203,7 +203,13 @@ internal sealed class SaveBillCommandValidator : AbstractValidator<SaveBillComma
         RuleForEach(x => x.Loads).ChildRules(load =>
         {
             load.RuleFor(l => l.ConsignorId).GreaterThan(0);
-            load.RuleFor(l => l.ConsigneeId).GreaterThan(0);
+            load.When(l => l.AsPerBill, () =>
+            {
+                load.RuleFor(l => l.ConsigneeId).Null();
+            }).Otherwise(() =>
+            {
+                load.RuleFor(l => l.ConsigneeId).NotNull().GreaterThan(0);
+            });
             load.RuleFor(l => l.ToId).GreaterThan(0);
             load.RuleFor(l => l.GoodsId).GreaterThan(0);
             load.RuleFor(l => l.UnitId).GreaterThan(0);

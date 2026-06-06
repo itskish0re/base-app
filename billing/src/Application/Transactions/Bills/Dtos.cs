@@ -28,7 +28,7 @@ public sealed record LoadLineResponse(
     int BillId,
     int LoadNumber,
     int ConsignorId,
-    int ConsigneeId,
+    int? ConsigneeId,
     bool AsPerBill,
     int ToId,
     int GoodsId,
@@ -83,7 +83,7 @@ public sealed record NextBillNumberResponse(string BillNumber);
 public sealed record SaveBillLoadItem(
     int? LoadId,
     int ConsignorId,
-    int ConsigneeId,
+    int? ConsigneeId,
     bool AsPerBill,
     int ToId,
     int GoodsId,

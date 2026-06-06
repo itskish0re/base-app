@@ -12,7 +12,7 @@ public sealed class Load : AuditableEntity
 
     public int ConsignorId { get; set; }
 
-    public int ConsigneeId { get; set; }
+    public int? ConsigneeId { get; set; }
 
     public bool AsPerBill { get; set; }
 
