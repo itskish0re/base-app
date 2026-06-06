@@ -227,6 +227,7 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
     ratePerUnit: toFormNumber(line.ratePerUnit),
     freight: toFormNumber(line.freight),
     advance: toFormNumber(line.advance),
+    topay: toFormNumber(line.topay),
     balance: toFormNumber(line.balance),
   }));
 

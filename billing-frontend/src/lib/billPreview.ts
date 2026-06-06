@@ -92,6 +92,7 @@ function createEmptyLoadRow(loadNumber: number): BillPreviewLoadLine {
     ratePerUnit: null,
     freight: null,
     advance: null,
+    topay: null,
     balance: null,
   };
 }
@@ -125,15 +126,19 @@ export function createSampleBillPreview(): BillPreviewModel {
   };
 }
 
-/** Caps at {@link BILL_MEMO_MAX_LOAD_ROWS}; always returns at least one row for layout. */
+/** Caps at {@link BILL_MEMO_MAX_LOAD_ROWS}; renumbers S. No. 1…n from load count. */
 export function prepareBillPreviewLoads(loads: BillPreviewLoadLine[]): BillPreviewLoadLine[] {
   const sorted = [...loads].sort((a, b) => a.loadNumber - b.loadNumber);
   const capped = sorted.slice(0, BILL_MEMO_MAX_LOAD_ROWS);
+
   if (capped.length === 0) {
     return [createEmptyLoadRow(1)];
   }
 
-  return capped;
+  return capped.map((line, index) => ({
+    ...line,
+    loadNumber: index + 1,
+  }));
 }
 
 export type BillPreviewChargeRow = {
@@ -146,11 +151,11 @@ export type BillPreviewChargeRow = {
 export function buildBillPreviewChargeRows(data: BillPreviewModel): BillPreviewChargeRow[] {
   const rows: BillPreviewChargeRow[] = [
     { key: 'commission', label: 'Commission', value: data.commission },
-    { key: 'officeMamul', label: 'Loading Charges', value: data.officeMamul },
-    { key: 'tapalMamul', label: 'Hamali / Guide', value: data.tapalMamul },
     { key: 'crossing', label: 'Crossing', value: data.crossing },
-    { key: 'handLoan', label: 'Hand Loan', value: data.handLoan },
     { key: 'truckLoan', label: 'Truck Loan', value: data.truckLoan },
+    { key: 'officeMamul', label: 'Office Mamul', value: data.officeMamul },
+    { key: 'tapalMamul', label: 'Tapal Mamul', value: data.tapalMamul },
+    { key: 'handLoan', label: 'Hand Loan', value: data.handLoan },
     { key: 'diesel', label: 'Diesel', value: data.diesel },
   ];
 

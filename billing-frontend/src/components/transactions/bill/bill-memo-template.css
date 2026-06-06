@@ -6,7 +6,7 @@
   --bill-memo-red: #c8232c;
   --bill-memo-line: 1px solid var(--bill-memo-ink);
   --bill-memo-border: 2px solid var(--bill-memo-ink);
-  --bill-memo-load-grid: 11% 11% 10% 17% 8% 8% 10% 8% 10%;
+  --bill-memo-load-grid: minmax(28px, 4%) 10% 12% 8% 7% repeat(5, minmax(0, 1fr));
   --bill-memo-font-body: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --bill-memo-font-display: 'Lora', Georgia, 'Times New Roman', serif;
   box-sizing: border-box;
@@ -261,18 +261,37 @@
   flex: 1 1 auto;
   display: flex;
   flex-direction: column;
+  justify-content: flex-start;
+  align-items: stretch;
+  min-height: 0;
 }
 
 .bill-memo__loads-row {
-  flex: 1 1 calc(100% / var(--bill-memo-load-count, 1));
-  min-height: calc(280px / var(--bill-memo-load-count, 1));
+  flex: 0 0 auto;
+  min-height: 36px;
+  max-height: 72px;
   font-size: 11px;
   line-height: 1.35;
   border-bottom: var(--bill-memo-line);
 }
 
 .bill-memo__loads-row:last-child {
-  border-bottom: none;
+  border-bottom: var(--bill-memo-line);
+}
+
+.bill-memo__loads-body-fill {
+  flex: 1 1 auto;
+  display: grid;
+  grid-template-columns: var(--bill-memo-load-grid);
+  min-height: 0;
+}
+
+.bill-memo__loads-body-fill > div {
+  border-right: var(--bill-memo-line);
+}
+
+.bill-memo__loads-body-fill > div:last-child {
+  border-right: none;
 }
 
 .bill-memo__loads-foot {
@@ -298,7 +317,7 @@
 .bill-memo__loads-foot-value-cell {
   grid-column: 7 / -1;
   display: grid;
-  grid-template-columns: 10fr 8fr 10fr;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   min-height: 2.4em;
 }
 
@@ -328,6 +347,7 @@
   border-right: var(--bill-memo-line);
   text-align: center;
   word-break: break-word;
+  overflow: hidden;
 }
 
 .bill-memo__loads-row > div:last-child {
@@ -337,6 +357,26 @@
 .bill-memo__loads-cell--left {
   justify-content: flex-start !important;
   text-align: left !important;
+}
+
+.bill-memo__loads-col--sno {
+  font-size: 10px;
+}
+
+.bill-memo__loads-rate {
+  white-space: nowrap;
+}
+
+.bill-memo__loads-rate-unit {
+  font-size: 0.72em;
+  line-height: 0;
+  margin-left: 1px;
+  font-weight: 500;
+}
+
+.bill-memo__loads-consignee-to {
+  font-size: 0.78em;
+  font-weight: 400;
 }
 
 /* ── Footer: terms + charges ── */

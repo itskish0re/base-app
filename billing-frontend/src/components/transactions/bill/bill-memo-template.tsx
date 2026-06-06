@@ -1,4 +1,3 @@
-import type { CSSProperties } from 'react';
 import {
   buildBillPreviewChargeRows,
   formatBillPreviewAmount,
@@ -16,14 +15,15 @@ type BillMemoTemplateProps = {
 };
 
 const LOAD_COLUMNS = [
+  { key: 'sno', label: 'S. No.', className: 'bill-memo__loads-col--sno' },
   { key: 'consignor', label: 'Consignor', className: 'bill-memo__loads-col--party' },
   { key: 'consignee', label: 'Consignee', className: 'bill-memo__loads-col--party' },
-  { key: 'to', label: 'To', className: 'bill-memo__loads-col--to' },
-  { key: 'goods', label: 'Description of Goods', className: 'bill-memo__loads-col--goods' },
+  { key: 'goods', label: 'Goods', className: 'bill-memo__loads-col--goods' },
   { key: 'weight', label: 'Weight', className: 'bill-memo__loads-col--num' },
-  { key: 'rate', label: 'Per Ton', className: 'bill-memo__loads-col--num' },
+  { key: 'rate', label: 'Rate', className: 'bill-memo__loads-col--num' },
   { key: 'freight', label: 'Freight', className: 'bill-memo__loads-col--num' },
   { key: 'advance', label: 'Advance', className: 'bill-memo__loads-col--num' },
+  { key: 'topay', label: 'To Pay', className: 'bill-memo__loads-col--num' },
   { key: 'balance', label: 'Balance', className: 'bill-memo__loads-col--num' },
 ] as const;
 
@@ -127,10 +127,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
         </section>
 
-        <section
-          className="bill-memo__loads-section"
-          style={{ '--bill-memo-load-count': loadRows.length } as CSSProperties}
-        >
+        <section className="bill-memo__loads-section">
           <div className="bill-memo__loads-head">
             {LOAD_COLUMNS.map((column) => (
               <div key={column.key} className={column.className}>
@@ -141,14 +138,18 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           <div className="bill-memo__loads-body">
             {loadRows.map((row) => (
               <div key={row.loadNumber} className="bill-memo__loads-row">
+                <div className="bill-memo__loads-col--sno">{row.loadNumber}</div>
                 <div className="bill-memo__loads-col--party bill-memo__loads-cell--left">
                   {row.consignorName}
                 </div>
-                <div className="bill-memo__loads-col--party bill-memo__loads-cell--left">
+                <div className="bill-memo__loads-col--party bill-memo__loads-cell--left bill-memo__loads-consignee">
                   {formatBillPreviewConsigneeName(row.consigneeName, row.asPerBill)}
-                </div>
-                <div className="bill-memo__loads-col--to bill-memo__loads-cell--left">
-                  {row.toLocationName}
+                  {row.toLocationName?.trim() ? (
+                    <span className="bill-memo__loads-consignee-to">
+                      {' '}
+                      ({row.toLocationName.trim()})
+                    </span>
+                  ) : null}
                 </div>
                 <div className="bill-memo__loads-col--goods bill-memo__loads-cell--left">
                   {row.goodsName}
@@ -156,8 +157,11 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
                 <div className="bill-memo__loads-col--num">
                   {formatBillPreviewWeight(row.weightOrQuantity, row.unitName)}
                 </div>
-                <div className="bill-memo__loads-col--num">
+                <div className="bill-memo__loads-col--num bill-memo__loads-rate">
                   {formatBillPreviewAmount(row.ratePerUnit)}
+                  {row.unitName?.trim() ? (
+                    <sub className="bill-memo__loads-rate-unit">{row.unitName.trim()}</sub>
+                  ) : null}
                 </div>
                 <div className="bill-memo__loads-col--num">
                   {formatBillPreviewAmount(row.freight)}
@@ -166,10 +170,18 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
                   {formatBillPreviewAmount(row.advance)}
                 </div>
                 <div className="bill-memo__loads-col--num">
+                  {formatBillPreviewAmount(row.topay)}
+                </div>
+                <div className="bill-memo__loads-col--num">
                   {formatBillPreviewAmount(row.balance)}
                 </div>
               </div>
             ))}
+            <div className="bill-memo__loads-body-fill" aria-hidden>
+              {LOAD_COLUMNS.map((column) => (
+                <div key={column.key} className={column.className} />
+              ))}
+            </div>
           </div>
           <div className="bill-memo__loads-foot">
             <div className="bill-memo__loads-foot-label-cell">Total Freight</div>
@@ -177,6 +189,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
               <div className="bill-memo__loads-foot-value">
                 {formatBillPreviewAmount(data.totalFreight)}
               </div>
+              <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
               <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
               <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
             </div>

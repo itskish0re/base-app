@@ -16,6 +16,7 @@ export type BillPreviewLoadLine = {
   ratePerUnit: number | null;
   freight: number | null;
   advance: number | null;
+  topay: number | null;
   balance: number | null;
 };
 
@@ -50,9 +51,9 @@ export type BillPreviewModel = {
   loads: BillPreviewLoadLine[];
   truckLoan: number | null;
   commission: number | null;
-  /** Shown as "Loading Charges" on memo */
+  /** Office mamul */
   officeMamul: number | null;
-  /** Shown as "Hamali/Guide" on memo */
+  /** Tapal mamul */
   tapalMamul: number | null;
   crossing: number | null;
   handLoan: number | null;
