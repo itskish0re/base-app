@@ -1,17 +1,22 @@
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
-import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
 import { DatePicker } from '@/components/ui/date-picker';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Switch } from '@/components/ui/switch';
 import { BillChargesSummary } from '@/components/transactions/bill/bill-charges-summary';
 import { BillChargesTable } from '@/components/transactions/bill/bill-charges-table';
-import { BillOtherCharges } from '@/components/transactions/bill/bill-other-charges';
-import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
+import {
+  BillFormAccordionSection,
+  BillFormField,
+  BillFormMonoInputClass,
+} from '@/components/transactions/bill/bill-form-ui';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
-import { Input } from '@/components/ui/input';
-import { Switch } from '@/components/ui/switch';
-import { Label } from '@/components/ui/label';
+import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
 import { lookupItemLabel } from '@/lib/billForm';
+import { cn } from '@/lib/utils';
 import type { BillFormValues } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
+import { Ban, FileText, Receipt, Wallet } from 'lucide-react';
 
 type BillFormProps = {
   values: BillFormValues;
@@ -58,26 +63,24 @@ export function BillForm({
   };
 
   return (
-    <div className="space-y-6 pb-6">
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold">Bill header</h3>
-        <div className="grid gap-3 sm:grid-cols-2">
-          <EntityFormFieldControl id="bill-number" label="Bill number" required>
+    <div className="mx-auto max-w-6xl space-y-4 pb-6">
+      <BillFormAccordionSection icon={FileText} title="Header Information">
+        <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 lg:grid-cols-4">
+          <BillFormField id="bill-number" label="Bill No." required>
             <Input
               id="bill-number"
               value={values.billNumber}
               readOnly={billNumberReadOnly}
+              className={cn(BillFormMonoInputClass(true), billNumberReadOnly && 'bg-muted/60')}
               onChange={(e) => patch({ billNumber: e.target.value })}
             />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-date" label="Bill date" required>
-            <DatePicker
-              id="bill-date"
-              value={values.billDate}
-              onChange={(billDate) => patch({ billDate })}
-            />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-from" label="From" required>
+          </BillFormField>
+
+          <BillFormField id="bill-date" label="Date" required>
+            <DatePicker id="bill-date" value={values.billDate} onChange={(billDate) => patch({ billDate })} />
+          </BillFormField>
+
+          <BillFormField id="bill-from" label="Origin / Branch" required className="lg:col-span-2">
             <EntityFormLookupCombobox
               id="bill-from"
               value={values.fromId}
@@ -92,8 +95,9 @@ export function BillForm({
               placeholder="Select from location…"
               searchPlaceholder="Search location…"
             />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-truck" label="Truck" required>
+          </BillFormField>
+
+          <BillFormField id="bill-truck" label="Truck No." required>
             <EntityFormLookupCombobox
               id="bill-truck"
               value={values.truckId}
@@ -119,42 +123,55 @@ export function BillForm({
               placeholder="Select truck…"
               searchPlaceholder="Search truck…"
             />
-          </EntityFormFieldControl>
-        </div>
+          </BillFormField>
 
-        <div className="grid gap-3 sm:grid-cols-2">
-          <EntityFormFieldControl id="bill-name-board" label="Name board">
-            <Input id="bill-name-board" value={values.nameBoardName} readOnly className="bg-muted/50" />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-owner-name" label="Owner name">
-            <Input id="bill-owner-name" value={values.ownerName} readOnly className="bg-muted/50" />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-owner-mobile" label="Owner mobile">
-            <Input id="bill-owner-mobile" value={values.ownerMobile} readOnly className="bg-muted/50" />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-driver-name" label="Driver name" required>
+          <BillFormField id="bill-name-board" label="Name Board">
+            <Input
+              id="bill-name-board"
+              value={values.nameBoardName}
+              readOnly
+              className={BillFormMonoInputClass(true)}
+            />
+          </BillFormField>
+
+          <BillFormField id="bill-owner-name" label="Owner Name">
+            <Input id="bill-owner-name" value={values.ownerName} readOnly className={BillFormMonoInputClass(true)} />
+          </BillFormField>
+
+          <BillFormField id="bill-owner-mobile" label="Owner Mobile">
+            <Input
+              id="bill-owner-mobile"
+              value={values.ownerMobile}
+              readOnly
+              className={BillFormMonoInputClass(true)}
+            />
+          </BillFormField>
+
+          <BillFormField id="bill-driver-name" label="Driver Name" required>
             <Input
               id="bill-driver-name"
               value={values.driverName}
               onChange={(e) => patch({ driverName: e.target.value })}
             />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-driver-mobile-1" label="Driver mobile 1">
+          </BillFormField>
+
+          <BillFormField id="bill-driver-mobile-1" label="Driver Mobile 1">
             <Input
               id="bill-driver-mobile-1"
               value={values.driverMobile1}
               onChange={(e) => patch({ driverMobile1: e.target.value })}
             />
-          </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-driver-mobile-2" label="Driver mobile 2">
+          </BillFormField>
+
+          <BillFormField id="bill-driver-mobile-2" label="Driver Mobile 2" className="lg:col-span-2">
             <Input
               id="bill-driver-mobile-2"
               value={values.driverMobile2}
               onChange={(e) => patch({ driverMobile2: e.target.value })}
             />
-          </EntityFormFieldControl>
+          </BillFormField>
         </div>
-      </section>
+      </BillFormAccordionSection>
 
       <BillLoadLines
         loads={values.loads}
@@ -165,42 +182,40 @@ export function BillForm({
         onChange={(loads) => patch({ loads })}
       />
 
-      <section className="space-y-4">
-        <h3 className="text-sm font-semibold">Charges & totals</h3>
-        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,17rem)_minmax(0,17rem)_1fr]">
-          <div className="min-w-0 space-y-4 md:col-span-2 xl:col-span-1">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Payment</p>
-              <BillPaymentPanel values={values} onChange={patch} />
-            </div>
-            <BillChargesSummary values={values} />
-          </div>
+      <section className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
+        <BillFormAccordionSection icon={Wallet} title="Payment Details" className="h-full" contentClassName="space-y-5">
+          <BillPaymentPanel values={values} onChange={patch} embedded />
+          <BillChargesSummary values={values} />
+        </BillFormAccordionSection>
 
-          <div className="min-w-0 space-y-4 md:col-span-2 xl:col-span-2">
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Charges</p>
-              <BillChargesTable
-                values={values}
-                onNumericChange={(key, raw) => onChange(patchNumeric(values, key, raw))}
-                onTruckLoanChange={(checked) => patch({ truckLoan: checked })}
-              />
-            </div>
-            <BillOtherCharges
-              items={values.others}
-              onChange={(others) => patch({ others })}
-            />
-          </div>
-        </div>
+        <BillFormAccordionSection
+          icon={Receipt}
+          title="Charges Summary"
+          className="h-full lg:col-span-2"
+          contentClassName="p-0 sm:p-0"
+        >
+          <BillChargesTable
+            values={values}
+            others={values.others}
+            onOthersChange={(others) => patch({ others })}
+            onNumericChange={(key, raw) => onChange(patchNumeric(values, key, raw))}
+            onTruckLoanChange={(checked) => patch({ truckLoan: checked })}
+          />
+        </BillFormAccordionSection>
+      </section>
 
+      <BillFormAccordionSection icon={Ban} title="Status" defaultOpen={values.isCancelled}>
         <div className="flex items-center gap-2">
           <Switch
             id="bill-cancelled"
             checked={values.isCancelled}
             onCheckedChange={(checked) => patch({ isCancelled: checked })}
           />
-          <Label htmlFor="bill-cancelled">Cancelled</Label>
+          <Label htmlFor="bill-cancelled" className="text-sm">
+            Cancelled
+          </Label>
         </div>
-      </section>
+      </BillFormAccordionSection>
     </div>
   );
 }

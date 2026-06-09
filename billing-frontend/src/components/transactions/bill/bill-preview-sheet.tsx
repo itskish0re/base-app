@@ -30,9 +30,9 @@ export function BillPreviewSheet({ data, open, onOpenChange }: BillPreviewSheetP
           side === 'right' && '!w-1/2 !max-w-none',
         )}
       >
-        <SheetHeader className="sr-only">
-          <SheetTitle>Bill preview</SheetTitle>
-          <SheetDescription>Memo preview for the current bill.</SheetDescription>
+        <SheetHeader className="border-b border-border bg-card px-4 py-3 sm:px-6">
+          <SheetTitle className="text-lg font-semibold tracking-tight">Memo Preview</SheetTitle>
+          <SheetDescription className="sr-only">Memo preview for the current bill.</SheetDescription>
         </SheetHeader>
         <div className="flex min-h-0 flex-1 flex-col p-3 sm:p-4">
           <BillPreviewCanvas

@@ -101,6 +101,18 @@ export function sumLoadAdvances(loads: BillLoadFormLine[]): number {
   return sumLoadField(loads, 'advance');
 }
 
+export function sumLoadTopay(loads: BillLoadFormLine[]): number {
+  return loads.reduce((sum, line) => sum + (toFormNumber(line.topay) ?? 0), 0);
+}
+
+export function formatBillFormCurrency(value: number | null | undefined): string {
+  const amount = value ?? 0;
+  return `₹ ${amount.toLocaleString('en-IN', {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  })}`;
+}
+
 export function isTruckLoanAllowed(loads: BillLoadFormLine[]): boolean {
   return sumLoadAdvances(loads) === 0;
 }

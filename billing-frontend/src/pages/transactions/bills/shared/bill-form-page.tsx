@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Eye } from 'lucide-react';
+import { Eye, Save } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BillForm } from '@/components/transactions/bill/bill-form';
 import { BillPreviewSheet } from '@/components/transactions/bill/bill-preview-sheet';
@@ -22,6 +22,7 @@ import { getTruckById } from '@/service/api/functions/trucks';
 import { saveBillMutationOptions } from '@/service/mutation/bills';
 import { billByIdQueryOptions, nextBillNumberQueryOptions } from '@/service/query/bills';
 import type { BillFormValues } from '@/types/billForm';
+import { cn } from '@/lib/utils';
 
 type BillFormPageProps = {
   mode: 'create' | 'edit';
@@ -146,7 +147,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     (mode === 'create' && nextNumberQuery.isLoading) ||
     (mode === 'edit' && (billQuery.isLoading || !hydrated));
 
-  const pageTitle = mode === 'create' ? 'Create bill' : `Edit bill${values.billNumber ? ` — ${values.billNumber}` : ''}`;
+  const pageTitle = mode === 'create' ? 'Create Bill' : `Edit Bill${values.billNumber ? ` — ${values.billNumber}` : ''}`;
 
   if (lookups.isError) {
     return (
@@ -167,7 +168,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       <Button
         type="button"
         variant="outline"
-        className="flex-1 sm:flex-none"
+        className="h-9 flex-1 sm:flex-none"
         onClick={() => setPreviewOpen(true)}
         disabled={isPageLoading}
       >
@@ -177,7 +178,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       <Button
         type="button"
         variant="outline"
-        className="flex-1 sm:flex-none"
+        className="h-9 flex-1 sm:flex-none"
         onClick={() => void navigate({ to: ROUTES.bills })}
         disabled={saveMutation.isPending}
       >
@@ -185,41 +186,43 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       </Button>
       <Button
         type="button"
-        className="flex-1 sm:flex-none"
+        className="h-9 flex-1 sm:flex-[1.5] sm:flex-none"
         onClick={handleSave}
         disabled={saveMutation.isPending || isPageLoading}
       >
-        {saveMutation.isPending ? 'Saving…' : 'Save bill'}
+        <Save className="size-4" />
+        {saveMutation.isPending ? 'Saving…' : 'Save Bill'}
       </Button>
     </>
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 pb-20 sm:pb-0">
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="flex min-h-0 flex-1 flex-col gap-4 pb-24 sm:pb-6">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <div className="min-w-0">
-          <h1 className="text-lg font-semibold sm:text-xl">{pageTitle}</h1>
-          <p className="text-sm text-muted-foreground">
-            Fill in the bill details below. Open Preview to see the memo.
+          <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{pageTitle}</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Generate a new freight bill for dispatch. Fields marked with * are required.
           </p>
         </div>
         <div className="hidden shrink-0 gap-2 sm:flex">{actionButtons}</div>
       </div>
 
-      {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
+      {formError ? (
+        <p className="mx-auto w-full max-w-6xl text-sm text-destructive">{formError}</p>
+      ) : null}
       {saveMutation.isError ? (
-        <p className="text-sm text-destructive">
+        <p className="mx-auto w-full max-w-6xl text-sm text-destructive">
           {saveMutation.error instanceof Error ? saveMutation.error.message : 'Save failed.'}
         </p>
       ) : null}
 
-      <div className="min-h-0 flex-1 overflow-y-auto rounded-lg border bg-background p-3 sm:p-4">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {isPageLoading ? (
-          <div className="space-y-4">
-            <Skeleton className="h-9 w-full" />
-            <Skeleton className="h-9 w-full" />
-            <Skeleton className="h-32 w-full" />
-            <Skeleton className="h-32 w-full" />
+          <div className="mx-auto max-w-6xl space-y-4">
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-64 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-lg" />
           </div>
         ) : (
           <BillForm
@@ -238,8 +241,37 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
 
       <BillPreviewSheet data={previewData} open={previewOpen} onOpenChange={setPreviewOpen} />
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
-        <div className="mx-auto flex max-w-lg gap-2">{actionButtons}</div>
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
+        <div className="mx-auto flex max-w-lg gap-2">
+          <Button
+            type="button"
+            variant="outline"
+            className="h-11 flex-1"
+            onClick={() => void navigate({ to: ROUTES.bills })}
+            disabled={saveMutation.isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            type="button"
+            variant="secondary"
+            className={cn('h-11 flex-1 bg-secondary/80')}
+            onClick={() => setPreviewOpen(true)}
+            disabled={isPageLoading}
+          >
+            <Eye className="size-4" />
+            Preview
+          </Button>
+          <Button
+            type="button"
+            className="h-11 flex-[1.5]"
+            onClick={handleSave}
+            disabled={saveMutation.isPending || isPageLoading}
+          >
+            <Save className="size-4" />
+            {saveMutation.isPending ? 'Saving…' : 'Save Bill'}
+          </Button>
+        </div>
       </div>
     </div>
   );
