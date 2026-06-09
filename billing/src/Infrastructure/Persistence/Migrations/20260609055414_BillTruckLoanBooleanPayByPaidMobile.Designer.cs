@@ -5,6 +5,7 @@ using Domain.Transactions;
 using Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -13,9 +14,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(BillingDbContext))]
-    partial class BillingDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260609055414_BillTruckLoanBooleanPayByPaidMobile")]
+    partial class BillTruckLoanBooleanPayByPaidMobile
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -1212,11 +1215,6 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("character varying(32)")
                         .HasColumnName("paid_mobile");
 
-                    b.Property<string>("PaidName")
-                        .HasMaxLength(256)
-                        .HasColumnType("character varying(256)")
-                        .HasColumnName("paid_name");
-
                     b.Property<string>("PayBy")
                         .HasMaxLength(16)
                         .HasColumnType("character varying(16)")
@@ -1356,10 +1354,6 @@ namespace Infrastructure.Persistence.Migrations
                     b.Property<string>("PaidMobile")
                         .HasColumnType("text")
                         .HasColumnName("paid_mobile");
-
-                    b.Property<string>("PaidName")
-                        .HasColumnType("text")
-                        .HasColumnName("paid_name");
 
                     b.Property<string>("PayBy")
                         .HasColumnType("text")

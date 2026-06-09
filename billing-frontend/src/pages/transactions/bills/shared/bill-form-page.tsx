@@ -160,28 +160,39 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     );
   }
 
+  const actionButtons = (
+    <>
+      <Button
+        type="button"
+        variant="outline"
+        className="flex-1 sm:flex-none"
+        onClick={() => void navigate({ to: ROUTES.bills })}
+        disabled={saveMutation.isPending}
+      >
+        Cancel
+      </Button>
+      <Button
+        type="button"
+        className="flex-1 sm:flex-none"
+        onClick={handleSave}
+        disabled={saveMutation.isPending || isPageLoading}
+      >
+        {saveMutation.isPending ? 'Saving…' : 'Save bill'}
+      </Button>
+    </>
+  );
+
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3">
-      <div className="flex flex-wrap items-center justify-between gap-3">
-        <div>
-          <h1 className="text-lg font-semibold">{pageTitle}</h1>
+    <div className="flex min-h-0 flex-1 flex-col gap-3 pb-20 lg:pb-0">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-lg font-semibold sm:text-xl">{pageTitle}</h1>
           <p className="text-sm text-muted-foreground">
-            Enter bill details on the left; the memo preview updates on the right.
+            <span className="lg:hidden">Fill in the form below; preview updates as you type.</span>
+            <span className="hidden lg:inline">Enter bill details on the left; the memo preview updates on the right.</span>
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => void navigate({ to: ROUTES.bills })}
-            disabled={saveMutation.isPending}
-          >
-            Cancel
-          </Button>
-          <Button type="button" onClick={handleSave} disabled={saveMutation.isPending || isPageLoading}>
-            {saveMutation.isPending ? 'Saving…' : 'Save bill'}
-          </Button>
-        </div>
+        <div className="hidden shrink-0 gap-2 sm:flex">{actionButtons}</div>
       </div>
 
       {formError ? <p className="text-sm text-destructive">{formError}</p> : null}
@@ -191,8 +202,8 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
         </p>
       ) : null}
 
-      <div className="grid min-h-0 flex-1 gap-4 lg:grid-cols-2">
-        <div className="min-h-0 overflow-y-auto rounded-lg border bg-background p-4">
+      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-2">
+        <div className="min-h-0 overflow-y-auto rounded-lg border bg-background p-3 sm:p-4">
           {isPageLoading ? (
             <div className="space-y-4">
               <Skeleton className="h-9 w-full" />
@@ -217,11 +228,15 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
 
         <div className="min-h-0">
           {isPageLoading ? (
-            <Skeleton className="h-full min-h-[24rem] w-full rounded-lg" />
+            <Skeleton className="mx-auto h-full min-h-[20rem] w-full max-w-[794px] rounded-lg sm:min-h-[24rem]" />
           ) : (
-            <BillPreviewCanvas data={previewData} className="h-full" />
+            <BillPreviewCanvas data={previewData} className="mx-auto h-full max-w-[794px]" />
           )}
         </div>
+      </div>
+
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none xl:hidden">
+        <div className="mx-auto flex max-w-lg gap-2">{actionButtons}</div>
       </div>
     </div>
   );

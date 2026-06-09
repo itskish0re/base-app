@@ -26,7 +26,13 @@ public sealed class Bill : AuditableEntity
 
     public decimal HandLoan { get; set; }
 
-    public decimal TruckLoan { get; set; }
+    public bool TruckLoan { get; set; }
+
+    public string? PayBy { get; set; }
+
+    public string? PaidName { get; set; }
+
+    public string? PaidMobile { get; set; }
 
     public decimal OfficeMamul { get; set; }
 

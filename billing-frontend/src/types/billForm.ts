@@ -1,4 +1,6 @@
 import type { BillOtherItem } from '@/types/billOther';
+import type { BillPayBy } from '@/types/entity/bill';
+
 export type BillLoadFormLine = {
   loadId?: number | null;
   loadNumber: number;
@@ -38,7 +40,10 @@ export type BillFormValues = {
   commission: number | '';
   crossing: number | '';
   handLoan: number | '';
-  truckLoan: number | '';
+  truckLoan: boolean;
+  payBy: BillPayBy | null;
+  paidName: string;
+  paidMobile: string;
   officeMamul: number | '';
   tapalMamul: number | '';
   diesel: number | '';

@@ -1,6 +1,14 @@
 import type { PagedResponse } from '@/types/common';
 import type { BillOtherItem } from '@/types/billOther';
 
+export type BillPayBy = 'upi' | 'cash' | 'owner';
+
+export const BILL_PAY_BY_OPTIONS: { value: BillPayBy; label: string }[] = [
+  { value: 'upi', label: 'UPI' },
+  { value: 'cash', label: 'Cash' },
+  { value: 'owner', label: 'Owner' },
+];
+
 export type BillListRowDto = {
   billId: number;
   billNumber: string;
@@ -18,7 +26,10 @@ export type BillListRowDto = {
   commission: number;
   crossing: number;
   handLoan: number;
-  truckLoan: number;
+  truckLoan: boolean;
+  payBy: BillPayBy | null;
+  paidName: string | null;
+  paidMobile: string | null;
   officeMamul: number;
   tapalMamul: number;
   diesel: number;
@@ -42,7 +53,10 @@ export type BillDto = {
   commission: number;
   crossing: number;
   handLoan: number;
-  truckLoan: number;
+  truckLoan: boolean;
+  payBy: BillPayBy | null;
+  paidName: string | null;
+  paidMobile: string | null;
   officeMamul: number;
   tapalMamul: number;
   diesel: number;
@@ -111,7 +125,10 @@ export type SaveBillItem = {
   commission: number;
   crossing: number;
   handLoan: number;
-  truckLoan: number;
+  truckLoan: boolean;
+  payBy: BillPayBy | null;
+  paidName: string | null;
+  paidMobile: string | null;
   officeMamul: number;
   tapalMamul: number;
   diesel: number;

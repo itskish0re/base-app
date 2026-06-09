@@ -41,7 +41,18 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
         ConfigureMoney(builder.Property(x => x.Commission), "commission");
         ConfigureMoney(builder.Property(x => x.Crossing), "crossing");
         ConfigureMoney(builder.Property(x => x.HandLoan), "hand_loan");
-        ConfigureMoney(builder.Property(x => x.TruckLoan), "truck_loan");
+        builder.Property(x => x.TruckLoan)
+            .HasColumnName("truck_loan")
+            .HasDefaultValue(false);
+        builder.Property(x => x.PayBy)
+            .HasColumnName("pay_by")
+            .HasMaxLength(16);
+        builder.Property(x => x.PaidName)
+            .HasColumnName("paid_name")
+            .HasMaxLength(256);
+        builder.Property(x => x.PaidMobile)
+            .HasColumnName("paid_mobile")
+            .HasMaxLength(32);
         ConfigureMoney(builder.Property(x => x.OfficeMamul), "office_mamul");
         ConfigureMoney(builder.Property(x => x.TapalMamul), "tapal_mamul");
         ConfigureMoney(builder.Property(x => x.Diesel), "diesel");

@@ -60,7 +60,10 @@ export function createInitialBillFormValues(): BillFormValues {
     commission: '',
     crossing: '',
     handLoan: '',
-    truckLoan: '',
+    truckLoan: false,
+    payBy: null,
+    paidName: '',
+    paidMobile: '',
     officeMamul: '',
     tapalMamul: '',
     diesel: '',
@@ -69,6 +72,24 @@ export function createInitialBillFormValues(): BillFormValues {
     isCancelled: false,
     loads: [createEmptyLoadLine()],
   });
+}
+
+export function formatBillFormAmount(value: number | null | undefined): string {
+  if (value == null || Number.isNaN(value)) {
+    return '';
+  }
+
+  return value.toLocaleString('en-IN', {
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
+  });
+}
+
+export function sumLoadField(
+  loads: BillLoadFormLine[],
+  field: 'advance' | 'balance',
+): number {
+  return loads.reduce((sum, line) => sum + (toFormNumber(line[field]) ?? 0), 0);
 }
 
 export function toFormNumber(value: number | '' | null | undefined): number | null {
@@ -115,8 +136,7 @@ export function recalculateBillForm(values: BillFormValues): BillFormValues {
     (toFormNumber(values.diesel) ?? 0) +
     sumBillOtherItems(values.others);
 
-  const deductions =
-    (toFormNumber(values.handLoan) ?? 0) + (toFormNumber(values.truckLoan) ?? 0);
+  const deductions = toFormNumber(values.handLoan) ?? 0;
 
   const total = totalFreight + charges - deductions;
 
@@ -172,6 +192,9 @@ export function mapBillDetailToFormValues(
     crossing: bill.crossing,
     handLoan: bill.handLoan,
     truckLoan: bill.truckLoan,
+    payBy: bill.payBy,
+    paidName: bill.payBy === 'upi' ? bill.paidName ?? '' : '',
+    paidMobile: bill.payBy === 'upi' ? bill.paidMobile ?? '' : '',
     officeMamul: bill.officeMamul,
     tapalMamul: bill.tapalMamul,
     diesel: bill.diesel,
@@ -251,7 +274,12 @@ export function mapBillFormToPreview(values: BillFormValues): BillPreviewModel {
     driverName: values.driverName,
     driverMobile: values.driverMobile,
     loads: loads.slice(0, BILL_FORM_MAX_LOAD_ROWS),
-    truckLoan: toFormNumber(values.truckLoan),
+    truckLoan: values.truckLoan,
+    payBy: values.payBy,
+    paidName: values.payBy === 'upi' ? values.paidName.trim() || null : null,
+    paidMobile: values.payBy === 'upi' ? values.paidMobile.trim() || null : null,
+    totalAdvance: sumLoadField(values.loads, 'advance'),
+    totalBalance: sumLoadField(values.loads, 'balance'),
     commission: toFormNumber(values.commission),
     officeMamul: toFormNumber(values.officeMamul),
     tapalMamul: toFormNumber(values.tapalMamul),
@@ -325,7 +353,10 @@ export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillReques
       commission: toFormNumberOrZero(values.commission),
       crossing: toFormNumberOrZero(values.crossing),
       handLoan: toFormNumberOrZero(values.handLoan),
-      truckLoan: toFormNumberOrZero(values.truckLoan),
+      truckLoan: values.truckLoan,
+      payBy: values.payBy,
+      paidName: values.payBy === 'upi' ? values.paidName.trim() || null : null,
+      paidMobile: values.payBy === 'upi' ? values.paidMobile.trim() || null : null,
       officeMamul: toFormNumberOrZero(values.officeMamul),
       tapalMamul: toFormNumberOrZero(values.tapalMamul),
       diesel: toFormNumberOrZero(values.diesel),
@@ -357,6 +388,16 @@ export function validateBillForm(values: BillFormValues): string | null {
   const savableLoads = values.loads.filter(isLoadLineSavable);
   if (savableLoads.length === 0) {
     return 'Add at least one load line with consignor, destination, goods, and unit (consignee required unless as per bill).';
+  }
+
+  if (values.payBy === 'upi') {
+    if (!values.paidName.trim()) {
+      return 'Paid name is required when pay by is UPI.';
+    }
+
+    if (!values.paidMobile.trim()) {
+      return 'Paid mobile is required when pay by is UPI.';
+    }
   }
 
   return null;

@@ -1,3 +1,5 @@
+import type { BillPayBy } from '@/types/entity/bill';
+
 /** Display model for the truck memo HTML preview (form → preview mapping). */
 export type BillPreviewOtherItem = {
   key: string;
@@ -49,7 +51,14 @@ export type BillPreviewModel = {
   driverName: string;
   driverMobile: string;
   loads: BillPreviewLoadLine[];
-  truckLoan: number | null;
+  truckLoan: boolean;
+  payBy: BillPayBy | null;
+  paidName: string | null;
+  paidMobile: string | null;
+  /** Sum of load advances — left ledger summary. */
+  totalAdvance: number | null;
+  /** Sum of load balances — left ledger summary. */
+  totalBalance: number | null;
   commission: number | null;
   /** Office mamul */
   officeMamul: number | null;

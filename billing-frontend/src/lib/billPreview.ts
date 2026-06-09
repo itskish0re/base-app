@@ -1,4 +1,7 @@
+import { BILL_PAY_BY_OPTIONS } from '@/types/entity/bill';
 import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
+
+export { BILL_PAY_BY_OPTIONS as BILL_MEMO_PAY_BY_OPTIONS };
 
 /** Maximum load lines rendered on the printed memo. */
 export const BILL_MEMO_MAX_LOAD_ROWS = 3;
@@ -112,7 +115,12 @@ export function createSampleBillPreview(): BillPreviewModel {
     driverName: '',
     driverMobile: '',
     loads: prepareBillPreviewLoads([]),
-    truckLoan: null,
+    truckLoan: false,
+    payBy: null,
+    paidName: null,
+    paidMobile: null,
+    totalAdvance: null,
+    totalBalance: null,
     commission: null,
     officeMamul: null,
     tapalMamul: null,
@@ -146,6 +154,52 @@ export type BillPreviewChargeRow = {
   label: string;
   value: number | null;
 };
+
+/** Loads table min-height when only the six standard charge rows + total are shown. */
+export const BILL_MEMO_LOADS_SECTION_BASE_MIN_HEIGHT = 400;
+
+/** Minimum loads table height — keeps header, rows, and footer readable. */
+export const BILL_MEMO_LOADS_SECTION_MIN_HEIGHT_FLOOR = 220;
+
+/** Standard charge rows (commission … diesel) plus TOTAL, with no dynamic others. */
+export const BILL_MEMO_BASELINE_CHARGE_ROW_COUNT = 7;
+
+/** Shrink loads min-height per summary row beyond the baseline. */
+export const BILL_MEMO_LOADS_HEIGHT_REDUCTION_PER_CHARGE_ROW = 28;
+
+/**
+ * Lowers the loads section min-height as the charges summary grows (extra others).
+ * Keeps signatures and disclaimer inside the fixed A4 memo height.
+ */
+export function sumPreviewLoadField(
+  loads: BillPreviewLoadLine[],
+  field: 'advance' | 'balance',
+): number {
+  return loads.reduce((sum, line) => {
+    const value = line[field];
+    return sum + (value == null || Number.isNaN(value) ? 0 : value);
+  }, 0);
+}
+
+export function resolveBillMemoLoadsSectionMinHeight(
+  chargeRowCount: number,
+  payBy: BillPreviewModel['payBy'] = null,
+): number {
+  const extraRows = Math.max(0, chargeRowCount - BILL_MEMO_BASELINE_CHARGE_ROW_COUNT);
+  let reduced =
+    BILL_MEMO_LOADS_SECTION_BASE_MIN_HEIGHT -
+    extraRows * BILL_MEMO_LOADS_HEIGHT_REDUCTION_PER_CHARGE_ROW;
+
+  if (payBy) {
+    reduced -= 28;
+  }
+
+  if (payBy === 'upi') {
+    reduced -= 44;
+  }
+
+  return Math.max(BILL_MEMO_LOADS_SECTION_MIN_HEIGHT_FLOOR, reduced);
+}
 
 /** Charge rows shown below loads (fixed order, skips empty optional rows). */
 export function buildBillPreviewChargeRows(data: BillPreviewModel): BillPreviewChargeRow[] {

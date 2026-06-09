@@ -112,6 +112,18 @@ internal sealed class SaveBillCommandHandler(
         bill.Crossing = item.Crossing;
         bill.HandLoan = item.HandLoan;
         bill.TruckLoan = item.TruckLoan;
+        bill.PayBy = string.IsNullOrWhiteSpace(item.PayBy) ? null : item.PayBy.Trim();
+
+        if (string.Equals(item.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase))
+        {
+            bill.PaidName = item.PaidName!.Trim();
+            bill.PaidMobile = item.PaidMobile!.Trim();
+        }
+        else
+        {
+            bill.PaidName = null;
+            bill.PaidMobile = null;
+        }
         bill.OfficeMamul = item.OfficeMamul;
         bill.TapalMamul = item.TapalMamul;
         bill.Diesel = item.Diesel;
@@ -200,6 +212,30 @@ internal sealed class SaveBillCommandValidator : AbstractValidator<SaveBillComma
         RuleFor(x => x.Bill.FromId).GreaterThan(0);
         RuleFor(x => x.Bill.TruckId).GreaterThan(0);
         RuleFor(x => x.Bill.DriverName).NotEmpty().MaximumLength(256);
+        RuleFor(x => x.Bill.PayBy)
+            .Must(payBy => payBy is null || BillPayBy.IsAllowed(payBy))
+            .WithMessage("Pay by must be upi, cash, or owner.");
+
+        When(
+            x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
+            () =>
+            {
+                RuleFor(x => x.Bill.PaidName).NotEmpty().MaximumLength(256);
+                RuleFor(x => x.Bill.PaidMobile).NotEmpty().MaximumLength(32);
+            });
+
+        Unless(
+            x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
+            () =>
+            {
+                RuleFor(x => x.Bill.PaidName)
+                    .Must(name => string.IsNullOrWhiteSpace(name))
+                    .WithMessage("Paid name is only allowed when pay by is upi.");
+                RuleFor(x => x.Bill.PaidMobile)
+                    .Must(mobile => string.IsNullOrWhiteSpace(mobile))
+                    .WithMessage("Paid mobile is only allowed when pay by is upi.");
+            });
+
         RuleForEach(x => x.Loads).ChildRules(load =>
         {
             load.RuleFor(l => l.ConsignorId).GreaterThan(0);

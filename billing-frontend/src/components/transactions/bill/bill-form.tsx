@@ -1,7 +1,10 @@
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
 import { DatePicker } from '@/components/ui/date-picker';
+import { BillChargesSummary } from '@/components/transactions/bill/bill-charges-summary';
+import { BillChargesTable } from '@/components/transactions/bill/bill-charges-table';
 import { BillOtherCharges } from '@/components/transactions/bill/bill-other-charges';
+import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
@@ -157,38 +160,33 @@ export function BillForm({
 
       <section className="space-y-4">
         <h3 className="text-sm font-semibold">Charges & totals</h3>
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {(
-            [
-              ['totalFreight', 'Total freight'],
-              ['commission', 'Commission'],
-              ['crossing', 'Crossing'],
-              ['handLoan', 'Hand loan'],
-              ['truckLoan', 'Truck loan'],
-              ['officeMamul', 'Office mamul'],
-              ['tapalMamul', 'Tapal mamul'],
-              ['diesel', 'Diesel'],
-              ['total', 'Total'],
-            ] as const
-          ).map(([key, label]) => (
-            <EntityFormFieldControl key={key} id={`bill-${key}`} label={label}>
-              <Input
-                id={`bill-${key}`}
-                type="number"
-                inputMode="decimal"
-                value={values[key] === '' ? '' : values[key]}
-                readOnly={key === 'totalFreight' || key === 'total'}
-                className={key === 'totalFreight' || key === 'total' ? 'bg-muted/50' : undefined}
-                onChange={(e) => onChange(patchNumeric(values, key, e.target.value))}
-              />
-            </EntityFormFieldControl>
-          ))}
-        </div>
+        <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-[minmax(0,17rem)_minmax(0,17rem)_1fr]">
+          <div className="min-w-0 space-y-4 md:col-span-2 xl:col-span-1">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">Payment</p>
+              <BillPaymentPanel values={values} onChange={patch} />
+            </div>
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">Summary</p>
+              <BillChargesSummary values={values} />
+            </div>
+          </div>
 
-        <BillOtherCharges
-          items={values.others}
-          onChange={(others) => patch({ others })}
-        />
+          <div className="min-w-0 space-y-4 md:col-span-2 xl:col-span-2">
+            <div className="space-y-1">
+              <p className="text-xs font-medium text-muted-foreground">Charges</p>
+              <BillChargesTable
+                values={values}
+                onNumericChange={(key, raw) => onChange(patchNumeric(values, key, raw))}
+                onTruckLoanChange={(checked) => patch({ truckLoan: checked })}
+              />
+            </div>
+            <BillOtherCharges
+              items={values.others}
+              onChange={(others) => patch({ others })}
+            />
+          </div>
+        </div>
 
         <div className="flex items-center gap-2">
           <Switch

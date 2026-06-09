@@ -1,12 +1,16 @@
 import {
+  BILL_MEMO_PAY_BY_OPTIONS,
   buildBillPreviewChargeRows,
   formatBillPreviewAmount,
   formatBillPreviewConsigneeName,
   formatBillPreviewDate,
   formatBillPreviewWeight,
   prepareBillPreviewLoads,
+  resolveBillMemoLoadsSectionMinHeight,
+  BILL_MEMO_BASELINE_CHARGE_ROW_COUNT,
 } from '@/lib/billPreview';
 import type { BillPreviewModel } from '@/types/billPreview';
+import type { CSSProperties } from 'react';
 import './bill-memo-template.css';
 
 type BillMemoTemplateProps = {
@@ -35,6 +39,12 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
   const loadRows = prepareBillPreviewLoads(data.loads);
   const { company } = data;
   const chargeRows = buildBillPreviewChargeRows(data);
+  const loadsSectionMinHeight = resolveBillMemoLoadsSectionMinHeight(chargeRows.length, data.payBy);
+  const showUpiPaidFields = data.payBy === 'upi';
+  const compactLoadsSection = chargeRows.length > BILL_MEMO_BASELINE_CHARGE_ROW_COUNT + 1;
+  const loadsSectionStyle = {
+    '--bill-memo-loads-min-height': `${loadsSectionMinHeight}px`,
+  } as CSSProperties;
 
   return (
     <article
@@ -127,7 +137,15 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
         </section>
 
-        <section className="bill-memo__loads-section">
+        <section
+          className={[
+            'bill-memo__loads-section',
+            compactLoadsSection ? 'bill-memo__loads-section--compact' : '',
+          ]
+            .filter(Boolean)
+            .join(' ')}
+          style={loadsSectionStyle}
+        >
           <div className="bill-memo__loads-head">
             {LOAD_COLUMNS.map((column) => (
               <div key={column.key} className={column.className}>
@@ -202,7 +220,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
             <div className="bill-memo__loads-foot-sno" aria-hidden />
             <div className="bill-memo__loads-foot-loan-label">Truck Loan</div>
             <div className="bill-memo__loads-foot-loan-value">
-              {formatBillPreviewAmount(data.truckLoan)}
+              {data.truckLoan ? 'Yes' : ''}
             </div>
             <div className="bill-memo__loads-foot-label-cell">Total Freight</div>
             <div className="bill-memo__loads-foot-freight-value">
@@ -214,38 +232,104 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
         </section>
 
-        <footer className="bill-memo__footer">
-          <div className="bill-memo__terms">
-            {company.terms.map((line, index) => (
-              <p key={`term-${index}`} className="bill-memo__terms-text">
-                <span className="bill-memo__terms-marker">{index + 1}.</span>
-                <span className="bill-memo__terms-body">{line}</span>
-              </p>
-            ))}
-          </div>
-          <table className="bill-memo__summary">
-            <tbody>
-              {chargeRows.map((row) => (
-                <tr
-                  key={row.key}
-                  className={row.key === 'total' ? 'bill-memo__summary-total' : undefined}
-                >
-                  <th>{row.label}</th>
-                  <td>{formatBillPreviewAmount(row.value)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </footer>
+        <section className="bill-memo__footer-grid">
+          <div className="bill-memo__footer-col">
+            <section className="bill-memo__footer-section">
+              <h3 className="bill-memo__footer-section-title">Terms &amp; conditions</h3>
+              <div className="bill-memo__disclaimer" aria-label="Terms and conditions">
+                {company.terms.map((line, index) => (
+                  <p key={`term-${index + 1}`} className="bill-memo__disclaimer-text">
+                    <span className="bill-memo__disclaimer-marker">{index + 1}.</span>
+                    <span className="bill-memo__disclaimer-body">{line}</span>
+                  </p>
+                ))}
+              </div>
+            </section>
 
-        <div className="bill-memo__signatures">
-          <div className="bill-memo__signature-block">
-            <div className="bill-memo__signature-space" aria-hidden />
-            <div>Truck Owner&apos;s &amp; Driver&apos;s Signature</div>
+            <section className="bill-memo__footer-section">
+              <h3 className="bill-memo__footer-section-title">Payment Summary</h3>
+              <table className="bill-memo__pay-table">
+              <thead>
+                <tr>
+                  <th className="bill-memo__pay-table-corner">Payment</th>
+                  {BILL_MEMO_PAY_BY_OPTIONS.map((option) => (
+                    <th key={option.value}>
+                      <div className="bill-memo__pay-table-option">
+                        <span className="bill-memo__pay-table-check-slot" aria-hidden>
+                          {data.payBy === option.value ? '✓' : ''}
+                        </span>
+                        <span className="bill-memo__pay-table-label">{option.label}</span>
+                      </div>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              {showUpiPaidFields ? (
+                <tbody>
+                  <tr>
+                    <th>Name</th>
+                    <td colSpan={3}>{data.paidName}</td>
+                  </tr>
+                  <tr>
+                    <th>Mobile</th>
+                    <td colSpan={3}>{data.paidMobile}</td>
+                  </tr>
+                </tbody>
+              ) : null}
+              </table>
+            </section>
           </div>
-          <div className="bill-memo__signature-block bill-memo__signature-block--right">
-            <div className="bill-memo__signature-space" aria-hidden />
-            <div>{company.signatureLabel}</div>
+
+          <div className="bill-memo__footer-col">
+            <section className="bill-memo__footer-section">
+              <h3 className="bill-memo__footer-section-title">Charges &amp; Total</h3>
+              <table className="bill-memo__summary bill-memo__summary--charges">
+              <tbody>
+                {chargeRows.map((row) => (
+                  <tr
+                    key={row.key}
+                    className={row.key === 'total' ? 'bill-memo__summary-total' : undefined}
+                  >
+                    <th>{row.label}</th>
+                    <td>{formatBillPreviewAmount(row.value)}</td>
+                  </tr>
+              ))}
+              </tbody>
+              </table>
+            </section>
+
+            <section className="bill-memo__footer-section">
+              <h3 className="bill-memo__footer-section-title">Advance Summary</h3>
+              <table className="bill-memo__ledger-summary">
+                <tbody>
+                  <tr>
+                    <th>Advance</th>
+                    <td>{formatBillPreviewAmount(data.totalAdvance)}</td>
+                  </tr>
+                  <tr>
+                    <th>Commission</th>
+                    <td>{formatBillPreviewAmount(data.commission)}</td>
+                  </tr>
+                  <tr>
+                    <th>Balance</th>
+                    <td>{formatBillPreviewAmount(data.totalBalance)}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </section>
+          </div>
+        </section>
+
+        <div className="bill-memo__bottom">
+          <div className="bill-memo__signatures">
+            <div className="bill-memo__signature-block">
+              <div className="bill-memo__signature-space" aria-hidden />
+              <div>Truck Owner&apos;s &amp; Driver&apos;s Signature</div>
+            </div>
+            <div className="bill-memo__signature-block bill-memo__signature-block--right">
+              <div className="bill-memo__signature-space" aria-hidden />
+              <div>{company.signatureLabel}</div>
+            </div>
           </div>
         </div>
       </div>
