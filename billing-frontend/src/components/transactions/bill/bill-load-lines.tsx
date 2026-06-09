@@ -1,9 +1,8 @@
 import { Plus, Trash2, Truck } from 'lucide-react';
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
+import { BillLoadConsigneeField } from '@/components/transactions/bill/bill-load-consignee-field';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import {
   BillFormAccordionSection,
   BillFormCurrencyAmount,
@@ -18,7 +17,6 @@ import {
   lookupItemLabel,
   lookupUnitIsFixed,
 } from '@/lib/billForm';
-import { cn } from '@/lib/utils';
 import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
 
@@ -38,6 +36,26 @@ function parseNumericInput(raw: string): number | '' {
 
   const n = Number(raw);
   return Number.isFinite(n) ? n : '';
+}
+
+function formatLoadLineTitle(index: number): string {
+  const loadNumber = index + 1;
+  const mod100 = loadNumber % 100;
+
+  if (mod100 >= 11 && mod100 <= 13) {
+    return `${loadNumber}th load`;
+  }
+
+  switch (loadNumber % 10) {
+    case 1:
+      return `${loadNumber}st load`;
+    case 2:
+      return `${loadNumber}nd load`;
+    case 3:
+      return `${loadNumber}rd load`;
+    default:
+      return `${loadNumber}th load`;
+  }
 }
 
 export function BillLoadLines({
@@ -82,7 +100,7 @@ export function BillLoadLines({
       {loads.map((line, index) => (
         <BillFormAccordionSection
           key={line.loadId ?? `new-${index}`}
-          title={`Line Item ${index + 1}`}
+          title={formatLoadLineTitle(index)}
           compact
           defaultOpen={loads.length === 1 || index === loads.length - 1}
           action={
@@ -105,7 +123,7 @@ export function BillLoadLines({
                   id={`load-${index}-consignor`}
                   label="Consignor"
                   required
-                  className="md:col-span-3"
+                  className="md:col-span-6"
                 >
                   <EntityFormLookupCombobox
                     id={`load-${index}-consignor`}
@@ -127,26 +145,20 @@ export function BillLoadLines({
                   id={`load-${index}-consignee`}
                   label="Consignee"
                   required={!line.asPerBill}
-                  className="md:col-span-3"
+                  className="md:col-span-6"
                 >
-                  <EntityFormLookupCombobox
+                  <BillLoadConsigneeField
                     id={`load-${index}-consignee`}
-                    value={line.consigneeId}
-                    disabled={line.asPerBill}
-                    onChange={(value) => {
-                      const consigneeId = value == null ? null : Number(value);
-                      updateLine(index, {
-                        consigneeId: Number.isFinite(consigneeId) ? consigneeId : null,
-                        consigneeName: lookupItemLabel(parties, consigneeId),
-                      });
-                    }}
+                    consigneeId={line.consigneeId}
+                    asPerBill={line.asPerBill}
                     items={parties}
-                    placeholder="Select consignee…"
-                    searchPlaceholder="Search party…"
+                    onChange={(value) => updateLine(index, value)}
                   />
-                </BillFormField>
+                </BillFormField>       
+              </div>
 
-                <BillFormField id={`load-${index}-to`} label="Destination" required className="md:col-span-2">
+              <div className="grid grid-cols-1 items-end gap-3 md:grid-cols-12">
+                <BillFormField id={`load-${index}-to`} label="Destination" required className="md:col-span-4">
                   <EntityFormLookupCombobox
                     id={`load-${index}-to`}
                     value={line.toId}
@@ -163,7 +175,7 @@ export function BillLoadLines({
                   />
                 </BillFormField>
 
-                <BillFormField id={`load-${index}-goods`} label="Goods Description" required className="md:col-span-2">
+                <BillFormField id={`load-${index}-goods`} label="Goods Description" required className="md:col-span-4">
                   <EntityFormLookupCombobox
                     id={`load-${index}-goods`}
                     value={line.goodsId}
@@ -180,7 +192,7 @@ export function BillLoadLines({
                   />
                 </BillFormField>
 
-                <BillFormField id={`load-${index}-unit`} label="Unit" required className="md:col-span-1">
+                <BillFormField id={`load-${index}-unit`} label="Unit" required className="md:col-span-4">
                   <EntityFormLookupCombobox
                     id={`load-${index}-unit`}
                     value={line.unitId}
@@ -197,29 +209,6 @@ export function BillLoadLines({
                     searchPlaceholder="Search unit…"
                   />
                 </BillFormField>
-
-                <div className="hidden flex-col gap-1.5 md:col-span-1 md:flex">
-                  <span className="text-xs font-medium text-muted-foreground">APB</span>
-                  <button
-                    type="button"
-                    title="As per bill"
-                    aria-pressed={line.asPerBill}
-                    onClick={() =>
-                      updateLine(index, {
-                        asPerBill: !line.asPerBill,
-                        ...(line.asPerBill ? {} : { consigneeId: null, consigneeName: '' }),
-                      })
-                    }
-                    className={cn(
-                      'flex h-9 items-center justify-center rounded-md border text-xs font-semibold transition-colors',
-                      line.asPerBill
-                        ? 'border-primary bg-primary/10 text-primary'
-                        : 'border-border bg-muted/40 text-muted-foreground hover:bg-muted',
-                    )}
-                  >
-                    APB
-                  </button>
-                </div>
               </div>
 
               <BillFormFinancialPanel>
@@ -283,22 +272,6 @@ export function BillLoadLines({
                   </BillFormField>
                 </div>
               </BillFormFinancialPanel>
-
-              <div className="flex items-center gap-2 md:hidden">
-                <Switch
-                  id={`load-${index}-as-per-bill-mobile`}
-                  checked={line.asPerBill}
-                  onCheckedChange={(checked) =>
-                    updateLine(index, {
-                      asPerBill: checked,
-                      ...(checked ? { consigneeId: null, consigneeName: '' } : {}),
-                    })
-                  }
-                />
-                <Label htmlFor={`load-${index}-as-per-bill-mobile`} className="text-xs">
-                  As per bill
-                </Label>
-              </div>
         </BillFormAccordionSection>
       ))}
 

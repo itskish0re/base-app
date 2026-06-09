@@ -55,10 +55,12 @@ function ComboboxInput({
   disabled = false,
   showTrigger = true,
   showClear = false,
+  addonBeforeTrigger,
   ...props
 }: ComboboxPrimitive.Input.Props & {
   showTrigger?: boolean;
   showClear?: boolean;
+  addonBeforeTrigger?: React.ReactNode;
 }) {
   return (
     <InputGroup className={cn('w-auto', className)}>
@@ -67,6 +69,7 @@ function ComboboxInput({
         {...props}
       />
       <InputGroupAddon align="inline-end">
+        {addonBeforeTrigger}
         {showTrigger ? (
           <ComboboxTrigger
             render={

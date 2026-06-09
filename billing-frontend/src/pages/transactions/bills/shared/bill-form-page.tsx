@@ -232,7 +232,6 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
             parties={lookups.parties}
             goods={lookups.goods}
             units={lookups.units}
-            billNumberReadOnly={mode === 'edit'}
             onChange={handleFormChange}
             onTruckSelected={handleTruckSelected}
           />

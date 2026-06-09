@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, type ReactNode } from 'react';
 import {
   Combobox,
   ComboboxContent,
@@ -22,6 +22,7 @@ type EntityFormLookupComboboxProps = {
   items: LookupItem[];
   isLoading?: boolean;
   isError?: boolean;
+  addonBeforeTrigger?: ReactNode;
 };
 
 function lookupItemValue(item: LookupItem): string {
@@ -61,6 +62,7 @@ export function EntityFormLookupCombobox({
   items,
   isLoading = false,
   isError = false,
+  addonBeforeTrigger,
 }: EntityFormLookupComboboxProps) {
   const selectedValue = value == null || value === '' ? null : String(value);
 
@@ -108,6 +110,7 @@ export function EntityFormLookupCombobox({
         showClear={clearable && selectedItem != null}
         disabled={comboboxDisabled}
         aria-invalid={isError || undefined}
+        addonBeforeTrigger={addonBeforeTrigger}
       />
       <ComboboxContent>
         {isError ? (

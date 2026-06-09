@@ -46,8 +46,7 @@ export function BillFormAccordionSection({
           {Icon ? <Icon className="size-5 shrink-0 text-primary" aria-hidden /> : null}
           <span
             className={cn(
-              'truncate font-semibold tracking-tight text-foreground',
-              compact ? 'text-xs' : 'text-sm',
+              'truncate text-sm font-semibold tracking-tight text-foreground',
             )}
           >
             {title}
@@ -133,14 +132,12 @@ export function BillFormFinancialPanel({ children, className }: BillFormFinancia
 
 type BillFormCurrencyAmountProps = {
   value: number | '' | null | undefined;
-  readOnly?: boolean;
   highlighted?: boolean;
   className?: string;
 };
 
 export function BillFormCurrencyAmount({
   value,
-  readOnly = true,
   highlighted = false,
   className,
 }: BillFormCurrencyAmountProps) {
@@ -153,14 +150,35 @@ export function BillFormCurrencyAmount({
         });
 
   return (
+    <BillFormReadOnlyValue display={display} highlighted={highlighted} className={className} />
+  );
+}
+
+type BillFormReadOnlyValueProps = {
+  display: string;
+  highlighted?: boolean;
+  align?: 'start' | 'center' | 'end';
+  bold?: boolean;
+  className?: string;
+};
+
+export function BillFormReadOnlyValue({
+  display,
+  highlighted = false,
+  align = 'end',
+  bold = false,
+  className,
+}: BillFormReadOnlyValueProps) {
+  return (
     <div className={cn('relative', className)}>
-      <span className="pointer-events-none absolute top-1/2 left-3 -translate-y-1/2 font-mono text-sm text-muted-foreground">
-        ₹
-      </span>
       <div
         className={cn(
-          'flex h-9 items-center justify-end rounded-md border pr-3 pl-7 font-mono text-sm tabular-nums',
-          readOnly && 'border-border bg-muted/50',
+          'flex h-9 items-center rounded-md border px-3 font-mono text-sm tabular-nums',
+          align === 'center' && 'justify-center',
+          align === 'end' && 'justify-end',
+          align === 'start' && 'justify-start',
+          'border-border bg-muted/50',
+          bold && 'font-bold',
           highlighted && 'border-transparent bg-secondary/40 font-semibold text-foreground',
         )}
       >

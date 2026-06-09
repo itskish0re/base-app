@@ -21,13 +21,14 @@ type BillChargesTableProps = {
   onOthersChange: (items: BillOtherItem[]) => void;
 };
 
-const ADDITIVE_ROWS = [
+const CHARGE_ROWS = [
   ['totalFreight', 'Total freight', true],
   ['commission', 'Commission', true],
   ['crossing', 'Crossing', false],
   ['officeMamul', 'Office mamul', false],
   ['tapalMamul', 'Tapal mamul', false],
   ['diesel', 'Diesel', false],
+  ['handLoan', 'Hand loan', false],
 ] as const;
 
 function parseNumericInput(raw: string): number | '' {
@@ -81,11 +82,10 @@ export function BillChargesTable({
           <tr className="border-b border-border bg-muted/50">
             <th className="px-4 py-2 text-left text-xs font-medium text-muted-foreground">Description</th>
             <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Amount (+)</th>
-            <th className="px-4 py-2 text-right text-xs font-medium text-muted-foreground">Deduction (-)</th>
           </tr>
         </thead>
         <tbody>
-          {ADDITIVE_ROWS.map(([key, label, readOnly]) => (
+          {CHARGE_ROWS.map(([key, label, readOnly]) => (
             <tr key={key} className="border-b border-border transition-colors hover:bg-muted/20">
               <td className="px-4 py-1.5 font-medium">{label}</td>
               <td className="px-4 py-1.5 text-right">
@@ -102,24 +102,8 @@ export function BillChargesTable({
                   />
                 )}
               </td>
-              <td className="px-4 py-1.5 text-right font-mono text-muted-foreground tabular-nums">-</td>
             </tr>
           ))}
-
-          <tr className="border-b border-border transition-colors hover:bg-muted/20">
-            <td className="px-4 py-1.5 font-medium">Hand loan</td>
-            <td className="px-4 py-1.5 text-right font-mono text-muted-foreground tabular-nums">-</td>
-            <td className="px-4 py-1.5 text-right">
-              <Input
-                id="bill-handLoan"
-                type="number"
-                inputMode="decimal"
-                value={values.handLoan === '' ? '' : values.handLoan}
-                className={cnInput()}
-                onChange={(e) => onNumericChange('handLoan', e.target.value)}
-              />
-            </td>
-          </tr>
 
           {others.map((item, index) => (
             <tr key={`other-${index}`} className="border-b border-border transition-colors hover:bg-muted/20">
@@ -128,7 +112,7 @@ export function BillChargesTable({
                   <Input
                     id={`bill-other-key-${index}`}
                     value={item.key}
-                    placeholder="Add other charge…"
+                    placeholder="Add Other"
                     className="h-8 border-transparent bg-transparent px-0 shadow-none focus-visible:ring-0"
                     onChange={(e) => updateOther(index, { key: e.target.value })}
                   />
@@ -154,26 +138,25 @@ export function BillChargesTable({
                   onChange={(e) => updateOther(index, { value: parseNumericInput(e.target.value) })}
                 />
               </td>
-              <td className="px-4 py-1.5 text-right font-mono text-muted-foreground tabular-nums">-</td>
             </tr>
           ))}
 
           <tr>
-            <td colSpan={3} className="px-4 py-2">
+            <td colSpan={2} className="px-4 py-2">
               <button
                 type="button"
                 onClick={addOther}
                 className="flex items-center gap-1 text-xs font-medium text-primary hover:underline"
               >
                 <Plus className="size-3.5" />
-                Add other charge
+                Add Other Charge
               </button>
             </td>
           </tr>
 
           <tr className="border-b border-border transition-colors hover:bg-muted/20">
             <td className="px-4 py-2 font-medium">Truck loan</td>
-            <td colSpan={2} className="px-4 py-2">
+            <td className="px-4 py-2">
               <div className="flex items-center gap-2">
                 <Switch
                   id="bill-truck-loan"
@@ -195,10 +178,7 @@ export function BillChargesTable({
         <tfoot>
           <tr className="border-t-2 border-border bg-muted/50">
             <td className="px-4 py-3 text-right text-sm font-semibold">Grand Total:</td>
-            <td
-              className="px-4 py-3 text-right font-mono text-base font-bold tabular-nums text-primary"
-              colSpan={2}
-            >
+            <td className="px-4 py-3 text-right font-mono text-base font-bold tabular-nums text-primary">
               {formatBillFormCurrency(toFormNumber(values.total) ?? 0)}
             </td>
           </tr>

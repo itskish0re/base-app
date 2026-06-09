@@ -190,11 +190,10 @@ export function recalculateBillForm(values: BillFormValues): BillFormValues {
     (toFormNumber(values.officeMamul) ?? 0) +
     (toFormNumber(values.tapalMamul) ?? 0) +
     (toFormNumber(values.diesel) ?? 0) +
+    (toFormNumber(values.handLoan) ?? 0) +
     sumBillOtherItems(values.others);
 
-  const deductions = toFormNumber(values.handLoan) ?? 0;
-
-  const total = roundMoney(totalFreight + charges - deductions);
+  const total = roundMoney(charges);
 
   return {
     ...values,

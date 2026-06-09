@@ -3,20 +3,20 @@ import { DatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { BillChargesSummary } from '@/components/transactions/bill/bill-charges-summary';
+import { BillAdvanceSummary } from '@/components/transactions/bill/bill-advance-summary';
 import { BillChargesTable } from '@/components/transactions/bill/bill-charges-table';
 import {
   BillFormAccordionSection,
   BillFormField,
   BillFormMonoInputClass,
+  BillFormReadOnlyValue,
 } from '@/components/transactions/bill/bill-form-ui';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
-import { lookupItemLabel } from '@/lib/billForm';
-import { cn } from '@/lib/utils';
+import { lookupItemLabel, sumLoadAdvances } from '@/lib/billForm';
 import type { BillFormValues } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
-import { Ban, FileText, Receipt, Wallet } from 'lucide-react';
+import { Ban, FileText, IndianRupee, Receipt, Wallet } from 'lucide-react';
 
 type BillFormProps = {
   values: BillFormValues;
@@ -25,7 +25,6 @@ type BillFormProps = {
   parties: LookupItem[];
   goods: LookupItem[];
   units: LookupItem[];
-  billNumberReadOnly?: boolean;
   onChange: (values: BillFormValues) => void;
   onTruckSelected: (truckId: number) => void;
 };
@@ -54,7 +53,6 @@ export function BillForm({
   parties,
   goods,
   units,
-  billNumberReadOnly = false,
   onChange,
   onTruckSelected,
 }: BillFormProps) {
@@ -62,18 +60,14 @@ export function BillForm({
     onChange({ ...values, ...partial });
   };
 
+  const showAdvanceSummary = sumLoadAdvances(values.loads) > 0;
+
   return (
     <div className="mx-auto max-w-6xl space-y-4 pb-6">
       <BillFormAccordionSection icon={FileText} title="Header Information">
         <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 lg:grid-cols-4">
           <BillFormField id="bill-number" label="Bill No." required>
-            <Input
-              id="bill-number"
-              value={values.billNumber}
-              readOnly={billNumberReadOnly}
-              className={cn(BillFormMonoInputClass(true), billNumberReadOnly && 'bg-muted/60')}
-              onChange={(e) => patch({ billNumber: e.target.value })}
-            />
+            <BillFormReadOnlyValue display={values.billNumber || '—'} align="center" bold />
           </BillFormField>
 
           <BillFormField id="bill-date" label="Date" required>
@@ -147,29 +141,31 @@ export function BillForm({
             />
           </BillFormField>
 
-          <BillFormField id="bill-driver-name" label="Driver Name" required>
-            <Input
-              id="bill-driver-name"
-              value={values.driverName}
-              onChange={(e) => patch({ driverName: e.target.value })}
-            />
-          </BillFormField>
+          <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:col-span-2 md:grid-cols-4 lg:col-span-4">
+            <BillFormField id="bill-driver-name" label="Driver Name" required className="md:col-span-2">
+              <Input
+                id="bill-driver-name"
+                value={values.driverName}
+                onChange={(e) => patch({ driverName: e.target.value })}
+              />
+            </BillFormField>
 
-          <BillFormField id="bill-driver-mobile-1" label="Driver Mobile 1">
-            <Input
-              id="bill-driver-mobile-1"
-              value={values.driverMobile1}
-              onChange={(e) => patch({ driverMobile1: e.target.value })}
-            />
-          </BillFormField>
+            <BillFormField id="bill-driver-mobile-1" label="Driver Mobile 1">
+              <Input
+                id="bill-driver-mobile-1"
+                value={values.driverMobile1}
+                onChange={(e) => patch({ driverMobile1: e.target.value })}
+              />
+            </BillFormField>
 
-          <BillFormField id="bill-driver-mobile-2" label="Driver Mobile 2" className="lg:col-span-2">
-            <Input
-              id="bill-driver-mobile-2"
-              value={values.driverMobile2}
-              onChange={(e) => patch({ driverMobile2: e.target.value })}
-            />
-          </BillFormField>
+            <BillFormField id="bill-driver-mobile-2" label="Driver Mobile 2">
+              <Input
+                id="bill-driver-mobile-2"
+                value={values.driverMobile2}
+                onChange={(e) => patch({ driverMobile2: e.target.value })}
+              />
+            </BillFormField>
+          </div>
         </div>
       </BillFormAccordionSection>
 
@@ -183,11 +179,6 @@ export function BillForm({
       />
 
       <section className="grid grid-cols-1 items-start gap-4 lg:grid-cols-3">
-        <BillFormAccordionSection icon={Wallet} title="Payment Details" className="h-full" contentClassName="space-y-5">
-          <BillPaymentPanel values={values} onChange={patch} embedded />
-          <BillChargesSummary values={values} />
-        </BillFormAccordionSection>
-
         <BillFormAccordionSection
           icon={Receipt}
           title="Charges Summary"
@@ -202,6 +193,23 @@ export function BillForm({
             onTruckLoanChange={(checked) => patch({ truckLoan: checked })}
           />
         </BillFormAccordionSection>
+
+        <div className="flex flex-col gap-4">
+          <BillFormAccordionSection icon={Wallet} title="Payment Details" className="h-full" contentClassName="p-4 sm:p-5">
+            <BillPaymentPanel values={values} onChange={patch} embedded />
+          </BillFormAccordionSection>
+
+          {showAdvanceSummary ? (
+            <BillFormAccordionSection
+              icon={IndianRupee}
+              title="Advance Summary"
+              className="h-full"
+              contentClassName="p-4 sm:p-5"
+            >
+              <BillAdvanceSummary values={values} />
+            </BillFormAccordionSection>
+          ) : null}
+        </div>
       </section>
 
       <BillFormAccordionSection icon={Ban} title="Status" defaultOpen={values.isCancelled}>
