@@ -10,6 +10,7 @@ import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview'
 import type { LookupItem } from '@/types/common';
 
 export const BILL_FORM_MAX_LOAD_ROWS = 3;
+export const BILL_FORM_DEFAULT_NUMERIC = 0;
 
 export function todayIsoDate(): string {
   const now = new Date();
@@ -33,12 +34,13 @@ export function createEmptyLoadLine(loadNumber = 1): BillLoadFormLine {
     goodsName: '',
     unitId: null,
     unitName: '',
-    weightOrQuantity: '',
-    ratePerUnit: '',
-    freight: '',
-    advance: '',
-    topay: '',
-    balance: '',
+    unitIsFixed: false,
+    weightOrQuantity: BILL_FORM_DEFAULT_NUMERIC,
+    ratePerUnit: BILL_FORM_DEFAULT_NUMERIC,
+    freight: BILL_FORM_DEFAULT_NUMERIC,
+    advance: BILL_FORM_DEFAULT_NUMERIC,
+    topay: BILL_FORM_DEFAULT_NUMERIC,
+    balance: BILL_FORM_DEFAULT_NUMERIC,
     loadId: null,
   };
 }
@@ -57,19 +59,19 @@ export function createInitialBillFormValues(): BillFormValues {
     driverName: '',
     driverMobile1: '',
     driverMobile2: '',
-    totalFreight: '',
-    commission: '',
-    crossing: '',
-    handLoan: '',
+    totalFreight: BILL_FORM_DEFAULT_NUMERIC,
+    commission: BILL_FORM_DEFAULT_NUMERIC,
+    crossing: BILL_FORM_DEFAULT_NUMERIC,
+    handLoan: BILL_FORM_DEFAULT_NUMERIC,
     truckLoan: false,
-    payBy: null,
+    payBy: 'upi',
     paidName: '',
     paidMobile: '',
-    officeMamul: '',
-    tapalMamul: '',
-    diesel: '',
+    officeMamul: BILL_FORM_DEFAULT_NUMERIC,
+    tapalMamul: BILL_FORM_DEFAULT_NUMERIC,
+    diesel: BILL_FORM_DEFAULT_NUMERIC,
     others: [createEmptyBillOtherItem()],
-    total: '',
+    total: BILL_FORM_DEFAULT_NUMERIC,
     isCancelled: false,
     loads: [createEmptyLoadLine()],
   });
@@ -86,11 +88,53 @@ export function formatBillFormAmount(value: number | null | undefined): string {
   });
 }
 
+const BILL_COMMISSION_RATE = 0.02;
+
 export function sumLoadField(
   loads: BillLoadFormLine[],
   field: 'advance' | 'balance',
 ): number {
   return loads.reduce((sum, line) => sum + (toFormNumber(line[field]) ?? 0), 0);
+}
+
+export function sumLoadAdvances(loads: BillLoadFormLine[]): number {
+  return sumLoadField(loads, 'advance');
+}
+
+export function isTruckLoanAllowed(loads: BillLoadFormLine[]): boolean {
+  return sumLoadAdvances(loads) === 0;
+}
+
+function roundMoney(value: number): number {
+  return Math.round(value * 100) / 100;
+}
+
+export function lookupUnitIsFixed(units: LookupItem[], unitId: number | null): boolean {
+  if (unitId == null) {
+    return false;
+  }
+
+  const item = units.find((row) => Number(row.value) === unitId);
+  const isFixed = item?.fields?.isFixed;
+  return isFixed === true || isFixed === 'true';
+}
+
+function calculateLoadFreight(line: BillLoadFormLine): number | null {
+  const rate = toFormNumber(line.ratePerUnit);
+  if (rate == null) {
+    return null;
+  }
+
+  if (line.unitIsFixed) {
+    return roundMoney(rate);
+  }
+
+  const weight = toFormNumber(line.weightOrQuantity);
+  if (weight == null) {
+    return null;
+  }
+
+  return roundMoney(weight * rate);
 }
 
 export function toFormNumber(value: number | '' | null | undefined): number | null {
@@ -107,16 +151,11 @@ function toFormNumberOrZero(value: number | '' | null | undefined): number {
 }
 
 export function recalculateLoadLine(line: BillLoadFormLine): BillLoadFormLine {
-  const weight = toFormNumber(line.weightOrQuantity);
-  const rate = toFormNumber(line.ratePerUnit);
-  let freight = toFormNumber(line.freight);
-
-  if (weight != null && rate != null) {
-    freight = weight * rate;
-  }
-
+  const freight = calculateLoadFreight(line);
   const advance = toFormNumber(line.advance) ?? 0;
-  const balance = freight != null ? freight - advance : toFormNumber(line.balance);
+  const topay = toFormNumber(line.topay) ?? 0;
+  const balance =
+    freight != null ? roundMoney(freight - advance - topay) : toFormNumber(line.balance);
 
   return {
     ...line,
@@ -127,10 +166,14 @@ export function recalculateLoadLine(line: BillLoadFormLine): BillLoadFormLine {
 
 export function recalculateBillForm(values: BillFormValues): BillFormValues {
   const loads = values.loads.map(recalculateLoadLine);
-  const totalFreight = loads.reduce((sum, line) => sum + (toFormNumber(line.freight) ?? 0), 0);
+  const totalFreight = roundMoney(
+    loads.reduce((sum, line) => sum + (toFormNumber(line.freight) ?? 0), 0),
+  );
+  const commission = roundMoney(totalFreight * BILL_COMMISSION_RATE);
+  const truckLoanAllowed = isTruckLoanAllowed(loads);
 
   const charges =
-    (toFormNumber(values.commission) ?? 0) +
+    commission +
     (toFormNumber(values.crossing) ?? 0) +
     (toFormNumber(values.officeMamul) ?? 0) +
     (toFormNumber(values.tapalMamul) ?? 0) +
@@ -139,12 +182,14 @@ export function recalculateBillForm(values: BillFormValues): BillFormValues {
 
   const deductions = toFormNumber(values.handLoan) ?? 0;
 
-  const total = totalFreight + charges - deductions;
+  const total = roundMoney(totalFreight + charges - deductions);
 
   return {
     ...values,
     loads,
     totalFreight,
+    commission,
+    truckLoan: truckLoanAllowed ? values.truckLoan : false,
     total,
   };
 }
@@ -227,6 +272,7 @@ export function mapBillDetailToFormValues(
               goodsName: lookupItemLabel(lookups.goods, line.goodsId),
               unitId: line.unitId,
               unitName: lookupItemLabel(lookups.units, line.unitId),
+              unitIsFixed: lookupUnitIsFixed(lookups.units, line.unitId),
               weightOrQuantity: line.weightOrQuantity,
               ratePerUnit: line.ratePerUnit,
               freight: line.freight,

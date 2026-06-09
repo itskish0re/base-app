@@ -15,6 +15,7 @@ export type BillLoadFormLine = {
   goodsName: string;
   unitId: number | null;
   unitName: string;
+  unitIsFixed: boolean;
   weightOrQuantity: number | '';
   ratePerUnit: number | '';
   freight: number | '';

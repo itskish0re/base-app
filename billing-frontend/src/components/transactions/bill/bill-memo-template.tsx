@@ -220,16 +220,19 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
           <div className="bill-memo__loads-foot">
             <div className="bill-memo__loads-foot-sno" aria-hidden />
-            <div className="bill-memo__loads-foot-loan-label">Truck Loan</div>
-            <div className="bill-memo__loads-foot-loan-value">
-              {data.truckLoan ? 'Yes' : ''}
+            <div className="bill-memo__loads-foot-truck-loan">
+              <span className="bill-memo__loads-foot-truck-loan-label">Truck Loan</span>
+              <span className="bill-memo__loads-foot-truck-loan-value">
+                {data.truckLoan ? formatBillPreviewAmount(data.total) : ''}
+              </span>
             </div>
-            <div className="bill-memo__loads-foot-label-cell">Total Freight</div>
-            <div className="bill-memo__loads-foot-freight-value">
-              {formatBillPreviewAmount(data.totalFreight)}
+            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--rate" aria-hidden />
+            <div className="bill-memo__loads-foot-total-freight">
+              <span className="bill-memo__loads-foot-total-freight-label">Total Freight</span>
+              <span className="bill-memo__loads-foot-total-freight-value">
+                {formatBillPreviewAmount(data.totalFreight)}
+              </span>
             </div>
-            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--advance" aria-hidden />
-            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--topay" aria-hidden />
             <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--balance" aria-hidden />
           </div>
         </section>

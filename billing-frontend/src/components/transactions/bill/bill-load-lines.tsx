@@ -5,7 +5,12 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { BILL_FORM_MAX_LOAD_ROWS, createEmptyLoadLine, lookupItemLabel } from '@/lib/billForm';
+import {
+  BILL_FORM_MAX_LOAD_ROWS,
+  createEmptyLoadLine,
+  lookupItemLabel,
+  lookupUnitIsFixed,
+} from '@/lib/billForm';
 import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
 
@@ -189,6 +194,7 @@ export function BillLoadLines({
                   updateLine(index, {
                     unitId: Number.isFinite(unitId) ? unitId : null,
                     unitName: lookupItemLabel(units, unitId),
+                    unitIsFixed: lookupUnitIsFixed(units, unitId),
                   });
                 }}
                 items={units}
@@ -227,9 +233,8 @@ export function BillLoadLines({
                 type="number"
                 inputMode="decimal"
                 value={line.freight === '' ? '' : line.freight}
-                onChange={(e) =>
-                  updateLine(index, { freight: parseNumericInput(e.target.value) })
-                }
+                readOnly
+                className="bg-muted/50"
               />
             </EntityFormFieldControl>
             <EntityFormFieldControl id={`load-${index}-advance`} label="Advance">

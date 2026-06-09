@@ -1,6 +1,7 @@
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
 import { Label } from '@/components/ui/label';
+import { isTruckLoanAllowed } from '@/lib/billForm';
 import type { BillFormValues } from '@/types/billForm';
 
 type BillChargesTableProps = {
@@ -11,7 +12,7 @@ type BillChargesTableProps = {
 
 const CHARGE_ROWS = [
   ['totalFreight', 'Total freight', true],
-  ['commission', 'Commission', false],
+  ['commission', 'Commission', true],
   ['crossing', 'Crossing', false],
   ['handLoan', 'Hand loan', false],
   ['officeMamul', 'Office mamul', false],
@@ -25,6 +26,8 @@ export function BillChargesTable({
   onNumericChange,
   onTruckLoanChange,
 }: BillChargesTableProps) {
+  const truckLoanEnabled = isTruckLoanAllowed(values.loads);
+
   return (
     <div className="overflow-x-auto rounded-lg border bg-card">
       <table className="w-full min-w-[16rem] border-collapse text-sm">
@@ -59,10 +62,15 @@ export function BillChargesTable({
                 <Switch
                   id="bill-truck-loan"
                   checked={values.truckLoan}
+                  disabled={!truckLoanEnabled}
                   onCheckedChange={onTruckLoanChange}
                 />
                 <Label htmlFor="bill-truck-loan" className="text-xs font-normal text-muted-foreground">
-                  {values.truckLoan ? 'Yes' : 'No'}
+                  {!truckLoanEnabled
+                    ? 'Disabled when advance is entered'
+                    : values.truckLoan
+                      ? 'Yes'
+                      : 'No'}
                 </Label>
               </div>
             </td>

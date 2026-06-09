@@ -25,6 +25,7 @@ const goodsLookup = {
 const unitLookup = {
   value: 'unit_id',
   label: 'name',
+  fields: [{ keyName: 'isFixed', columnName: 'is_fixed' }],
 } as const;
 
 const truckLookup = {

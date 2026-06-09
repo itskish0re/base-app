@@ -303,10 +303,8 @@
 }
 
 .bill-memo__loads-foot-sno,
-.bill-memo__loads-foot-loan-label,
-.bill-memo__loads-foot-loan-value,
-.bill-memo__loads-foot-label-cell,
-.bill-memo__loads-foot-freight-value,
+.bill-memo__loads-foot-truck-loan,
+.bill-memo__loads-foot-total-freight,
 .bill-memo__loads-foot-spacer {
   display: flex;
   align-items: center;
@@ -319,41 +317,46 @@
   grid-column: 1;
 }
 
-.bill-memo__loads-foot-loan-label {
-  grid-column: 2 / 3;
-  justify-content: flex-start;
-  padding-left: 8px;
+.bill-memo__loads-foot-truck-loan {
+  grid-column: 2 / 6;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 8px;
   font-weight: 600;
+}
+
+.bill-memo__loads-foot-truck-loan-label {
+  flex-shrink: 0;
   text-align: left;
 }
 
-.bill-memo__loads-foot-loan-value {
-  grid-column: 3 / 6;
-  justify-content: center;
-  text-align: center;
-}
-
-.bill-memo__loads-foot-label-cell {
-  grid-column: 6 / 7;
-  justify-content: flex-end;
-  padding-right: 8px;
-  font-weight: 600;
-  text-align: right;
-}
-
-.bill-memo__loads-foot-freight-value {
-  grid-column: 7 / 8;
-  justify-content: center;
+.bill-memo__loads-foot-truck-loan-value {
+  flex: 1;
   font-weight: 700;
   text-align: center;
 }
 
-.bill-memo__loads-foot-spacer--advance {
-  grid-column: 8;
+.bill-memo__loads-foot-spacer--rate {
+  grid-column: 6;
 }
 
-.bill-memo__loads-foot-spacer--topay {
-  grid-column: 9;
+.bill-memo__loads-foot-total-freight {
+  grid-column: 7 / 10;
+  justify-content: space-between;
+  gap: 8px;
+  padding-inline: 8px;
+  font-weight: 600;
+}
+
+.bill-memo__loads-foot-total-freight-label {
+  flex-shrink: 0;
+  text-align: left;
+}
+
+.bill-memo__loads-foot-total-freight-value {
+  flex: 1;
+  font-weight: 700;
+  text-align: center;
 }
 
 .bill-memo__loads-foot-spacer--balance {
