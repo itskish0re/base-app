@@ -35,7 +35,8 @@ export type BillFormValues = {
   ownerName: string;
   ownerMobile: string;
   driverName: string;
-  driverMobile: string;
+  driverMobile1: string;
+  driverMobile2: string;
   totalFreight: number | '';
   commission: number | '';
   crossing: number | '';

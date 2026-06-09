@@ -21,7 +21,8 @@ export type BillListRowDto = {
   ownerName: string;
   ownerMobile: string | null;
   driverName: string;
-  driverMobile: string | null;
+  driverMobile1: string | null;
+  driverMobile2: string | null;
   totalFreight: number;
   commission: number;
   crossing: number;
@@ -48,7 +49,8 @@ export type BillDto = {
   fromId: number;
   truckId: number;
   driverName: string;
-  driverMobile: string | null;
+  driverMobile1: string | null;
+  driverMobile2: string | null;
   totalFreight: number;
   commission: number;
   crossing: number;
@@ -120,7 +122,8 @@ export type SaveBillItem = {
   fromId: number;
   truckId: number;
   driverName: string;
-  driverMobile?: string | null;
+  driverMobile1?: string | null;
+  driverMobile2?: string | null;
   totalFreight: number;
   commission: number;
   crossing: number;

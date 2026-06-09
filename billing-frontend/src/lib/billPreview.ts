@@ -1,5 +1,9 @@
 import { BILL_PAY_BY_OPTIONS } from '@/types/entity/bill';
-import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
+import type {
+  BillPreviewAdvanceSummary,
+  BillPreviewLoadLine,
+  BillPreviewModel,
+} from '@/types/billPreview';
 
 export { BILL_PAY_BY_OPTIONS as BILL_MEMO_PAY_BY_OPTIONS };
 
@@ -113,14 +117,14 @@ export function createSampleBillPreview(): BillPreviewModel {
     ownerName: '',
     ownerMobile: '',
     driverName: '',
-    driverMobile: '',
+    driverMobile1: '',
+    driverMobile2: '',
     loads: prepareBillPreviewLoads([]),
     truckLoan: false,
     payBy: null,
     paidName: null,
     paidMobile: null,
-    totalAdvance: null,
-    totalBalance: null,
+    advanceSummary: null,
     commission: null,
     officeMamul: null,
     tapalMamul: null,
@@ -172,13 +176,32 @@ export const BILL_MEMO_LOADS_HEIGHT_REDUCTION_PER_CHARGE_ROW = 28;
  * Keeps signatures and disclaimer inside the fixed A4 memo height.
  */
 export function sumPreviewLoadField(
-  loads: BillPreviewLoadLine[],
+  loads: ReadonlyArray<Pick<BillPreviewLoadLine, 'advance' | 'balance'>>,
   field: 'advance' | 'balance',
 ): number {
   return loads.reduce((sum, line) => {
     const value = line[field];
     return sum + (value == null || Number.isNaN(value) ? 0 : value);
   }, 0);
+}
+
+/** Advance summary — hidden when total load advances are zero. */
+export function buildBillAdvanceSummary(
+  loads: ReadonlyArray<Pick<BillPreviewLoadLine, 'advance' | 'balance'>>,
+  total: number | null,
+): BillPreviewAdvanceSummary | null {
+  const advance = sumPreviewLoadField(loads, 'advance');
+  if (advance === 0) {
+    return null;
+  }
+
+  const billTotal = total ?? 0;
+
+  return {
+    advance,
+    commission: billTotal,
+    balance: advance - billTotal,
+  };
 }
 
 export function resolveBillMemoLoadsSectionMinHeight(

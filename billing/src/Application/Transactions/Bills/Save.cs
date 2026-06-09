@@ -106,7 +106,8 @@ internal sealed class SaveBillCommandHandler(
         bill.FromId = item.FromId;
         bill.TruckId = item.TruckId;
         bill.DriverName = item.DriverName.Trim();
-        bill.DriverMobile = string.IsNullOrWhiteSpace(item.DriverMobile) ? null : item.DriverMobile.Trim();
+        bill.DriverMobile1 = string.IsNullOrWhiteSpace(item.DriverMobile1) ? null : item.DriverMobile1.Trim();
+        bill.DriverMobile2 = string.IsNullOrWhiteSpace(item.DriverMobile2) ? null : item.DriverMobile2.Trim();
         bill.TotalFreight = item.TotalFreight;
         bill.Commission = item.Commission;
         bill.Crossing = item.Crossing;

@@ -33,8 +33,12 @@ internal sealed class BillConfiguration : IEntityTypeConfiguration<Bill>
             .HasMaxLength(256)
             .IsRequired();
 
-        builder.Property(x => x.DriverMobile)
-            .HasColumnName("driver_mobile")
+        builder.Property(x => x.DriverMobile1)
+            .HasColumnName("driver_mobile_1")
+            .HasMaxLength(32);
+
+        builder.Property(x => x.DriverMobile2)
+            .HasColumnName("driver_mobile_2")
             .HasMaxLength(32);
 
         ConfigureMoney(builder.Property(x => x.TotalFreight), "total_freight");

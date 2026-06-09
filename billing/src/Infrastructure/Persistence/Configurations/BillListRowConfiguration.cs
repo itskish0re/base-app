@@ -22,7 +22,8 @@ internal sealed class BillListRowConfiguration : IEntityTypeConfiguration<BillLi
         builder.Property(x => x.OwnerName).HasColumnName("owner_name");
         builder.Property(x => x.OwnerMobile).HasColumnName("owner_mobile");
         builder.Property(x => x.DriverName).HasColumnName("driver_name");
-        builder.Property(x => x.DriverMobile).HasColumnName("driver_mobile");
+        builder.Property(x => x.DriverMobile1).HasColumnName("driver_mobile_1");
+        builder.Property(x => x.DriverMobile2).HasColumnName("driver_mobile_2");
         builder.Property(x => x.TotalFreight).HasColumnName("total_freight");
         builder.Property(x => x.Commission).HasColumnName("commission");
         builder.Property(x => x.Crossing).HasColumnName("crossing");

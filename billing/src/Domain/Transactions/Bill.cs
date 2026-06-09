@@ -16,7 +16,9 @@ public sealed class Bill : AuditableEntity
 
     public string DriverName { get; set; } = null!;
 
-    public string? DriverMobile { get; set; }
+    public string? DriverMobile1 { get; set; }
+
+    public string? DriverMobile2 { get; set; }
 
     public decimal TotalFreight { get; set; }
 

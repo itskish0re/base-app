@@ -13,7 +13,8 @@ internal static class TransactionGridifyMappers
             x => x.TruckNumber,
             x => x.NameBoardName,
             x => x.DriverName,
-            x => x.DriverMobile);
+            x => x.DriverMobile1,
+            x => x.DriverMobile2);
 
     public static readonly IGridifyMapper<LoadListRow> Load = new GridifyMapper<LoadListRow>()
         .AddCompositeMap(

@@ -128,7 +128,9 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           <div className="bill-memo__meta-row">
             <div className="bill-memo__field">
               <span className="bill-memo__field-label">Driver Mobile :</span>
-              <span className="bill-memo__field-value">{data.driverMobile}</span>
+              <span className="bill-memo__field-value">
+                {[data.driverMobile1, data.driverMobile2].filter((m) => m.trim()).join(', ')}
+              </span>
             </div>
             <div className="bill-memo__field">
               <span className="bill-memo__field-label">Name Board :</span>
@@ -298,25 +300,27 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
               </table>
             </section>
 
-            <section className="bill-memo__footer-section">
-              <h3 className="bill-memo__footer-section-title">Advance Summary</h3>
-              <table className="bill-memo__ledger-summary">
-                <tbody>
-                  <tr>
-                    <th>Advance</th>
-                    <td>{formatBillPreviewAmount(data.totalAdvance)}</td>
-                  </tr>
-                  <tr>
-                    <th>Commission</th>
-                    <td>{formatBillPreviewAmount(data.commission)}</td>
-                  </tr>
-                  <tr>
-                    <th>Balance</th>
-                    <td>{formatBillPreviewAmount(data.totalBalance)}</td>
-                  </tr>
-                </tbody>
-              </table>
-            </section>
+            {data.advanceSummary ? (
+              <section className="bill-memo__footer-section">
+                <h3 className="bill-memo__footer-section-title">Advance Summary</h3>
+                <table className="bill-memo__ledger-summary">
+                  <tbody>
+                    <tr>
+                      <th>Advance</th>
+                      <td>{formatBillPreviewAmount(data.advanceSummary.advance)}</td>
+                    </tr>
+                    <tr>
+                      <th>Commission</th>
+                      <td>{formatBillPreviewAmount(data.advanceSummary.commission)}</td>
+                    </tr>
+                    <tr>
+                      <th>Balance</th>
+                      <td>{formatBillPreviewAmount(data.advanceSummary.balance)}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </section>
+            ) : null}
           </div>
         </section>
 

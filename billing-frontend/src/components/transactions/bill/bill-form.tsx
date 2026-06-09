@@ -139,11 +139,18 @@ export function BillForm({
               onChange={(e) => patch({ driverName: e.target.value })}
             />
           </EntityFormFieldControl>
-          <EntityFormFieldControl id="bill-driver-mobile" label="Driver mobile">
+          <EntityFormFieldControl id="bill-driver-mobile-1" label="Driver mobile 1">
             <Input
-              id="bill-driver-mobile"
-              value={values.driverMobile}
-              onChange={(e) => patch({ driverMobile: e.target.value })}
+              id="bill-driver-mobile-1"
+              value={values.driverMobile1}
+              onChange={(e) => patch({ driverMobile1: e.target.value })}
+            />
+          </EntityFormFieldControl>
+          <EntityFormFieldControl id="bill-driver-mobile-2" label="Driver mobile 2">
+            <Input
+              id="bill-driver-mobile-2"
+              value={values.driverMobile2}
+              onChange={(e) => patch({ driverMobile2: e.target.value })}
             />
           </EntityFormFieldControl>
         </div>
@@ -166,10 +173,7 @@ export function BillForm({
               <p className="text-xs font-medium text-muted-foreground">Payment</p>
               <BillPaymentPanel values={values} onChange={patch} />
             </div>
-            <div className="space-y-1">
-              <p className="text-xs font-medium text-muted-foreground">Summary</p>
-              <BillChargesSummary values={values} />
-            </div>
+            <BillChargesSummary values={values} />
           </div>
 
           <div className="min-w-0 space-y-4 md:col-span-2 xl:col-span-2">

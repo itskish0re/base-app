@@ -22,6 +22,15 @@ export type BillPreviewLoadLine = {
   balance: number | null;
 };
 
+export type BillPreviewAdvanceSummary = {
+  /** Sum of advances across all loads. */
+  advance: number;
+  /** Bill total. */
+  commission: number;
+  /** Sum of load balances minus bill total. */
+  balance: number;
+};
+
 export type BillPreviewCompany = {
   motto: string;
   titleTop: string;
@@ -49,16 +58,15 @@ export type BillPreviewModel = {
   ownerName: string;
   ownerMobile: string;
   driverName: string;
-  driverMobile: string;
+  driverMobile1: string;
+  driverMobile2: string;
   loads: BillPreviewLoadLine[];
   truckLoan: boolean;
   payBy: BillPayBy | null;
   paidName: string | null;
   paidMobile: string | null;
-  /** Sum of load advances — left ledger summary. */
-  totalAdvance: number | null;
-  /** Sum of load balances — left ledger summary. */
-  totalBalance: number | null;
+  /** Shown when sum of load advances is non-zero. */
+  advanceSummary: BillPreviewAdvanceSummary | null;
   commission: number | null;
   /** Office mamul */
   officeMamul: number | null;
