@@ -4,6 +4,7 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
@@ -28,6 +29,11 @@ export function EntityFormYearInput({
       value={selectedValue || null}
       disabled={isDisabled}
       onValueChange={(nextValue) => {
+        if (nextValue === '__clear__') {
+          onChange('');
+          return;
+        }
+
         onChange(nextValue ?? '');
       }}
     >
@@ -40,6 +46,14 @@ export function EntityFormYearInput({
         <SelectValue placeholder={placeholder ?? 'Select year…'} />
       </SelectTrigger>
       <SelectContent>
+        {selectedValue ? (
+          <>
+            <SelectItem value="__clear__" className="text-muted-foreground">
+              Clear
+            </SelectItem>
+            <SelectSeparator />
+          </>
+        ) : null}
         {yearOptions.map((year) => (
           <SelectItem key={year} value={String(year)}>
             {year}

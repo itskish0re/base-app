@@ -12,6 +12,7 @@ type EntityFormLookupComboboxProps = {
   onChange: (value: unknown) => void;
   onBlur?: () => void;
   disabled?: boolean;
+  clearable?: boolean;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
@@ -60,6 +61,7 @@ export function EntityFormLookupCombobox({
   onChange,
   onBlur,
   disabled = false,
+  clearable = true,
   placeholder = 'Select…',
   searchPlaceholder = 'Search…',
   emptyMessage = 'No matches found.',
@@ -117,10 +119,26 @@ export function EntityFormLookupCombobox({
             <p className="px-3 py-2 text-sm text-muted-foreground">Loading options…</p>
           ) : isError ? (
             <p className="px-3 py-2 text-sm text-destructive">Failed to load options.</p>
-          ) : filteredItems.length === 0 ? (
-            <p className="px-3 py-2 text-sm text-muted-foreground">{emptyMessage}</p>
           ) : (
-            filteredItems.map((item) => {
+            <>
+              {clearable && selectedValue != null ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="h-auto w-full justify-start rounded-none border-b px-3 py-2 text-left font-normal text-muted-foreground"
+                  onClick={() => {
+                    onChange(null);
+                    setOpen(false);
+                    setSearch('');
+                  }}
+                >
+                  Clear
+                </Button>
+              ) : null}
+              {filteredItems.length === 0 ? (
+                <p className="px-3 py-2 text-sm text-muted-foreground">{emptyMessage}</p>
+              ) : (
+                filteredItems.map((item) => {
               const itemValue = lookupItemValue(item);
               const isSelected = itemValue === selectedValue;
               const secondary = item.fields?.code != null ? String(item.fields.code) : null;
@@ -152,8 +170,10 @@ export function EntityFormLookupCombobox({
                     ) : null}
                   </span>
                 </Button>
-              );
-            })
+                );
+              })
+              )}
+            </>
           )}
         </div>
       </PopoverContent>

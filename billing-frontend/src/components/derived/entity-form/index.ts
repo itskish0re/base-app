@@ -18,6 +18,7 @@ export { EntityFormMobileInput } from '@/components/derived/entity-form/ef-input
 export { EntityFormNumberInput } from '@/components/derived/entity-form/ef-input-number';
 export { EntityFormTextInput, EntityFormBadgeTextInput } from '@/components/derived/entity-form/ef-input-text';
 export { EntityFormYearInput } from '@/components/derived/entity-form/ef-input-year';
+export { EntityFormDateInput } from '@/components/derived/entity-form/ef-input-date';
 export {
   buildFinancialYearOptions,
   formatFinancialYearName,

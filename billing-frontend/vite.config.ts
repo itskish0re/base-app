@@ -23,6 +23,9 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
+    optimizeDeps: {
+      include: ['react-day-picker', 'date-fns'],
+    },
     server: {
       port: 5173,
       /** Expose dev server on LAN (e.g. http://<laptop-ip>:5173 from phone). */

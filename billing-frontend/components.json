@@ -20,8 +20,6 @@
     "hooks": "@/hooks"
   },
   "registries": {
-    "@shadcn": {
-      "url": "https://ui.shadcn.com/r/styles/{style}/{name}.json"
-    }
+    "@shadcn": "https://ui.shadcn.com/r/styles/{style}/{name}.json"
   }
 }

@@ -53,7 +53,7 @@ export function formatBillPreviewAmount(value: number | null | undefined): strin
 }
 
 /** Shown in the Consignee column when as per bill is enabled. */
-export const BILL_PREVIEW_AS_PER_BILL_LABEL = 'As per bill';
+export const BILL_PREVIEW_AS_PER_BILL_LABEL = 'AS PER BILL';
 
 export function formatBillPreviewConsigneeName(
   consigneeName: string,
@@ -152,7 +152,6 @@ export function buildBillPreviewChargeRows(data: BillPreviewModel): BillPreviewC
   const rows: BillPreviewChargeRow[] = [
     { key: 'commission', label: 'Commission', value: data.commission },
     { key: 'crossing', label: 'Crossing', value: data.crossing },
-    { key: 'truckLoan', label: 'Truck Loan', value: data.truckLoan },
     { key: 'officeMamul', label: 'Office Mamul', value: data.officeMamul },
     { key: 'tapalMamul', label: 'Tapal Mamul', value: data.tapalMamul },
     { key: 'handLoan', label: 'Hand Loan', value: data.handLoan },

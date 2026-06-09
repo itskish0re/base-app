@@ -1,5 +1,6 @@
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { EntityFormFieldControl } from '@/components/derived/entity-form/ef-field-control';
+import { DatePicker } from '@/components/ui/date-picker';
 import { BillOtherCharges } from '@/components/transactions/bill/bill-other-charges';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { Input } from '@/components/ui/input';
@@ -67,11 +68,10 @@ export function BillForm({
             />
           </EntityFormFieldControl>
           <EntityFormFieldControl id="bill-date" label="Bill date" required>
-            <Input
+            <DatePicker
               id="bill-date"
-              type="date"
               value={values.billDate}
-              onChange={(e) => patch({ billDate: e.target.value })}
+              onChange={(billDate) => patch({ billDate })}
             />
           </EntityFormFieldControl>
           <EntityFormFieldControl id="bill-from" label="From" required>

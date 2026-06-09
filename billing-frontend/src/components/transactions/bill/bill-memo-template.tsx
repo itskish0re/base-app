@@ -71,7 +71,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
             ))}
           </div>
           <dl className="bill-memo__truck-box">
-            <dt>Truck No. :</dt>
+            <dt>Truck Number :</dt>
             <dd>{data.truckNumber}</dd>
           </dl>
         </section>
@@ -97,7 +97,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
           <div className="bill-memo__meta-row">
             <div className="bill-memo__field">
-              <span className="bill-memo__field-label">Owner Mo. :</span>
+              <span className="bill-memo__field-label">Owner Mobile :</span>
               <span className="bill-memo__field-value">{data.ownerMobile}</span>
             </div>
             <div className="bill-memo__field">
@@ -117,7 +117,7 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           </div>
           <div className="bill-memo__meta-row">
             <div className="bill-memo__field">
-              <span className="bill-memo__field-label">Driver Mo. :</span>
+              <span className="bill-memo__field-label">Driver Mobile :</span>
               <span className="bill-memo__field-value">{data.driverMobile}</span>
             </div>
             <div className="bill-memo__field">
@@ -142,12 +142,27 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
                 <div className="bill-memo__loads-col--party bill-memo__loads-cell--left">
                   {row.consignorName}
                 </div>
-                <div className="bill-memo__loads-col--party bill-memo__loads-cell--left bill-memo__loads-consignee">
-                  {formatBillPreviewConsigneeName(row.consigneeName, row.asPerBill)}
+                <div
+                  className={[
+                    'bill-memo__loads-col--party bill-memo__loads-cell--left bill-memo__loads-consignee',
+                    row.asPerBill ? 'bill-memo__loads-consignee--as-per-bill' : '',
+                  ]
+                    .filter(Boolean)
+                    .join(' ')}
+                >
+                  <span
+                    className={[
+                      'bill-memo__loads-consignee-name',
+                      row.asPerBill ? 'bill-memo__loads-consignee-name--as-per-bill' : '',
+                    ]
+                      .filter(Boolean)
+                      .join(' ')}
+                  >
+                    {formatBillPreviewConsigneeName(row.consigneeName, row.asPerBill)}
+                  </span>
                   {row.toLocationName?.trim() ? (
                     <span className="bill-memo__loads-consignee-to">
-                      {' '}
-                      ({row.toLocationName.trim()})
+                      To: {row.toLocationName.trim()}
                     </span>
                   ) : null}
                 </div>
@@ -184,15 +199,18 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
             </div>
           </div>
           <div className="bill-memo__loads-foot">
-            <div className="bill-memo__loads-foot-label-cell">Total Freight</div>
-            <div className="bill-memo__loads-foot-value-cell">
-              <div className="bill-memo__loads-foot-value">
-                {formatBillPreviewAmount(data.totalFreight)}
-              </div>
-              <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
-              <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
-              <div className="bill-memo__loads-foot-value-spacer" aria-hidden />
+            <div className="bill-memo__loads-foot-sno" aria-hidden />
+            <div className="bill-memo__loads-foot-loan-label">Truck Loan</div>
+            <div className="bill-memo__loads-foot-loan-value">
+              {formatBillPreviewAmount(data.truckLoan)}
             </div>
+            <div className="bill-memo__loads-foot-label-cell">Total Freight</div>
+            <div className="bill-memo__loads-foot-freight-value">
+              {formatBillPreviewAmount(data.totalFreight)}
+            </div>
+            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--advance" aria-hidden />
+            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--topay" aria-hidden />
+            <div className="bill-memo__loads-foot-spacer bill-memo__loads-foot-spacer--balance" aria-hidden />
           </div>
         </section>
 
