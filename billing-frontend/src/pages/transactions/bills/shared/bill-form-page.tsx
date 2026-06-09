@@ -1,8 +1,9 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
+import { Eye } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BillForm } from '@/components/transactions/bill/bill-form';
-import { BillPreviewCanvas } from '@/components/transactions/bill/bill-preview-canvas';
+import { BillPreviewSheet } from '@/components/transactions/bill/bill-preview-sheet';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants/routes';
@@ -35,6 +36,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const [values, setValues] = useState<BillFormValues>(() => createInitialBillFormValues());
   const [formError, setFormError] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(mode === 'create');
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   const nextNumberQuery = useQuery({
     ...nextBillNumberQueryOptions(),
@@ -166,6 +168,16 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
         type="button"
         variant="outline"
         className="flex-1 sm:flex-none"
+        onClick={() => setPreviewOpen(true)}
+        disabled={isPageLoading}
+      >
+        <Eye className="size-4" />
+        Preview
+      </Button>
+      <Button
+        type="button"
+        variant="outline"
+        className="flex-1 sm:flex-none"
         onClick={() => void navigate({ to: ROUTES.bills })}
         disabled={saveMutation.isPending}
       >
@@ -183,13 +195,12 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   );
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-3 pb-20 lg:pb-0">
+    <div className="flex min-h-0 flex-1 flex-col gap-3 pb-20 sm:pb-0">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div className="min-w-0">
           <h1 className="text-lg font-semibold sm:text-xl">{pageTitle}</h1>
           <p className="text-sm text-muted-foreground">
-            <span className="lg:hidden">Fill in the form below; preview updates as you type.</span>
-            <span className="hidden lg:inline">Enter bill details on the left; the memo preview updates on the right.</span>
+            Fill in the bill details below. Open Preview to see the memo.
           </p>
         </div>
         <div className="hidden shrink-0 gap-2 sm:flex">{actionButtons}</div>
@@ -202,40 +213,32 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
         </p>
       ) : null}
 
-      <div className="grid min-h-0 flex-1 gap-4 xl:grid-cols-2">
-        <div className="min-h-0 overflow-y-auto rounded-lg border bg-background p-3 sm:p-4">
-          {isPageLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-9 w-full" />
-              <Skeleton className="h-9 w-full" />
-              <Skeleton className="h-32 w-full" />
-              <Skeleton className="h-32 w-full" />
-            </div>
-          ) : (
-            <BillForm
-              values={values}
-              locations={lookups.locations}
-              trucks={lookups.trucks}
-              parties={lookups.parties}
-              goods={lookups.goods}
-              units={lookups.units}
-              billNumberReadOnly={mode === 'edit'}
-              onChange={handleFormChange}
-              onTruckSelected={handleTruckSelected}
-            />
-          )}
-        </div>
-
-        <div className="min-h-0">
-          {isPageLoading ? (
-            <Skeleton className="mx-auto h-full min-h-[20rem] w-full max-w-[794px] rounded-lg sm:min-h-[24rem]" />
-          ) : (
-            <BillPreviewCanvas data={previewData} className="mx-auto h-full max-w-[794px]" />
-          )}
-        </div>
+      <div className="min-h-0 flex-1 overflow-y-auto rounded-lg border bg-background p-3 sm:p-4">
+        {isPageLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-9 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-32 w-full" />
+          </div>
+        ) : (
+          <BillForm
+            values={values}
+            locations={lookups.locations}
+            trucks={lookups.trucks}
+            parties={lookups.parties}
+            goods={lookups.goods}
+            units={lookups.units}
+            billNumberReadOnly={mode === 'edit'}
+            onChange={handleFormChange}
+            onTruckSelected={handleTruckSelected}
+          />
+        )}
       </div>
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:static sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none xl:hidden">
+      <BillPreviewSheet data={previewData} open={previewOpen} onOpenChange={setPreviewOpen} />
+
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t bg-background/95 p-3 backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
         <div className="mx-auto flex max-w-lg gap-2">{actionButtons}</div>
       </div>
     </div>
