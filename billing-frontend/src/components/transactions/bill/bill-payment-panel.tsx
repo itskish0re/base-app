@@ -1,18 +1,27 @@
-import { EntityFormRequiredMark } from '@/components/derived/entity-form/ef-form-ui';
+import { BillFormField, BillFormPhoneInput } from '@/components/transactions/bill/bill-form-ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { billFormFieldError, type BillFormFieldErrors } from '@/lib/billForm';
 import { cn } from '@/lib/utils';
 import { BILL_PAY_BY_OPTIONS, type BillPayBy } from '@/types/entity/bill';
 import type { BillFormValues } from '@/types/billForm';
 
 type BillPaymentPanelProps = {
   values: BillFormValues;
+  fieldErrors?: BillFormFieldErrors;
   onChange: (partial: Partial<BillFormValues>) => void;
   embedded?: boolean;
 };
 
-export function BillPaymentPanel({ values, onChange, embedded = false }: BillPaymentPanelProps) {
+export function BillPaymentPanel({
+  values,
+  fieldErrors,
+  onChange,
+  embedded = false,
+}: BillPaymentPanelProps) {
   const isUpi = values.payBy === 'upi';
+  const paidNameError = billFormFieldError(fieldErrors, 'paidName');
+  const paidMobileError = billFormFieldError(fieldErrors, 'paidMobile');
 
   const selectPayBy = (payBy: BillPayBy) => {
     if (payBy === 'upi') {
@@ -53,34 +62,24 @@ export function BillPaymentPanel({ values, onChange, embedded = false }: BillPay
 
       {isUpi ? (
         <div className={cn('space-y-3', embedded ? 'pt-1' : 'border-t px-3 py-3')}>
-          <div className="space-y-1.5">
-            <Label htmlFor="bill-paid-name" className="text-xs font-medium text-muted-foreground">
-              Paid name
-              <EntityFormRequiredMark />
-            </Label>
+          <BillFormField id="bill-paid-name" label="Paid name" required error={paidNameError}>
             <Input
               id="bill-paid-name"
               value={values.paidName}
               autoComplete="name"
               className="h-9"
+              aria-invalid={paidNameError ? true : undefined}
               onChange={(e) => onChange({ paidName: e.target.value })}
             />
-          </div>
-          <div className="space-y-1.5">
-            <Label htmlFor="bill-paid-mobile" className="text-xs font-medium text-muted-foreground">
-              Paid mobile
-              <EntityFormRequiredMark />
-            </Label>
-            <Input
+          </BillFormField>
+          <BillFormField id="bill-paid-mobile" label="Paid mobile" required error={paidMobileError}>
+            <BillFormPhoneInput
               id="bill-paid-mobile"
               value={values.paidMobile}
-              type="tel"
-              inputMode="tel"
-              autoComplete="tel"
-              className="h-9"
-              onChange={(e) => onChange({ paidMobile: e.target.value })}
+              aria-invalid={paidMobileError ? true : undefined}
+              onChange={(paidMobile) => onChange({ paidMobile })}
             />
-          </div>
+          </BillFormField>
         </div>
       ) : (
         <p className={cn('text-xs text-muted-foreground', embedded ? 'pt-1' : 'border-t px-3 py-2.5')}>

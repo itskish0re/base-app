@@ -15,7 +15,8 @@ import {
   mapBillFormToPreview,
   mapBillFormToSaveRequest,
   recalculateBillForm,
-  validateBillForm,
+  validateBillFormFields,
+  type BillFormFieldErrors,
 } from '@/lib/billForm';
 import { getNameBoardById } from '@/service/api/functions/nameBoards';
 import { getTruckById } from '@/service/api/functions/trucks';
@@ -35,6 +36,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
 
   const [values, setValues] = useState<BillFormValues>(() => createInitialBillFormValues());
   const [formError, setFormError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<BillFormFieldErrors>({});
   const [hydrated, setHydrated] = useState(mode === 'create');
   const [previewOpen, setPreviewOpen] = useState(false);
 
@@ -127,17 +129,21 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const handleFormChange = useCallback((next: BillFormValues) => {
     setValues(recalculateBillForm(next));
     setFormError(null);
+    setFieldErrors({});
   }, []);
 
   const previewData = useMemo(() => mapBillFormToPreview(values), [values]);
 
   const handleSave = () => {
-    const validationError = validateBillForm(values);
-    if (validationError) {
-      setFormError(validationError);
+    const validation = validateBillFormFields(values);
+    if (validation.formError) {
+      setFieldErrors(validation.fieldErrors);
+      setFormError(validation.formError);
       return;
     }
 
+    setFieldErrors({});
+    setFormError(null);
     saveMutation.mutate(mapBillFormToSaveRequest(values));
   };
 
@@ -206,6 +212,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
           ) : (
             <BillForm
               values={values}
+              fieldErrors={fieldErrors}
               locations={lookups.locations}
               trucks={lookups.trucks}
               parties={lookups.parties}

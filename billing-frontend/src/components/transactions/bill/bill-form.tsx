@@ -7,15 +7,18 @@ import {
   BillFormAccordionSection,
   BillFormField,
   BillFormMonoInputClass,
+  BillFormPhoneInput,
   BillFormReadOnlyValue,
 } from '@/components/transactions/bill/bill-form-ui';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
 import {
+  billFormFieldError,
   formatBillFormTruckNumber,
   lookupItemLabel,
   parseBillFormNumericInput,
   sumLoadAdvances,
+  type BillFormFieldErrors,
 } from '@/lib/billForm';
 import type { BillFormValues } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
@@ -23,6 +26,7 @@ import { FileText, IndianRupee, Receipt, Wallet } from 'lucide-react';
 
 type BillFormProps = {
   values: BillFormValues;
+  fieldErrors?: BillFormFieldErrors;
   locations: LookupItem[];
   trucks: LookupItem[];
   parties: LookupItem[];
@@ -37,11 +41,17 @@ function patchNumeric(
   key: keyof BillFormValues,
   raw: string,
 ): BillFormValues {
-  return { ...values, [key]: parseBillFormNumericInput(raw) };
+  const parsed = parseBillFormNumericInput(raw);
+  if (parsed === null) {
+    return values;
+  }
+
+  return { ...values, [key]: parsed };
 }
 
 export function BillForm({
   values,
+  fieldErrors,
   locations,
   trucks,
   parties,
@@ -55,6 +65,7 @@ export function BillForm({
   };
 
   const showAdvanceSummary = sumLoadAdvances(values.loads) > 0;
+  const fieldError = (path: string) => billFormFieldError(fieldErrors, path);
 
   return (
     <div className="relative space-y-4 pb-6">
@@ -67,18 +78,30 @@ export function BillForm({
 
       <BillFormAccordionSection icon={FileText} title="Header Information">
         <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 lg:grid-cols-4">
-          <BillFormField id="bill-number" label="Bill No." required>
+          <BillFormField
+            id="bill-number"
+            label="Bill No."
+            required
+            error={fieldError('billNumber')}
+          >
             <BillFormReadOnlyValue display={values.billNumber || '—'} align="center" bold />
           </BillFormField>
 
-          <BillFormField id="bill-date" label="Date" required>
+          <BillFormField id="bill-date" label="Date" required error={fieldError('billDate')}>
             <DatePicker id="bill-date" value={values.billDate} onChange={(billDate) => patch({ billDate })} />
           </BillFormField>
 
-          <BillFormField id="bill-from" label="Origin / Branch" required className="lg:col-span-2">
+          <BillFormField
+            id="bill-from"
+            label="Origin / Branch"
+            required
+            className="lg:col-span-2"
+            error={fieldError('fromId')}
+          >
             <EntityFormLookupCombobox
               id="bill-from"
               value={values.fromId}
+              invalid={Boolean(fieldError('fromId'))}
               onChange={(value) => {
                 const fromId = value == null ? null : Number(value);
                 patch({
@@ -92,10 +115,11 @@ export function BillForm({
             />
           </BillFormField>
 
-          <BillFormField id="bill-truck" label="Truck No." required>
+          <BillFormField id="bill-truck" label="Truck No." required error={fieldError('truckId')}>
             <EntityFormLookupCombobox
               id="bill-truck"
               value={values.truckId}
+              invalid={Boolean(fieldError('truckId'))}
               onChange={(value) => {
                 const truckId = value == null ? null : Number(value);
                 if (truckId != null && Number.isFinite(truckId) && truckId > 0) {
@@ -145,27 +169,45 @@ export function BillForm({
           </BillFormField>
 
           <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:col-span-2 md:grid-cols-4 lg:col-span-4">
-            <BillFormField id="bill-driver-name" label="Driver Name" required className="md:col-span-2">
+            <BillFormField
+              id="bill-driver-name"
+              label="Driver Name"
+              required
+              className="md:col-span-2"
+              error={fieldError('driverName')}
+            >
               <Input
                 id="bill-driver-name"
                 value={values.driverName}
+                aria-invalid={fieldError('driverName') ? true : undefined}
                 onChange={(e) => patch({ driverName: e.target.value })}
               />
             </BillFormField>
 
-            <BillFormField id="bill-driver-mobile-1" label="Driver Mobile 1">
-              <Input
+            <BillFormField
+              id="bill-driver-mobile-1"
+              label="Driver Mobile 1"
+              required
+              error={fieldError('driverMobile1')}
+            >
+              <BillFormPhoneInput
                 id="bill-driver-mobile-1"
                 value={values.driverMobile1}
-                onChange={(e) => patch({ driverMobile1: e.target.value })}
+                aria-invalid={fieldError('driverMobile1') ? true : undefined}
+                onChange={(driverMobile1) => patch({ driverMobile1 })}
               />
             </BillFormField>
 
-            <BillFormField id="bill-driver-mobile-2" label="Driver Mobile 2">
-              <Input
+            <BillFormField
+              id="bill-driver-mobile-2"
+              label="Driver Mobile 2"
+              error={fieldError('driverMobile2')}
+            >
+              <BillFormPhoneInput
                 id="bill-driver-mobile-2"
                 value={values.driverMobile2}
-                onChange={(e) => patch({ driverMobile2: e.target.value })}
+                aria-invalid={fieldError('driverMobile2') ? true : undefined}
+                onChange={(driverMobile2) => patch({ driverMobile2 })}
               />
             </BillFormField>
           </div>
@@ -174,6 +216,7 @@ export function BillForm({
 
       <BillLoadLines
         loads={values.loads}
+        fieldErrors={fieldErrors}
         parties={parties}
         locations={locations}
         goods={goods}
@@ -190,6 +233,7 @@ export function BillForm({
         >
           <BillChargesTable
             values={values}
+            fieldErrors={fieldErrors}
             others={values.others}
             onOthersChange={(others) => patch({ others })}
             onNumericChange={(key, raw) => onChange(patchNumeric(values, key, raw))}
@@ -199,7 +243,7 @@ export function BillForm({
 
         <div className="flex flex-col gap-4">
           <BillFormAccordionSection icon={Wallet} title="Payment Details" className="h-full" contentClassName="p-4 sm:p-5">
-            <BillPaymentPanel values={values} onChange={patch} embedded />
+            <BillPaymentPanel values={values} fieldErrors={fieldErrors} onChange={patch} embedded />
           </BillFormAccordionSection>
 
           {showAdvanceSummary ? (

@@ -28,6 +28,7 @@ type EntityFormLookupComboboxProps = {
   items: LookupItem[];
   isLoading?: boolean;
   isError?: boolean;
+  invalid?: boolean;
   addonBeforeTrigger?: ReactNode;
 };
 
@@ -89,6 +90,7 @@ export function EntityFormLookupCombobox({
   items,
   isLoading = false,
   isError = false,
+  invalid = false,
   addonBeforeTrigger,
 }: EntityFormLookupComboboxProps) {
   const selectedValue = value == null || value === '' ? null : String(value);
@@ -136,7 +138,7 @@ export function EntityFormLookupCombobox({
         placeholder={isLoading ? 'Loading options…' : placeholder}
         showClear={clearable && selectedItem != null}
         disabled={comboboxDisabled}
-        aria-invalid={isError || undefined}
+        aria-invalid={isError || invalid || undefined}
         addonBeforeTrigger={addonBeforeTrigger}
       />
       <ComboboxContent>

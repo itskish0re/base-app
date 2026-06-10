@@ -8,6 +8,7 @@ type BillLoadConsigneeFieldProps = {
   consigneeId: number | null;
   asPerBill: boolean;
   items: LookupItem[];
+  invalid?: boolean;
   onChange: (value: {
     consigneeId: number | null;
     consigneeName: string;
@@ -50,6 +51,7 @@ export function BillLoadConsigneeField({
   consigneeId,
   asPerBill,
   items,
+  invalid = false,
   onChange,
 }: BillLoadConsigneeFieldProps) {
   return (
@@ -58,6 +60,7 @@ export function BillLoadConsigneeField({
       value={consigneeId}
       disabled={asPerBill}
       clearable={!asPerBill}
+      invalid={invalid}
       items={items}
       placeholder={asPerBill ? 'As per bill' : 'Select consignee…'}
       searchPlaceholder="Search party…"

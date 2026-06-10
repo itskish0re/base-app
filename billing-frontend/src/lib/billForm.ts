@@ -10,8 +10,10 @@ import type { BillDetailResponse, SaveBillLoadItem, SaveBillRequest } from '@/ty
 import type { BillFormValues, BillLoadFormLine } from '@/types/billForm';
 import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
 import type { LookupItem } from '@/types/common';
+import { BILL_FORM_NUMERIC_MAX_DIGITS, validateBillFormFields } from '@/lib/billFormSchema';
 
 export const BILL_FORM_MAX_LOAD_ROWS = 3;
+export { BILL_FORM_NUMERIC_MAX_DIGITS, BILL_FORM_PHONE_MAX_DIGITS } from '@/lib/billFormSchema';
 
 export function todayIsoDate(): string {
   const now = new Date();
@@ -168,13 +170,23 @@ export function normalizeEditableNumeric(value: number | '' | null | undefined):
   return value;
 }
 
-export function parseBillFormNumericInput(raw: string): number | '' {
-  if (raw.trim() === '') {
+export function parseBillFormNumericInput(raw: string): number | '' | null {
+  const trimmed = raw.trim();
+  if (trimmed === '') {
     return '';
   }
 
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : '';
+  if (!/^-?\d*(\.\d*)?$/.test(trimmed) || trimmed === '-' || trimmed === '.') {
+    return null;
+  }
+
+  const integerPart = trimmed.split('.')[0]?.replace(/^-/, '') ?? '';
+  if (integerPart.length > BILL_FORM_NUMERIC_MAX_DIGITS) {
+    return null;
+  }
+
+  const n = Number(trimmed);
+  return Number.isFinite(n) ? n : null;
 }
 
 export function formNumericInputValue(value: number | ''): string | number {
@@ -495,40 +507,13 @@ export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillReques
 }
 
 export function validateBillForm(values: BillFormValues): string | null {
-  if (!values.billNumber.trim()) {
-    return 'Bill number is required.';
-  }
-
-  if (values.isCancelled) {
-    return null;
-  }
-
-  if (!values.fromId) {
-    return 'From location is required.';
-  }
-
-  if (!values.truckId) {
-    return 'Truck is required.';
-  }
-
-  if (!values.driverName.trim()) {
-    return 'Driver name is required.';
-  }
-
-  const savableLoads = values.loads.filter(isLoadLineSavable);
-  if (savableLoads.length === 0) {
-    return 'Add at least one load line with consignor, destination, goods, and unit (consignee required unless as per bill).';
-  }
-
-  if (values.payBy === 'upi') {
-    if (!values.paidName.trim()) {
-      return 'Paid name is required when pay by is UPI.';
-    }
-
-    if (!values.paidMobile.trim()) {
-      return 'Paid mobile is required when pay by is UPI.';
-    }
-  }
-
-  return null;
+  const { formError } = validateBillFormFields(values);
+  return formError;
 }
+
+export {
+  billFormFieldError,
+  validateBillFormFields,
+  type BillFormFieldErrors,
+  type BillFormValidationResult,
+} from '@/lib/billFormSchema';

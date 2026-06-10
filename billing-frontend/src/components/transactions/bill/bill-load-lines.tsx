@@ -2,28 +2,28 @@ import { Plus, Trash2, Truck } from 'lucide-react';
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { BillLoadConsigneeField } from '@/components/transactions/bill/bill-load-consignee-field';
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import {
   BillFormAccordionSection,
   BillFormCurrencyAmount,
   BillFormDashedAddButton,
   BillFormField,
   BillFormFinancialPanel,
-  BillFormMonoInputClass,
+  BillFormNumericInput,
 } from '@/components/transactions/bill/bill-form-ui';
 import {
   BILL_FORM_MAX_LOAD_ROWS,
+  billFormFieldError,
   createEmptyLoadLine,
-  formNumericInputValue,
   lookupItemLabel,
   lookupUnitIsFixed,
-  parseBillFormNumericInput,
+  type BillFormFieldErrors,
 } from '@/lib/billForm';
 import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
 
 type BillLoadLinesProps = {
   loads: BillLoadFormLine[];
+  fieldErrors?: BillFormFieldErrors;
   parties: LookupItem[];
   locations: LookupItem[];
   goods: LookupItem[];
@@ -51,14 +51,22 @@ function formatLoadLineTitle(index: number): string {
   }
 }
 
+function loadFieldPath(index: number, field: string): string {
+  return `loads.${index}.${field}`;
+}
+
 export function BillLoadLines({
   loads,
+  fieldErrors,
   parties,
   locations,
   goods,
   units,
   onChange,
 }: BillLoadLinesProps) {
+  const fieldError = (index: number, field: string) =>
+    billFormFieldError(fieldErrors, loadFieldPath(index, field));
+
   const updateLine = (index: number, patch: Partial<BillLoadFormLine>) => {
     onChange(loads.map((line, i) => (i === index ? { ...line, ...patch } : line)));
   };
@@ -111,160 +119,185 @@ export function BillLoadLines({
           }
           contentClassName="space-y-4 bg-muted/20"
         >
-              <div className="grid grid-cols-1 items-end gap-3 md:grid-cols-12">
-                <BillFormField
-                  id={`load-${index}-consignor`}
-                  label="Consignor"
-                  required
-                  className="md:col-span-6"
-                >
-                  <EntityFormLookupCombobox
-                    id={`load-${index}-consignor`}
-                    value={line.consignorId}
-                    onChange={(value) => {
-                      const consignorId = value == null ? null : Number(value);
-                      updateLine(index, {
-                        consignorId: Number.isFinite(consignorId) ? consignorId : null,
-                        consignorName: lookupItemLabel(parties, consignorId),
-                      });
-                    }}
-                    items={parties}
-                    placeholder="Select consignor…"
-                    searchPlaceholder="Search party…"
-                  />
-                </BillFormField>
+          <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-12">
+            <BillFormField
+              id={`load-${index}-consignor`}
+              label="Consignor"
+              required
+              className="md:col-span-6"
+              error={fieldError(index, 'consignorId')}
+            >
+              <EntityFormLookupCombobox
+                id={`load-${index}-consignor`}
+                value={line.consignorId}
+                invalid={Boolean(fieldError(index, 'consignorId'))}
+                onChange={(value) => {
+                  const consignorId = value == null ? null : Number(value);
+                  updateLine(index, {
+                    consignorId: Number.isFinite(consignorId) ? consignorId : null,
+                    consignorName: lookupItemLabel(parties, consignorId),
+                  });
+                }}
+                items={parties}
+                placeholder="Select consignor…"
+                searchPlaceholder="Search party…"
+              />
+            </BillFormField>
 
-                <BillFormField
-                  id={`load-${index}-consignee`}
-                  label="Consignee"
-                  required={!line.asPerBill}
-                  className="md:col-span-6"
-                >
-                  <BillLoadConsigneeField
-                    id={`load-${index}-consignee`}
-                    consigneeId={line.consigneeId}
-                    asPerBill={line.asPerBill}
-                    items={parties}
-                    onChange={(value) => updateLine(index, value)}
-                  />
-                </BillFormField>       
-              </div>
+            <BillFormField
+              id={`load-${index}-consignee`}
+              label="Consignee"
+              required={!line.asPerBill}
+              className="md:col-span-6"
+              error={fieldError(index, 'consigneeId')}
+            >
+              <BillLoadConsigneeField
+                id={`load-${index}-consignee`}
+                consigneeId={line.consigneeId}
+                asPerBill={line.asPerBill}
+                items={parties}
+                invalid={Boolean(fieldError(index, 'consigneeId'))}
+                onChange={(value) => updateLine(index, value)}
+              />
+            </BillFormField>
+          </div>
 
-              <div className="grid grid-cols-1 items-end gap-3 md:grid-cols-12">
-                <BillFormField id={`load-${index}-to`} label="Destination" required className="md:col-span-4">
-                  <EntityFormLookupCombobox
-                    id={`load-${index}-to`}
-                    value={line.toId}
-                    onChange={(value) => {
-                      const toId = value == null ? null : Number(value);
-                      updateLine(index, {
-                        toId: Number.isFinite(toId) ? toId : null,
-                        toLocationName: lookupItemLabel(locations, toId),
-                      });
-                    }}
-                    items={locations}
-                    placeholder="Select destination…"
-                    searchPlaceholder="Search location…"
-                  />
-                </BillFormField>
+          <div className="grid grid-cols-1 items-start gap-3 md:grid-cols-12">
+            <BillFormField
+              id={`load-${index}-to`}
+              label="Destination"
+              required
+              className="md:col-span-4"
+              error={fieldError(index, 'toId')}
+            >
+              <EntityFormLookupCombobox
+                id={`load-${index}-to`}
+                value={line.toId}
+                invalid={Boolean(fieldError(index, 'toId'))}
+                onChange={(value) => {
+                  const toId = value == null ? null : Number(value);
+                  updateLine(index, {
+                    toId: Number.isFinite(toId) ? toId : null,
+                    toLocationName: lookupItemLabel(locations, toId),
+                  });
+                }}
+                items={locations}
+                placeholder="Select destination…"
+                searchPlaceholder="Search location…"
+              />
+            </BillFormField>
 
-                <BillFormField id={`load-${index}-goods`} label="Goods Description" required className="md:col-span-4">
-                  <EntityFormLookupCombobox
-                    id={`load-${index}-goods`}
-                    value={line.goodsId}
-                    onChange={(value) => {
-                      const goodsId = value == null ? null : Number(value);
-                      updateLine(index, {
-                        goodsId: Number.isFinite(goodsId) ? goodsId : null,
-                        goodsName: lookupItemLabel(goods, goodsId),
-                      });
-                    }}
-                    items={goods}
-                    placeholder="Select goods…"
-                    searchPlaceholder="Search goods…"
-                  />
-                </BillFormField>
+            <BillFormField
+              id={`load-${index}-goods`}
+              label="Goods Description"
+              required
+              className="md:col-span-4"
+              error={fieldError(index, 'goodsId')}
+            >
+              <EntityFormLookupCombobox
+                id={`load-${index}-goods`}
+                value={line.goodsId}
+                invalid={Boolean(fieldError(index, 'goodsId'))}
+                onChange={(value) => {
+                  const goodsId = value == null ? null : Number(value);
+                  updateLine(index, {
+                    goodsId: Number.isFinite(goodsId) ? goodsId : null,
+                    goodsName: lookupItemLabel(goods, goodsId),
+                  });
+                }}
+                items={goods}
+                placeholder="Select goods…"
+                searchPlaceholder="Search goods…"
+              />
+            </BillFormField>
 
-                <BillFormField id={`load-${index}-unit`} label="Unit" required className="md:col-span-4">
-                  <EntityFormLookupCombobox
-                    id={`load-${index}-unit`}
-                    value={line.unitId}
-                    onChange={(value) => {
-                      const unitId = value == null ? null : Number(value);
-                      updateLine(index, {
-                        unitId: Number.isFinite(unitId) ? unitId : null,
-                        unitName: lookupItemLabel(units, unitId),
-                        unitIsFixed: lookupUnitIsFixed(units, unitId),
-                      });
-                    }}
-                    items={units}
-                    placeholder="Unit"
-                    searchPlaceholder="Search unit…"
-                  />
-                </BillFormField>
-              </div>
+            <BillFormField
+              id={`load-${index}-unit`}
+              label="Unit"
+              required
+              className="md:col-span-4"
+              error={fieldError(index, 'unitId')}
+            >
+              <EntityFormLookupCombobox
+                id={`load-${index}-unit`}
+                value={line.unitId}
+                invalid={Boolean(fieldError(index, 'unitId'))}
+                onChange={(value) => {
+                  const unitId = value == null ? null : Number(value);
+                  updateLine(index, {
+                    unitId: Number.isFinite(unitId) ? unitId : null,
+                    unitName: lookupItemLabel(units, unitId),
+                    unitIsFixed: lookupUnitIsFixed(units, unitId),
+                  });
+                }}
+                items={units}
+                placeholder="Unit"
+                searchPlaceholder="Search unit…"
+              />
+            </BillFormField>
+          </div>
 
-              <BillFormFinancialPanel>
-                <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
-                  <BillFormField id={`load-${index}-weight`} label="Weight / Qty">
-                    <Input
-                      id={`load-${index}-weight`}
-                      type="number"
-                      inputMode="decimal"
-                      className={BillFormMonoInputClass()}
-                      value={formNumericInputValue(line.weightOrQuantity)}
-                      onChange={(e) =>
-                        updateLine(index, { weightOrQuantity: parseBillFormNumericInput(e.target.value) })
-                      }
-                    />
-                  </BillFormField>
+          <BillFormFinancialPanel>
+            <div className="grid grid-cols-2 gap-3 md:grid-cols-6">
+              <BillFormField
+                id={`load-${index}-weight`}
+                label="Weight / Qty"
+                required
+                error={fieldError(index, 'weightOrQuantity')}
+              >
+                <BillFormNumericInput
+                  id={`load-${index}-weight`}
+                  value={line.weightOrQuantity}
+                  aria-invalid={fieldError(index, 'weightOrQuantity') ? true : undefined}
+                  onChange={(weightOrQuantity) => updateLine(index, { weightOrQuantity })}
+                />
+              </BillFormField>
 
-                  <BillFormField id={`load-${index}-rate`} label="Rate">
-                    <Input
-                      id={`load-${index}-rate`}
-                      type="number"
-                      inputMode="decimal"
-                      className={BillFormMonoInputClass()}
-                      value={formNumericInputValue(line.ratePerUnit)}
-                      onChange={(e) =>
-                        updateLine(index, { ratePerUnit: parseBillFormNumericInput(e.target.value) })
-                      }
-                    />
-                  </BillFormField>
+              <BillFormField
+                id={`load-${index}-rate`}
+                label="Rate"
+                required
+                error={fieldError(index, 'ratePerUnit')}
+              >
+                <BillFormNumericInput
+                  id={`load-${index}-rate`}
+                  value={line.ratePerUnit}
+                  aria-invalid={fieldError(index, 'ratePerUnit') ? true : undefined}
+                  onChange={(ratePerUnit) => updateLine(index, { ratePerUnit })}
+                />
+              </BillFormField>
 
-                  <BillFormField id={`load-${index}-freight`} label="Freight">
-                    <BillFormCurrencyAmount value={line.freight} />
-                  </BillFormField>
+              <BillFormField id={`load-${index}-freight`} label="Freight">
+                <BillFormCurrencyAmount value={line.freight} />
+              </BillFormField>
 
-                  <BillFormField id={`load-${index}-advance`} label="Advance">
-                    <Input
-                      id={`load-${index}-advance`}
-                      type="number"
-                      inputMode="decimal"
-                      className={BillFormMonoInputClass()}
-                      value={formNumericInputValue(line.advance)}
-                      onChange={(e) =>
-                        updateLine(index, { advance: parseBillFormNumericInput(e.target.value) })
-                      }
-                    />
-                  </BillFormField>
+              <BillFormField
+                id={`load-${index}-advance`}
+                label="Advance"
+                error={fieldError(index, 'advance')}
+              >
+                <BillFormNumericInput
+                  id={`load-${index}-advance`}
+                  value={line.advance}
+                  aria-invalid={fieldError(index, 'advance') ? true : undefined}
+                  onChange={(advance) => updateLine(index, { advance })}
+                />
+              </BillFormField>
 
-                  <BillFormField id={`load-${index}-topay`} label="To Pay">
-                    <Input
-                      id={`load-${index}-topay`}
-                      type="number"
-                      inputMode="decimal"
-                      className={BillFormMonoInputClass()}
-                      value={formNumericInputValue(line.topay)}
-                      onChange={(e) => updateLine(index, { topay: parseBillFormNumericInput(e.target.value) })}
-                    />
-                  </BillFormField>
+              <BillFormField id={`load-${index}-topay`} label="To Pay" error={fieldError(index, 'topay')}>
+                <BillFormNumericInput
+                  id={`load-${index}-topay`}
+                  value={line.topay}
+                  aria-invalid={fieldError(index, 'topay') ? true : undefined}
+                  onChange={(topay) => updateLine(index, { topay })}
+                />
+              </BillFormField>
 
-                  <BillFormField id={`load-${index}-balance`} label="Balance">
-                    <BillFormCurrencyAmount value={line.balance} highlighted />
-                  </BillFormField>
-                </div>
-              </BillFormFinancialPanel>
+              <BillFormField id={`load-${index}-balance`} label="Balance">
+                <BillFormCurrencyAmount value={line.balance} highlighted />
+              </BillFormField>
+            </div>
+          </BillFormFinancialPanel>
         </BillFormAccordionSection>
       ))}
 

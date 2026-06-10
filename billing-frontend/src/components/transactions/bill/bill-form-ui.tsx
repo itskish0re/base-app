@@ -1,7 +1,15 @@
 import { ChevronDown } from 'lucide-react';
 import type { LucideIcon } from 'lucide-react';
 import type { ReactNode } from 'react';
+import { isValidElement, cloneElement } from 'react';
+import { EntityFormFieldError } from '@/components/derived/entity-form/ef-form-ui';
+import {
+  formatMobileInputDisplay,
+  parseMobileStoredValue,
+} from '@/components/derived/entity-form/ef-input-value';
 import { Collapsible, CollapsibleContent, CollapsibleTrigger } from '@/components/ui/collapsible';
+import { Input } from '@/components/ui/input';
+import { formNumericInputValue, parseBillFormNumericInput } from '@/lib/billForm';
 import { cn } from '@/lib/utils';
 
 type BillFormAccordionSectionProps = {
@@ -97,17 +105,31 @@ type BillFormFieldProps = {
   id?: string;
   label: string;
   required?: boolean;
+  error?: string;
   children: ReactNode;
   className?: string;
 };
 
-export function BillFormField({ id, label, required, children, className }: BillFormFieldProps) {
+function withFieldAriaInvalid(children: ReactNode, invalid: boolean): ReactNode {
+  if (!invalid || !isValidElement(children)) {
+    return children;
+  }
+
+  return cloneElement(children, {
+    'aria-invalid': true,
+  } as Record<string, unknown>);
+}
+
+export function BillFormField({ id, label, required, error, children, className }: BillFormFieldProps) {
   return (
     <div className={cn('flex flex-col gap-1.5', className)}>
       <BillFormFieldLabel htmlFor={id} required={required}>
         {label}
       </BillFormFieldLabel>
-      {children}
+      {withFieldAriaInvalid(children, Boolean(error))}
+      <div className="min-h-5">
+        <EntityFormFieldError message={error} />
+      </div>
     </div>
   );
 }
@@ -219,7 +241,69 @@ export function BillFormDashedAddButton({
 
 export function BillFormMonoInputClass(readOnly = false) {
   return cn(
-    'h-9 font-mono text-sm tabular-nums',
+    'h-9 font-mono text-sm tabular-nums [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none',
     readOnly && 'border-border bg-muted/50',
+  );
+}
+
+type BillFormNumericInputProps = {
+  id?: string;
+  value: number | '';
+  onChange: (value: number | '') => void;
+  className?: string;
+  'aria-invalid'?: boolean;
+};
+
+export function BillFormNumericInput({
+  id,
+  value,
+  onChange,
+  className,
+  'aria-invalid': ariaInvalid,
+}: BillFormNumericInputProps) {
+  return (
+    <Input
+      id={id}
+      type="text"
+      inputMode="decimal"
+      className={cn(BillFormMonoInputClass(), className)}
+      value={formNumericInputValue(value)}
+      aria-invalid={ariaInvalid}
+      onChange={(event) => {
+        const parsed = parseBillFormNumericInput(event.target.value);
+        if (parsed !== null) {
+          onChange(parsed);
+        }
+      }}
+    />
+  );
+}
+
+type BillFormPhoneInputProps = {
+  id?: string;
+  value: string;
+  onChange: (value: string) => void;
+  className?: string;
+  'aria-invalid'?: boolean;
+};
+
+export function BillFormPhoneInput({
+  id,
+  value,
+  onChange,
+  className,
+  'aria-invalid': ariaInvalid,
+}: BillFormPhoneInputProps) {
+  return (
+    <Input
+      id={id}
+      type="tel"
+      inputMode="numeric"
+      autoComplete="tel"
+      className={cn('h-9', className)}
+      value={formatMobileInputDisplay(value)}
+      aria-invalid={ariaInvalid}
+      onChange={(event) => onChange(parseMobileStoredValue(event.target.value))}
+    />
   );
 }

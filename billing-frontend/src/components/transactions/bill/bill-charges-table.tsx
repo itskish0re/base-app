@@ -1,21 +1,25 @@
 import { Plus, Trash2 } from 'lucide-react';
+import { EntityFormFieldError } from '@/components/derived/entity-form/ef-form-ui';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { BillFormCurrencyAmount, BillFormMonoInputClass } from '@/components/transactions/bill/bill-form-ui';
 import {
+  BillFormCurrencyAmount,
+  BillFormNumericInput,
+} from '@/components/transactions/bill/bill-form-ui';
+import {
+  billFormFieldError,
   formatBillFormCurrency,
-  formNumericInputValue,
   isTruckLoanAllowed,
-  parseBillFormNumericInput,
   toFormNumber,
+  type BillFormFieldErrors,
 } from '@/lib/billForm';
-import { cn } from '@/lib/utils';
 import { createEmptyBillOtherItem, type BillOtherItem } from '@/types/billOther';
 import type { BillFormValues } from '@/types/billForm';
 
 type BillChargesTableProps = {
   values: BillFormValues;
+  fieldErrors?: BillFormFieldErrors;
   onNumericChange: (key: keyof BillFormValues, raw: string) => void;
   onTruckLoanChange: (checked: boolean) => void;
   others: BillOtherItem[];
@@ -34,6 +38,7 @@ const CHARGE_ROWS = [
 
 export function BillChargesTable({
   values,
+  fieldErrors,
   onNumericChange,
   onTruckLoanChange,
   others,
@@ -69,64 +74,78 @@ export function BillChargesTable({
           </tr>
         </thead>
         <tbody>
-          {CHARGE_ROWS.map(([key, label, readOnly]) => (
-            <tr key={key} className="border-b border-border transition-colors hover:bg-muted/20">
-              <td className="px-4 py-1.5 font-medium">{label}</td>
-              <td className="px-4 py-1.5">
-                {readOnly ? (
-                  <BillFormCurrencyAmount
-                    value={values[key]}
-                    className="ml-auto max-w-[8rem]"
-                  />
-                ) : (
-                  <Input
-                    id={`bill-${key}`}
-                    type="number"
-                    inputMode="decimal"
-                    value={formNumericInputValue(values[key])}
-                    className={cnInput()}
-                    onChange={(e) => onNumericChange(key, e.target.value)}
-                  />
-                )}
-              </td>
-            </tr>
-          ))}
+          {CHARGE_ROWS.map(([key, label, readOnly]) => {
+            const error = billFormFieldError(fieldErrors, key);
 
-          {others.map((item, index) => (
-            <tr key={`other-${index}`} className="border-b border-border transition-colors hover:bg-muted/20">
-              <td className="px-4 py-1.5">
-                <div className="flex items-center gap-2">
-                  <Input
-                    id={`bill-other-key-${index}`}
-                    value={item.key}
-                    placeholder="Add Other"
-                    className="h-8 border-transparent bg-transparent px-0 shadow-none focus-visible:ring-0"
-                    onChange={(e) => updateOther(index, { key: e.target.value })}
-                  />
-                  {others.length > 1 || item.key.trim() ? (
-                    <button
-                      type="button"
-                      className="text-muted-foreground hover:text-destructive"
-                      onClick={() => removeOther(index)}
-                      title="Remove"
-                    >
-                      <Trash2 className="size-4" />
-                    </button>
-                  ) : null}
-                </div>
-              </td>
-              <td className="px-4 py-1.5 text-right">
-                <Input
-                  id={`bill-other-value-${index}`}
-                  type="number"
-                  inputMode="decimal"
-                  value={formNumericInputValue(item.value)}
-                  className={cnInput()}
-                  onChange={(e) => updateOther(index, { value: parseBillFormNumericInput(e.target.value) })}
-                />
-              </td>
-            </tr>
-          ))}
+            return (
+              <tr key={key} className="border-b border-border transition-colors hover:bg-muted/20">
+                <td className="px-4 py-1.5 font-medium">{label}</td>
+                <td className="px-4 py-1.5">
+                  {readOnly ? (
+                    <BillFormCurrencyAmount
+                      value={values[key]}
+                      className="ml-auto max-w-[8rem]"
+                    />
+                  ) : (
+                    <div className="ml-auto max-w-[8rem]">
+                      <BillFormNumericInput
+                        id={`bill-${key}`}
+                        value={values[key]}
+                        className="h-8 text-right"
+                        aria-invalid={error ? true : undefined}
+                        onChange={(nextValue) => onNumericChange(key, nextValue === '' ? '' : String(nextValue))}
+                      />
+                      <EntityFormFieldError message={error} className="mt-1 text-right" />
+                    </div>
+                  )}
+                </td>
+              </tr>
+            );
+          })}
+
+          {others.map((item, index) => {
+            const error = billFormFieldError(fieldErrors, `others.${index}.value`);
+
+            return (
+              <tr key={`other-${index}`} className="border-b border-border transition-colors hover:bg-muted/20">
+                <td className="px-4 py-1.5">
+                  <div className="flex items-center gap-2">
+                    <Input
+                      id={`bill-other-key-${index}`}
+                      value={item.key}
+                      placeholder="Add Other"
+                      className="h-8 border-transparent bg-transparent px-0 shadow-none focus-visible:ring-0"
+                      onChange={(e) => updateOther(index, { key: e.target.value })}
+                    />
+                    {others.length > 1 || item.key.trim() ? (
+                      <button
+                        type="button"
+                        className="text-muted-foreground hover:text-destructive"
+                        onClick={() => removeOther(index)}
+                        title="Remove"
+                      >
+                        <Trash2 className="size-4" />
+                      </button>
+                    ) : null}
+                  </div>
+                </td>
+                <td className="px-4 py-1.5">
+                  <div className="ml-auto max-w-[8rem]">
+                    <BillFormNumericInput
+                      id={`bill-other-value-${index}`}
+                      value={item.value}
+                      className="h-8 text-right"
+                      aria-invalid={error ? true : undefined}
+                      onChange={(value) => {
+                        updateOther(index, { value });
+                      }}
+                    />
+                    <EntityFormFieldError message={error} className="mt-1 text-right" />
+                  </div>
+                </td>
+              </tr>
+            );
+          })}
 
           <tr>
             <td colSpan={2} className="px-4 py-2">
@@ -173,8 +192,4 @@ export function BillChargesTable({
       </table>
     </div>
   );
-}
-
-function cnInput() {
-  return cn(BillFormMonoInputClass(), 'ml-auto h-8 max-w-[8rem] text-right');
 }
