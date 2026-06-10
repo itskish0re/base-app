@@ -1,6 +1,7 @@
 import { configureStore, type Reducer } from '@reduxjs/toolkit';
 import type { ScreenKey } from '@/constants/screenKeys';
 import { authReducer } from '@/store/global/authSlice';
+import { billFormDraftReducer } from '@/store/global/billFormDraftSlice';
 import { menuReducer } from '@/store/global/menuSlice';
 import { screenCacheReducer } from '@/store/global/screenCacheSlice';
 import { financialYearContextReducer } from '@/store/global/financialYearContextSlice';
@@ -13,6 +14,7 @@ const staticReducers = {
   menu: menuReducer,
   screenCache: screenCacheReducer,
   financialYearContext: financialYearContextReducer,
+  billFormDraft: billFormDraftReducer,
 };
 
 const reducerManager = createReducerManager(staticReducers);

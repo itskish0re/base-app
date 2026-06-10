@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BillForm } from '@/components/transactions/bill/bill-form';
 import { BillFormToolbar } from '@/components/transactions/bill/bill-form-toolbar';
 import { BillPreviewSheet } from '@/components/transactions/bill/bill-preview-sheet';
@@ -15,6 +15,7 @@ import {
   mapBillFormToPreview,
   mapBillFormToSaveRequest,
   recalculateBillForm,
+  resolveBillFormDraftValues,
   validateBillFormFields,
   type BillFormFieldErrors,
 } from '@/lib/billForm';
@@ -22,6 +23,13 @@ import { getNameBoardById } from '@/service/api/functions/nameBoards';
 import { getTruckById } from '@/service/api/functions/trucks';
 import { saveBillMutationOptions } from '@/service/mutation/bills';
 import { billByIdQueryOptions, nextBillNumberQueryOptions } from '@/service/query/bills';
+import {
+  billFormDraftActions,
+  selectBillFormCreateDraft,
+  selectBillFormEditDraft,
+} from '@/store/global/billFormDraftSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { selectSelectedFinancialYearId } from '@/store/global/financialYearContextSlice';
 import type { BillFormValues } from '@/types/billForm';
 
 type BillFormPageProps = {
@@ -31,18 +39,35 @@ type BillFormPageProps = {
 
 export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   const queryClient = useQueryClient();
+  const financialYearId = useAppSelector(selectSelectedFinancialYearId);
+  const createDraft = useAppSelector(selectBillFormCreateDraft);
+  const editDraft = useAppSelector((state) =>
+    billId != null && billId > 0 ? selectBillFormEditDraft(state, billId) : null,
+  );
   const lookups = useBillFormLookups();
 
-  const [values, setValues] = useState<BillFormValues>(() => createInitialBillFormValues());
+  const restoredEditDraft = mode === 'edit' && billId != null && billId > 0 && editDraft != null;
+
+  const [values, setValues] = useState<BillFormValues>(() =>
+    resolveBillFormDraftValues({
+      mode,
+      billId,
+      financialYearId,
+      createDraft,
+      editDraft,
+    }) ?? createInitialBillFormValues(),
+  );
   const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<BillFormFieldErrors>({});
-  const [hydrated, setHydrated] = useState(mode === 'create');
+  const [hydrated, setHydrated] = useState(mode === 'create' || restoredEditDraft);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const previousFinancialYearIdRef = useRef(financialYearId);
 
   const nextNumberQuery = useQuery({
-    ...nextBillNumberQueryOptions(),
-    enabled: mode === 'create',
+    ...nextBillNumberQueryOptions(financialYearId),
+    enabled: mode === 'create' && financialYearId != null,
   });
 
   const billQuery = useQuery({
@@ -50,28 +75,58 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     enabled: mode === 'edit' && billId != null && billId > 0,
   });
 
-  const applyTruckMeta = useCallback(async (truckId: number, apply: typeof setValues) => {
-    try {
-      const truck = await getTruckById(truckId);
-      const nameBoard = await getNameBoardById(truck.nameBoardId);
-      apply((current) =>
-        recalculateBillForm({
-          ...current,
-          truckId,
-          truckNumber: formatBillFormTruckNumber(truck.truckNumber),
-          nameBoardName: truck.nameBoardName ?? nameBoard.name,
-          ownerName: nameBoard.ownerName,
-          ownerMobile: nameBoard.ownerPhone ?? '',
-        }),
-      );
-    } catch {
-      // Preview can still show truck number from lookup label.
-    }
-  }, []);
+  const persistDraft = useCallback(
+    (next: BillFormValues) => {
+      if (mode === 'create' && financialYearId != null) {
+        dispatch(
+          billFormDraftActions.setCreateDraft({
+            financialYearId,
+            values: next,
+          }),
+        );
+        return;
+      }
+
+      if (mode === 'edit' && billId != null && billId > 0) {
+        dispatch(billFormDraftActions.setEditDraft({ billId, values: next }));
+      }
+    },
+    [billId, dispatch, financialYearId, mode],
+  );
+
+  const applyTruckMeta = useCallback(
+    async (truckId: number, apply: typeof setValues) => {
+      try {
+        const truck = await getTruckById(truckId);
+        const nameBoard = await getNameBoardById(truck.nameBoardId);
+        apply((current) => {
+          const next = recalculateBillForm({
+            ...current,
+            truckId,
+            truckNumber: formatBillFormTruckNumber(truck.truckNumber),
+            nameBoardName: truck.nameBoardName ?? nameBoard.name,
+            ownerName: nameBoard.ownerName,
+            ownerMobile: nameBoard.ownerPhone ?? '',
+          });
+          persistDraft(next);
+          return next;
+        });
+      } catch {
+        // Preview can still show truck number from lookup label.
+      }
+    },
+    [persistDraft],
+  );
 
   const saveMutation = useMutation({
     ...saveBillMutationOptions,
     onSuccess: async (response) => {
+      if (mode === 'create') {
+        dispatch(billFormDraftActions.clearCreateDraft());
+      } else if (billId != null && billId > 0) {
+        dispatch(billFormDraftActions.clearEditDraft({ billId }));
+      }
+
       await queryClient.invalidateQueries({ queryKey: queryKeys.bills.all });
       if (mode === 'create') {
         void navigate({
@@ -83,33 +138,95 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   });
 
   useEffect(() => {
-    if (mode !== 'create' || !nextNumberQuery.data) {
+    if (mode !== 'create') {
       return;
     }
 
-    setValues((current) =>
-      current.billNumber
-        ? current
-        : recalculateBillForm({ ...current, billNumber: nextNumberQuery.data.billNumber }),
-    );
-  }, [mode, nextNumberQuery.data]);
+    if (previousFinancialYearIdRef.current === financialYearId) {
+      return;
+    }
+
+    previousFinancialYearIdRef.current = financialYearId;
+
+    if (
+      financialYearId != null &&
+      createDraft?.financialYearId === financialYearId
+    ) {
+      setValues(recalculateBillForm(createDraft.values));
+      setFieldErrors({});
+      setFormError(null);
+      return;
+    }
+
+    setValues(createInitialBillFormValues());
+    setFieldErrors({});
+    setFormError(null);
+  }, [mode, financialYearId, createDraft]);
+
+  useEffect(() => {
+    if (mode !== 'create') {
+      return;
+    }
+
+    if (!nextNumberQuery.data) {
+      setValues((current) => {
+        if (current.billNumber === '') {
+          return current;
+        }
+
+        const next = recalculateBillForm({ ...current, billNumber: '' });
+        persistDraft(next);
+        return next;
+      });
+      return;
+    }
+
+    setValues((current) => {
+      if (current.billNumber) {
+        return current;
+      }
+
+      const next = recalculateBillForm({
+        ...current,
+        billNumber: nextNumberQuery.data.billNumber,
+      });
+      persistDraft(next);
+      return next;
+    });
+  }, [mode, financialYearId, nextNumberQuery.data, persistDraft]);
 
   useEffect(() => {
     if (mode !== 'edit' || !billQuery.data || lookups.isLoading) {
       return;
     }
 
-    setValues(
-      mapBillDetailToFormValues(billQuery.data, {
-        locations: lookups.locations,
-        parties: lookups.parties,
-        goods: lookups.goods,
-        units: lookups.units,
-        trucks: lookups.trucks,
-      }),
-    );
+    if (restoredEditDraft) {
+      setHydrated(true);
+      return;
+    }
+
+    const next = mapBillDetailToFormValues(billQuery.data, {
+      locations: lookups.locations,
+      parties: lookups.parties,
+      goods: lookups.goods,
+      units: lookups.units,
+      trucks: lookups.trucks,
+    });
+    setValues(next);
+    persistDraft(next);
     setHydrated(true);
-  }, [mode, billQuery.data, lookups.isLoading, lookups.locations, lookups.parties, lookups.goods, lookups.units, lookups.trucks]);
+  }, [
+    mode,
+    billQuery.data,
+    lookups.isLoading,
+    lookups.locations,
+    lookups.parties,
+    lookups.goods,
+    lookups.units,
+    lookups.trucks,
+    restoredEditDraft,
+    persistDraft,
+  ]);
 
   useEffect(() => {
     if (mode !== 'edit' || !billQuery.data?.bill.truckId || !hydrated) {
@@ -126,11 +243,16 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     [applyTruckMeta],
   );
 
-  const handleFormChange = useCallback((next: BillFormValues) => {
-    setValues(recalculateBillForm(next));
-    setFormError(null);
-    setFieldErrors({});
-  }, []);
+  const handleFormChange = useCallback(
+    (next: BillFormValues) => {
+      const recalculated = recalculateBillForm(next);
+      setValues(recalculated);
+      persistDraft(recalculated);
+      setFormError(null);
+      setFieldErrors({});
+    },
+    [persistDraft],
+  );
 
   const previewData = useMemo(() => mapBillFormToPreview(values), [values]);
 
@@ -151,9 +273,14 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     handleFormChange({ ...values, isCancelled });
   };
 
+  const isNextBillNumberLoading =
+    mode === 'create' &&
+    !values.billNumber &&
+    (financialYearId == null || nextNumberQuery.isPending);
+
   const isPageLoading =
     lookups.isLoading ||
-    (mode === 'create' && nextNumberQuery.isLoading) ||
+    isNextBillNumberLoading ||
     (mode === 'edit' && (billQuery.isLoading || !hydrated));
 
   const pageTitle = mode === 'create' ? 'Create Bill' : `Edit Bill${values.billNumber ? ` — ${values.billNumber}` : ''}`;
@@ -177,6 +304,16 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     return (
       <p className="p-4 text-sm text-destructive">
         {billQuery.error instanceof Error ? billQuery.error.message : 'Bill not found.'}
+      </p>
+    );
+  }
+
+  if (mode === 'create' && nextNumberQuery.isError) {
+    return (
+      <p className="p-4 text-sm text-destructive">
+        {nextNumberQuery.error instanceof Error
+          ? nextNumberQuery.error.message
+          : 'Failed to load the next bill number for the selected financial year.'}
       </p>
     );
   }

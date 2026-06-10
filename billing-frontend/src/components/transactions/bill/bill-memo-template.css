@@ -262,6 +262,17 @@
   border-right: none;
 }
 
+.bill-memo__loads-weight-head {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1.25;
+}
+
+.bill-memo__loads-weight-head-line {
+  display: block;
+}
+
 .bill-memo__loads-body {
   flex: 1 1 auto;
   display: flex;
@@ -392,9 +403,16 @@
   white-space: nowrap;
 }
 
+.bill-memo__loads-rate-head,
+.bill-memo__loads-rate-value {
+  display: inline-block;
+  line-height: 1.2;
+}
+
 .bill-memo__loads-rate-unit {
   font-size: 0.72em;
-  line-height: 0;
+  vertical-align: sub;
+  line-height: 1;
   margin-left: 1px;
   font-weight: 500;
 }

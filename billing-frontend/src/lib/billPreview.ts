@@ -73,17 +73,8 @@ export function formatBillPreviewConsigneeName(
   return consigneeName;
 }
 
-export function formatBillPreviewWeight(
-  weight: number | null | undefined,
-  unitName: string | null | undefined,
-): string {
-  const amount = formatBillPreviewAmount(weight);
-  if (!amount) {
-    return '';
-  }
-
-  const unit = unitName?.trim();
-  return unit ? `${amount} ${unit}` : amount;
+export function formatBillPreviewWeight(weight: number | null | undefined): string {
+  return formatBillPreviewAmount(weight);
 }
 
 function createEmptyLoadRow(loadNumber: number): BillPreviewLoadLine {

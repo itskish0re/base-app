@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.Extensions.Configuration;
+using Npgsql;
 
 namespace Infrastructure.Persistence;
 
@@ -19,7 +20,11 @@ public sealed class BillingDbContextFactory : IDesignTimeDbContextFactory<Billin
             ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
         var optionsBuilder = new DbContextOptionsBuilder<BillingDbContext>();
-        optionsBuilder.UseNpgsql(connectionString).UseSnakeCaseNamingConvention();
+        optionsBuilder
+            .UseNpgsql(
+                connectionString,
+                npgsql => npgsql.ConfigureDataSource(builder => builder.EnableDynamicJson()))
+            .UseSnakeCaseNamingConvention();
 
         return new BillingDbContext(optionsBuilder.Options);
     }

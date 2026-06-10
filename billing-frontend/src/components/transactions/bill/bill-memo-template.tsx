@@ -151,7 +151,19 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
           <div className="bill-memo__loads-head">
             {LOAD_COLUMNS.map((column) => (
               <div key={column.key} className={column.className}>
-                {column.label}
+                {column.key === 'weight' ? (
+                  <span className="bill-memo__loads-weight-head">
+                    <span className="bill-memo__loads-weight-head-line">Weight</span>
+                    <span className="bill-memo__loads-weight-head-line">/ Qty</span>
+                  </span>
+                ) : column.key === 'rate' ? (
+                  <span className="bill-memo__loads-rate-head">
+                    Rate
+                    <sub className="bill-memo__loads-rate-unit">/ Unit</sub>
+                  </span>
+                ) : (
+                  column.label
+                )}
               </div>
             ))}
           </div>
@@ -190,13 +202,15 @@ export function BillMemoTemplate({ data, className }: BillMemoTemplateProps) {
                   {row.goodsName}
                 </div>
                 <div className="bill-memo__loads-col--num">
-                  {formatBillPreviewWeight(row.weightOrQuantity, row.unitName)}
+                  {formatBillPreviewWeight(row.weightOrQuantity)}
                 </div>
                 <div className="bill-memo__loads-col--num bill-memo__loads-rate">
-                  {formatBillPreviewAmount(row.ratePerUnit)}
-                  {row.unitName?.trim() ? (
-                    <sub className="bill-memo__loads-rate-unit">{row.unitName.trim()}</sub>
-                  ) : null}
+                  <span className="bill-memo__loads-rate-value">
+                    {formatBillPreviewAmount(row.ratePerUnit)}
+                    {row.unitName?.trim() ? (
+                      <sub className="bill-memo__loads-rate-unit">{row.unitName.trim()}</sub>
+                    ) : null}
+                  </span>
                 </div>
                 <div className="bill-memo__loads-col--num">
                   {formatBillPreviewAmount(row.freight)}

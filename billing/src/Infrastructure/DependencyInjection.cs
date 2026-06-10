@@ -49,7 +49,7 @@ public static class DependencyInjection
             throw new InvalidOperationException("Connection string 'DefaultConnection' is not configured.");
         }
 
-        services.AddSingleton(_ => new NpgsqlDataSourceBuilder(connectionString).Build());
+        services.AddSingleton(_ => NpgsqlDataSourceFactory.Create(connectionString));
         services.AddScoped<IDbConnectionFactory, DbConnectionFactory>();
 
         services.AddScoped<IUserRepository, UserRepository>();
@@ -70,8 +70,10 @@ public static class DependencyInjection
         services.AddScoped<IAppEntityScreenRepository, AppEntityScreenRepository>();
         services.AddScoped<IRegistryColumnResolver, RegistryColumnResolver>();
 
-        services.AddDbContext<BillingDbContext>(options =>
-            options.UseNpgsql(connectionString).UseSnakeCaseNamingConvention());
+        services.AddDbContext<BillingDbContext>((serviceProvider, options) =>
+            options
+                .UseNpgsql(serviceProvider.GetRequiredService<NpgsqlDataSource>())
+                .UseSnakeCaseNamingConvention());
 
         services.AddScoped<IUnitOfWork>(sp => sp.GetRequiredService<BillingDbContext>());
 

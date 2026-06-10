@@ -80,6 +80,31 @@ export function createInitialBillFormValues(): BillFormValues {
   });
 }
 
+/** Restore unsaved bill form values from the global draft store, if any. */
+export function resolveBillFormDraftValues(input: {
+  mode: 'create' | 'edit';
+  billId?: number;
+  financialYearId: number | null;
+  createDraft: { financialYearId: number; values: BillFormValues } | null;
+  editDraft: BillFormValues | null;
+}): BillFormValues | null {
+  const { mode, billId, financialYearId, createDraft, editDraft } = input;
+
+  if (
+    mode === 'create' &&
+    financialYearId != null &&
+    createDraft?.financialYearId === financialYearId
+  ) {
+    return recalculateBillForm(createDraft.values);
+  }
+
+  if (mode === 'edit' && billId != null && billId > 0 && editDraft) {
+    return recalculateBillForm(editDraft);
+  }
+
+  return null;
+}
+
 export function formatBillFormAmount(value: number | null | undefined): string {
   if (value == null || Number.isNaN(value)) {
     return '';

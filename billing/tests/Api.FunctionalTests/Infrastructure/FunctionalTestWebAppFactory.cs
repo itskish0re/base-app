@@ -26,13 +26,15 @@ public class FunctionalTestWebAppFactory : WebApplicationFactory<Program>, IAsyn
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IDbConnectionFactory>();
-            services.AddSingleton<IDbConnectionFactory>(_ =>
-                new DbConnectionFactory(new NpgsqlDataSourceBuilder(_dbContainer.GetConnectionString()).Build()));
+            services.RemoveAll<NpgsqlDataSource>();
+            var dataSource = NpgsqlDataSourceFactory.Create(_dbContainer.GetConnectionString());
+            services.AddSingleton(dataSource);
+            services.AddSingleton<IDbConnectionFactory>(_ => new DbConnectionFactory(dataSource));
 
             services.RemoveAll<DbContextOptions<BillingDbContext>>();
-            services.AddDbContext<BillingDbContext>(options =>
+            services.AddDbContext<BillingDbContext>((serviceProvider, options) =>
                 options
-                    .UseNpgsql(_dbContainer.GetConnectionString())
+                    .UseNpgsql(serviceProvider.GetRequiredService<NpgsqlDataSource>())
                     .UseSnakeCaseNamingConvention());
         });
     }

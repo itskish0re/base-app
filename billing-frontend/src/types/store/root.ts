@@ -1,4 +1,9 @@
-import type { AuthState, MenuState, FinancialYearContextState } from '@/types/store/global';
+import type {
+  AuthState,
+  BillFormDraftState,
+  MenuState,
+  FinancialYearContextState,
+} from '@/types/store/global';
 import type { ScreenCacheState } from '@/types/store/screenCache';
 import type { ScreenStateByKey } from '@/types/store/screens';
 
@@ -8,4 +13,5 @@ export type RootState = {
   menu: MenuState;
   screenCache: ScreenCacheState;
   financialYearContext: FinancialYearContextState;
+  billFormDraft: BillFormDraftState;
 } & Partial<ScreenStateByKey>;

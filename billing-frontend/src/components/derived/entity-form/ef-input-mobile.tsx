@@ -12,7 +12,7 @@ export function EntityFormMobileInput({
   onBlur,
   disabled,
   readOnly,
-  placeholder = '+91 XXX XXX XXXX',
+  placeholder = '10-digit mobile',
 }: EntityFormFieldInputProps) {
   return (
     <Input

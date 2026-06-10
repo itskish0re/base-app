@@ -1,7 +1,4 @@
-import {
-  formatIndianMobile,
-  formatIndianVehicleNumber,
-} from '@/components/derived/data-table/column-cells/formatters';
+import { formatIndianVehicleNumber } from '@/components/derived/data-table/column-cells/formatters';
 
 /** Store up to 10 local digits (strips +91 / leading 0). */
 export function parseMobileStoredValue(raw: string): string {
@@ -16,13 +13,9 @@ export function parseMobileStoredValue(raw: string): string {
   return digits.slice(0, 10);
 }
 
+/** Plain mobile display for inputs — digits only, no +91 prefix. */
 export function formatMobileInputDisplay(stored: unknown): string {
-  const digits = parseMobileStoredValue(String(stored ?? ''));
-  if (!digits) {
-    return '';
-  }
-
-  return formatIndianMobile(digits);
+  return parseMobileStoredValue(String(stored ?? ''));
 }
 
 /** Compact uppercase vehicle number for storage/API. */
