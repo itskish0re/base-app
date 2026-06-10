@@ -210,46 +210,50 @@ internal sealed class SaveBillCommandValidator : AbstractValidator<SaveBillComma
     public SaveBillCommandValidator()
     {
         RuleFor(x => x.Bill.BillNumber).NotEmpty().MaximumLength(64);
-        RuleFor(x => x.Bill.FromId).GreaterThan(0);
-        RuleFor(x => x.Bill.TruckId).GreaterThan(0);
-        RuleFor(x => x.Bill.DriverName).NotEmpty().MaximumLength(256);
-        RuleFor(x => x.Bill.PayBy)
-            .Must(payBy => payBy is null || BillPayBy.IsAllowed(payBy))
-            .WithMessage("Pay by must be upi, cash, or owner.");
 
-        When(
-            x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
-            () =>
-            {
-                RuleFor(x => x.Bill.PaidName).NotEmpty().MaximumLength(256);
-                RuleFor(x => x.Bill.PaidMobile).NotEmpty().MaximumLength(32);
-            });
-
-        Unless(
-            x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
-            () =>
-            {
-                RuleFor(x => x.Bill.PaidName)
-                    .Must(name => string.IsNullOrWhiteSpace(name))
-                    .WithMessage("Paid name is only allowed when pay by is upi.");
-                RuleFor(x => x.Bill.PaidMobile)
-                    .Must(mobile => string.IsNullOrWhiteSpace(mobile))
-                    .WithMessage("Paid mobile is only allowed when pay by is upi.");
-            });
-
-        RuleForEach(x => x.Loads).ChildRules(load =>
+        When(x => !x.Bill.IsCancelled, () =>
         {
-            load.RuleFor(l => l.ConsignorId).GreaterThan(0);
-            load.When(l => l.AsPerBill, () =>
+            RuleFor(x => x.Bill.FromId).GreaterThan(0);
+            RuleFor(x => x.Bill.TruckId).GreaterThan(0);
+            RuleFor(x => x.Bill.DriverName).NotEmpty().MaximumLength(256);
+            RuleFor(x => x.Bill.PayBy)
+                .Must(payBy => payBy is null || BillPayBy.IsAllowed(payBy))
+                .WithMessage("Pay by must be upi, cash, or owner.");
+
+            When(
+                x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
+                () =>
+                {
+                    RuleFor(x => x.Bill.PaidName).NotEmpty().MaximumLength(256);
+                    RuleFor(x => x.Bill.PaidMobile).NotEmpty().MaximumLength(32);
+                });
+
+            Unless(
+                x => string.Equals(x.Bill.PayBy, BillPayBy.Upi, StringComparison.OrdinalIgnoreCase),
+                () =>
+                {
+                    RuleFor(x => x.Bill.PaidName)
+                        .Must(name => string.IsNullOrWhiteSpace(name))
+                        .WithMessage("Paid name is only allowed when pay by is upi.");
+                    RuleFor(x => x.Bill.PaidMobile)
+                        .Must(mobile => string.IsNullOrWhiteSpace(mobile))
+                        .WithMessage("Paid mobile is only allowed when pay by is upi.");
+                });
+
+            RuleForEach(x => x.Loads).ChildRules(load =>
             {
-                load.RuleFor(l => l.ConsigneeId).Null();
-            }).Otherwise(() =>
-            {
-                load.RuleFor(l => l.ConsigneeId).NotNull().GreaterThan(0);
+                load.RuleFor(l => l.ConsignorId).GreaterThan(0);
+                load.When(l => l.AsPerBill, () =>
+                {
+                    load.RuleFor(l => l.ConsigneeId).Null();
+                }).Otherwise(() =>
+                {
+                    load.RuleFor(l => l.ConsigneeId).NotNull().GreaterThan(0);
+                });
+                load.RuleFor(l => l.ToId).GreaterThan(0);
+                load.RuleFor(l => l.GoodsId).GreaterThan(0);
+                load.RuleFor(l => l.UnitId).GreaterThan(0);
             });
-            load.RuleFor(l => l.ToId).GreaterThan(0);
-            load.RuleFor(l => l.GoodsId).GreaterThan(0);
-            load.RuleFor(l => l.UnitId).GreaterThan(0);
         });
     }
 }

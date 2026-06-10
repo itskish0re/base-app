@@ -127,6 +127,12 @@ If trucks were seeded earlier with spaced numbers, normalize once before re-seed
 psql "$CONN" -f scripts/truck/migrate_normalize_truck_numbers.sql
 ```
 
+Remove erroneous **Cancel** placeholder rows (from bad CSV import) in an existing database:
+
+```bash
+psql "$CONN" -f scripts/temp/remove_cancel_name_board_and_truck.sql
+```
+
 To regenerate after editing the CSV:
 
 ```bash

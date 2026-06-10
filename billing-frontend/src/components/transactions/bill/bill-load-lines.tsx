@@ -14,8 +14,10 @@ import {
 import {
   BILL_FORM_MAX_LOAD_ROWS,
   createEmptyLoadLine,
+  formNumericInputValue,
   lookupItemLabel,
   lookupUnitIsFixed,
+  parseBillFormNumericInput,
 } from '@/lib/billForm';
 import type { BillLoadFormLine } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
@@ -28,15 +30,6 @@ type BillLoadLinesProps = {
   units: LookupItem[];
   onChange: (loads: BillLoadFormLine[]) => void;
 };
-
-function parseNumericInput(raw: string): number | '' {
-  if (raw.trim() === '') {
-    return '';
-  }
-
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : '';
-}
 
 function formatLoadLineTitle(index: number): string {
   const loadNumber = index + 1;
@@ -219,9 +212,9 @@ export function BillLoadLines({
                       type="number"
                       inputMode="decimal"
                       className={BillFormMonoInputClass()}
-                      value={line.weightOrQuantity === '' ? '' : line.weightOrQuantity}
+                      value={formNumericInputValue(line.weightOrQuantity)}
                       onChange={(e) =>
-                        updateLine(index, { weightOrQuantity: parseNumericInput(e.target.value) })
+                        updateLine(index, { weightOrQuantity: parseBillFormNumericInput(e.target.value) })
                       }
                     />
                   </BillFormField>
@@ -232,9 +225,9 @@ export function BillLoadLines({
                       type="number"
                       inputMode="decimal"
                       className={BillFormMonoInputClass()}
-                      value={line.ratePerUnit === '' ? '' : line.ratePerUnit}
+                      value={formNumericInputValue(line.ratePerUnit)}
                       onChange={(e) =>
-                        updateLine(index, { ratePerUnit: parseNumericInput(e.target.value) })
+                        updateLine(index, { ratePerUnit: parseBillFormNumericInput(e.target.value) })
                       }
                     />
                   </BillFormField>
@@ -249,9 +242,9 @@ export function BillLoadLines({
                       type="number"
                       inputMode="decimal"
                       className={BillFormMonoInputClass()}
-                      value={line.advance === '' ? '' : line.advance}
+                      value={formNumericInputValue(line.advance)}
                       onChange={(e) =>
-                        updateLine(index, { advance: parseNumericInput(e.target.value) })
+                        updateLine(index, { advance: parseBillFormNumericInput(e.target.value) })
                       }
                     />
                   </BillFormField>
@@ -262,8 +255,8 @@ export function BillLoadLines({
                       type="number"
                       inputMode="decimal"
                       className={BillFormMonoInputClass()}
-                      value={line.topay === '' ? '' : line.topay}
-                      onChange={(e) => updateLine(index, { topay: parseNumericInput(e.target.value) })}
+                      value={formNumericInputValue(line.topay)}
+                      onChange={(e) => updateLine(index, { topay: parseBillFormNumericInput(e.target.value) })}
                     />
                   </BillFormField>
 

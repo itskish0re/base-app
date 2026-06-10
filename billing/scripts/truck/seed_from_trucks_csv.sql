@@ -315,7 +315,6 @@ FROM (
         ('TN77R8183', 'sri_selliamman'),
         ('KA50A2054', 'kavin'),
         ('TN52AD5290', 'kavin'),
-        ('Cancel', 'cancel'),
         ('TN24AX6856', 'r_s_transport'),
         ('TN24AX3699', 'r_s_transport'),
         ('TN46V2207', 'smr_jeyaseelan'),

@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { ENTITY_LOOKUP_STALE_TIME_MS } from '@/components/derived/entity-form/ef-lookup-registry';
 import { queryKeys } from '@/constants/queryKeys';
+import { filterBillFormTruckLookupItems } from '@/lib/billForm';
 import { lookupGoods } from '@/service/api/functions/goods';
 import { lookupLocations } from '@/service/api/functions/locations';
 import { lookupParties } from '@/service/api/functions/parties';
@@ -81,6 +82,6 @@ export function useBillFormLookups() {
     parties: parties.data?.items ?? [],
     goods: goods.data?.items ?? [],
     units: units.data?.items ?? [],
-    trucks: trucks.data?.items ?? [],
+    trucks: filterBillFormTruckLookupItems(trucks.data?.items ?? []),
   };
 }

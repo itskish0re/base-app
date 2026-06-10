@@ -1,3 +1,5 @@
+import { formatIndianVehicleNumber } from '@/components/derived/data-table/column-cells/formatters';
+import { parseVehicleNumberStoredValue } from '@/components/derived/entity-form/ef-input-value';
 import { buildBillAdvanceSummary, DEFAULT_BILL_PREVIEW_COMPANY } from '@/lib/billPreview';
 import {
   createEmptyBillOtherItem,
@@ -10,7 +12,6 @@ import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview'
 import type { LookupItem } from '@/types/common';
 
 export const BILL_FORM_MAX_LOAD_ROWS = 3;
-export const BILL_FORM_DEFAULT_NUMERIC = 0;
 
 export function todayIsoDate(): string {
   const now = new Date();
@@ -35,12 +36,12 @@ export function createEmptyLoadLine(loadNumber = 1): BillLoadFormLine {
     unitId: null,
     unitName: '',
     unitIsFixed: false,
-    weightOrQuantity: BILL_FORM_DEFAULT_NUMERIC,
-    ratePerUnit: BILL_FORM_DEFAULT_NUMERIC,
-    freight: BILL_FORM_DEFAULT_NUMERIC,
-    advance: BILL_FORM_DEFAULT_NUMERIC,
-    topay: BILL_FORM_DEFAULT_NUMERIC,
-    balance: BILL_FORM_DEFAULT_NUMERIC,
+    weightOrQuantity: '',
+    ratePerUnit: '',
+    freight: '',
+    advance: '',
+    topay: '',
+    balance: '',
     loadId: null,
   };
 }
@@ -59,19 +60,19 @@ export function createInitialBillFormValues(): BillFormValues {
     driverName: '',
     driverMobile1: '',
     driverMobile2: '',
-    totalFreight: BILL_FORM_DEFAULT_NUMERIC,
-    commission: BILL_FORM_DEFAULT_NUMERIC,
-    crossing: BILL_FORM_DEFAULT_NUMERIC,
-    handLoan: BILL_FORM_DEFAULT_NUMERIC,
+    totalFreight: '',
+    commission: '',
+    crossing: '',
+    handLoan: '',
     truckLoan: false,
     payBy: 'upi',
     paidName: '',
     paidMobile: '',
-    officeMamul: BILL_FORM_DEFAULT_NUMERIC,
-    tapalMamul: BILL_FORM_DEFAULT_NUMERIC,
-    diesel: BILL_FORM_DEFAULT_NUMERIC,
+    officeMamul: '',
+    tapalMamul: '',
+    diesel: '',
     others: [createEmptyBillOtherItem()],
-    total: BILL_FORM_DEFAULT_NUMERIC,
+    total: '',
     isCancelled: false,
     loads: [createEmptyLoadLine()],
   });
@@ -158,6 +159,32 @@ export function toFormNumber(value: number | '' | null | undefined): number | nu
   return Number.isFinite(n) ? n : null;
 }
 
+/** Empty editable numeric fields use '' instead of 0 so inputs do not show a leading zero. */
+export function normalizeEditableNumeric(value: number | '' | null | undefined): number | '' {
+  if (value === '' || value == null || value === 0) {
+    return '';
+  }
+
+  return value;
+}
+
+export function parseBillFormNumericInput(raw: string): number | '' {
+  if (raw.trim() === '') {
+    return '';
+  }
+
+  const n = Number(raw);
+  return Number.isFinite(n) ? n : '';
+}
+
+export function formNumericInputValue(value: number | ''): string | number {
+  if (value === '' || value === 0) {
+    return '';
+  }
+
+  return value;
+}
+
 function toFormNumberOrZero(value: number | '' | null | undefined): number {
   return toFormNumber(value) ?? 0;
 }
@@ -205,6 +232,23 @@ export function recalculateBillForm(values: BillFormValues): BillFormValues {
   };
 }
 
+function lookupItemRawLabel(item: LookupItem): string {
+  const label = item.label;
+  return label == null || label === '' ? String(item.value ?? '') : String(label);
+}
+
+export function formatBillFormTruckNumber(value: string | null | undefined): string {
+  return formatIndianVehicleNumber(value);
+}
+
+/** Drops placeholder / invalid truck numbers from bill-form lookup options. */
+export function filterBillFormTruckLookupItems(items: LookupItem[]): LookupItem[] {
+  return items.filter((item) => {
+    const normalized = parseVehicleNumberStoredValue(lookupItemRawLabel(item));
+    return normalized.length > 0 && normalized !== 'CANCEL';
+  });
+}
+
 export function lookupItemLabel(items: LookupItem[], id: number | null): string {
   if (id == null) {
     return '';
@@ -215,8 +259,7 @@ export function lookupItemLabel(items: LookupItem[], id: number | null): string 
     return '';
   }
 
-  const label = item.label;
-  return label == null || label === '' ? String(item.value) : String(label);
+  return lookupItemRawLabel(item);
 }
 
 export function mapBillDetailToFormValues(
@@ -238,7 +281,7 @@ export function mapBillDetailToFormValues(
     fromId: bill.fromId,
     fromLocationName: lookupItemLabel(lookups.locations, bill.fromId),
     truckId: bill.truckId,
-    truckNumber: lookupItemLabel(lookups.trucks, bill.truckId),
+    truckNumber: formatBillFormTruckNumber(lookupItemLabel(lookups.trucks, bill.truckId)),
     nameBoardName: '',
     ownerName: '',
     ownerMobile: '',
@@ -247,17 +290,20 @@ export function mapBillDetailToFormValues(
     driverMobile2: bill.driverMobile2 ?? '',
     totalFreight: bill.totalFreight,
     commission: bill.commission,
-    crossing: bill.crossing,
-    handLoan: bill.handLoan,
+    crossing: normalizeEditableNumeric(bill.crossing),
+    handLoan: normalizeEditableNumeric(bill.handLoan),
     truckLoan: bill.truckLoan,
     payBy: bill.payBy,
     paidName: bill.payBy === 'upi' ? bill.paidName ?? '' : '',
     paidMobile: bill.payBy === 'upi' ? bill.paidMobile ?? '' : '',
-    officeMamul: bill.officeMamul,
-    tapalMamul: bill.tapalMamul,
-    diesel: bill.diesel,
+    officeMamul: normalizeEditableNumeric(bill.officeMamul),
+    tapalMamul: normalizeEditableNumeric(bill.tapalMamul),
+    diesel: normalizeEditableNumeric(bill.diesel),
     others: bill.others?.length
-      ? bill.others.map((o) => ({ key: o.key, value: o.value }))
+      ? bill.others.map((o) => ({
+          key: o.key,
+          value: normalizeEditableNumeric(o.value),
+        }))
       : [createEmptyBillOtherItem()],
     total: bill.total,
     isCancelled: bill.isCancelled,
@@ -284,11 +330,11 @@ export function mapBillDetailToFormValues(
               unitId: line.unitId,
               unitName: lookupItemLabel(lookups.units, line.unitId),
               unitIsFixed: lookupUnitIsFixed(lookups.units, line.unitId),
-              weightOrQuantity: line.weightOrQuantity,
-              ratePerUnit: line.ratePerUnit,
+              weightOrQuantity: normalizeEditableNumeric(line.weightOrQuantity),
+              ratePerUnit: normalizeEditableNumeric(line.ratePerUnit),
               freight: line.freight,
-              advance: line.advance,
-              topay: line.topay,
+              advance: normalizeEditableNumeric(line.advance),
+              topay: normalizeEditableNumeric(line.topay),
               balance: line.balance,
             }),
           )
@@ -383,30 +429,50 @@ function mapOthersToSave(items: BillOtherItem[]) {
 }
 
 export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillRequest {
-  const loads: SaveBillLoadItem[] = values.loads.filter(isLoadLineSavable).map((line) => ({
+  const mapLoadLine = (line: BillLoadFormLine): SaveBillLoadItem => ({
     loadId: line.loadId ?? null,
-    consignorId: line.consignorId!,
+    consignorId: line.consignorId ?? 0,
     consigneeId: line.asPerBill ? null : line.consigneeId,
     asPerBill: line.asPerBill,
-    toId: line.toId!,
-    goodsId: line.goodsId!,
-    unitId: line.unitId!,
+    toId: line.toId ?? 0,
+    goodsId: line.goodsId ?? 0,
+    unitId: line.unitId ?? 0,
     weightOrQuantity: toFormNumberOrZero(line.weightOrQuantity),
     ratePerUnit: toFormNumberOrZero(line.ratePerUnit),
     freight: toFormNumberOrZero(line.freight),
     advance: toFormNumberOrZero(line.advance),
     topay: toFormNumberOrZero(line.topay),
     balance: toFormNumberOrZero(line.balance),
-  }));
+  });
+
+  const loads: SaveBillLoadItem[] = values.isCancelled
+    ? values.loads.map(mapLoadLine)
+    : values.loads.filter(isLoadLineSavable).map((line) => ({
+        loadId: line.loadId ?? null,
+        consignorId: line.consignorId!,
+        consigneeId: line.asPerBill ? null : line.consigneeId,
+        asPerBill: line.asPerBill,
+        toId: line.toId!,
+        goodsId: line.goodsId!,
+        unitId: line.unitId!,
+        weightOrQuantity: toFormNumberOrZero(line.weightOrQuantity),
+        ratePerUnit: toFormNumberOrZero(line.ratePerUnit),
+        freight: toFormNumberOrZero(line.freight),
+        advance: toFormNumberOrZero(line.advance),
+        topay: toFormNumberOrZero(line.topay),
+        balance: toFormNumberOrZero(line.balance),
+      }));
+
+  const driverName = values.driverName.trim();
 
   return {
     bill: {
       billId: values.billId ?? null,
       billNumber: values.billNumber.trim(),
       billDate: values.billDate,
-      fromId: values.fromId!,
-      truckId: values.truckId!,
-      driverName: values.driverName.trim(),
+      fromId: values.fromId ?? 0,
+      truckId: values.truckId ?? 0,
+      driverName: values.isCancelled ? driverName || '-' : driverName,
       driverMobile1: values.driverMobile1.trim() || null,
       driverMobile2: values.driverMobile2.trim() || null,
       totalFreight: toFormNumberOrZero(values.totalFreight),
@@ -431,6 +497,10 @@ export function mapBillFormToSaveRequest(values: BillFormValues): SaveBillReques
 export function validateBillForm(values: BillFormValues): string | null {
   if (!values.billNumber.trim()) {
     return 'Bill number is required.';
+  }
+
+  if (values.isCancelled) {
+    return null;
   }
 
   if (!values.fromId) {

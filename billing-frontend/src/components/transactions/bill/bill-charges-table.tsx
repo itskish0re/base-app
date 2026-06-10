@@ -2,11 +2,12 @@ import { Plus, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
-import { BillFormMonoInputClass } from '@/components/transactions/bill/bill-form-ui';
+import { BillFormCurrencyAmount, BillFormMonoInputClass } from '@/components/transactions/bill/bill-form-ui';
 import {
-  formatBillFormAmount,
   formatBillFormCurrency,
+  formNumericInputValue,
   isTruckLoanAllowed,
+  parseBillFormNumericInput,
   toFormNumber,
 } from '@/lib/billForm';
 import { cn } from '@/lib/utils';
@@ -30,23 +31,6 @@ const CHARGE_ROWS = [
   ['diesel', 'Diesel', false],
   ['handLoan', 'Hand loan', false],
 ] as const;
-
-function parseNumericInput(raw: string): number | '' {
-  if (raw.trim() === '') {
-    return '';
-  }
-
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : '';
-}
-
-function formatAmountCell(value: number | ''): string {
-  if (value === '') {
-    return '0.00';
-  }
-
-  return formatBillFormAmount(value) || '0.00';
-}
 
 export function BillChargesTable({
   values,
@@ -88,15 +72,18 @@ export function BillChargesTable({
           {CHARGE_ROWS.map(([key, label, readOnly]) => (
             <tr key={key} className="border-b border-border transition-colors hover:bg-muted/20">
               <td className="px-4 py-1.5 font-medium">{label}</td>
-              <td className="px-4 py-1.5 text-right">
+              <td className="px-4 py-1.5">
                 {readOnly ? (
-                  <span className="font-mono tabular-nums">{formatAmountCell(values[key])}</span>
+                  <BillFormCurrencyAmount
+                    value={values[key]}
+                    className="ml-auto max-w-[8rem]"
+                  />
                 ) : (
                   <Input
                     id={`bill-${key}`}
                     type="number"
                     inputMode="decimal"
-                    value={values[key] === '' ? '' : values[key]}
+                    value={formNumericInputValue(values[key])}
                     className={cnInput()}
                     onChange={(e) => onNumericChange(key, e.target.value)}
                   />
@@ -133,9 +120,9 @@ export function BillChargesTable({
                   id={`bill-other-value-${index}`}
                   type="number"
                   inputMode="decimal"
-                  value={item.value === '' ? '' : item.value}
+                  value={formNumericInputValue(item.value)}
                   className={cnInput()}
-                  onChange={(e) => updateOther(index, { value: parseNumericInput(e.target.value) })}
+                  onChange={(e) => updateOther(index, { value: parseBillFormNumericInput(e.target.value) })}
                 />
               </td>
             </tr>

@@ -1,4 +1,6 @@
 import { useMemo, type ReactNode } from 'react';
+import { formatIndianVehicleNumber } from '@/components/derived/data-table/column-cells/formatters';
+import { parseVehicleNumberStoredValue } from '@/components/derived/entity-form/ef-input-value';
 import {
   Combobox,
   ComboboxContent,
@@ -7,7 +9,10 @@ import {
   ComboboxItem,
   ComboboxList,
 } from '@/components/ui/combobox';
+import { cn } from '@/lib/utils';
 import type { LookupItem } from '@/types/common';
+
+export type EntityFormLookupLabelFormat = 'default' | 'vehicle_number';
 
 type EntityFormLookupComboboxProps = {
   id?: string;
@@ -16,6 +21,7 @@ type EntityFormLookupComboboxProps = {
   onBlur?: () => void;
   disabled?: boolean;
   clearable?: boolean;
+  labelFormat?: EntityFormLookupLabelFormat;
   placeholder?: string;
   searchPlaceholder?: string;
   emptyMessage?: string;
@@ -38,8 +44,28 @@ function lookupItemLabel(item: LookupItem): string {
   return String(label);
 }
 
-function lookupItemSearchText(item: LookupItem): string {
-  const parts = [lookupItemLabel(item), lookupItemValue(item)];
+function resolveLookupItemLabel(
+  item: LookupItem,
+  labelFormat: EntityFormLookupLabelFormat,
+): string {
+  const raw = lookupItemLabel(item);
+  if (labelFormat === 'vehicle_number') {
+    return formatIndianVehicleNumber(raw);
+  }
+
+  return raw;
+}
+
+function lookupItemSearchText(
+  item: LookupItem,
+  labelFormat: EntityFormLookupLabelFormat,
+): string {
+  const raw = lookupItemLabel(item);
+  const parts = [raw, lookupItemValue(item)];
+
+  if (labelFormat === 'vehicle_number') {
+    parts.push(formatIndianVehicleNumber(raw), parseVehicleNumberStoredValue(raw));
+  }
 
   for (const fieldValue of Object.values(item.fields ?? {})) {
     if (fieldValue != null && fieldValue !== '') {
@@ -57,6 +83,7 @@ export function EntityFormLookupCombobox({
   onBlur,
   disabled = false,
   clearable = true,
+  labelFormat = 'default',
   placeholder = 'Select…',
   emptyMessage = 'No matches found.',
   items,
@@ -90,7 +117,7 @@ export function EntityFormLookupCombobox({
           onBlur?.();
         }
       }}
-      itemToStringLabel={lookupItemLabel}
+      itemToStringLabel={(item) => resolveLookupItemLabel(item, labelFormat)}
       isItemEqualToValue={(item, selected) =>
         lookupItemValue(item) === lookupItemValue(selected)
       }
@@ -100,7 +127,7 @@ export function EntityFormLookupCombobox({
           return true;
         }
 
-        return lookupItemSearchText(item).includes(normalizedQuery);
+        return lookupItemSearchText(item, labelFormat).includes(normalizedQuery);
       }}
       disabled={comboboxDisabled}
     >
@@ -126,10 +153,20 @@ export function EntityFormLookupCombobox({
                 const secondary =
                   item.fields?.code != null ? String(item.fields.code) : null;
 
+                const displayLabel = resolveLookupItemLabel(item, labelFormat);
+
                 return (
                   <ComboboxItem key={itemValue} value={item}>
                     <span className="min-w-0 flex-1">
-                      <span className="block truncate">{lookupItemLabel(item)}</span>
+                      <span
+                        className={cn(
+                          'block truncate',
+                          labelFormat === 'vehicle_number' &&
+                            'font-mono text-sm font-medium uppercase tracking-wide',
+                        )}
+                      >
+                        {displayLabel}
+                      </span>
                       {secondary ? (
                         <span className="block truncate font-mono text-xs uppercase text-muted-foreground">
                           {secondary}

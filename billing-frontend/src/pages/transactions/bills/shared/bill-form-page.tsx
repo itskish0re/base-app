@@ -1,16 +1,16 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
-import { Eye, Save } from 'lucide-react';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { BillForm } from '@/components/transactions/bill/bill-form';
+import { BillFormToolbar } from '@/components/transactions/bill/bill-form-toolbar';
 import { BillPreviewSheet } from '@/components/transactions/bill/bill-preview-sheet';
-import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants/routes';
 import { queryKeys } from '@/constants/queryKeys';
 import { useBillFormLookups } from '@/hooks/useBillFormLookups';
 import {
   createInitialBillFormValues,
+  formatBillFormTruckNumber,
   mapBillDetailToFormValues,
   mapBillFormToPreview,
   mapBillFormToSaveRequest,
@@ -22,7 +22,6 @@ import { getTruckById } from '@/service/api/functions/trucks';
 import { saveBillMutationOptions } from '@/service/mutation/bills';
 import { billByIdQueryOptions, nextBillNumberQueryOptions } from '@/service/query/bills';
 import type { BillFormValues } from '@/types/billForm';
-import { cn } from '@/lib/utils';
 
 type BillFormPageProps = {
   mode: 'create' | 'edit';
@@ -57,7 +56,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
         recalculateBillForm({
           ...current,
           truckId,
-          truckNumber: truck.truckNumber,
+          truckNumber: formatBillFormTruckNumber(truck.truckNumber),
           nameBoardName: truck.nameBoardName ?? nameBoard.name,
           ownerName: nameBoard.ownerName,
           ownerMobile: nameBoard.ownerPhone ?? '',
@@ -142,12 +141,25 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     saveMutation.mutate(mapBillFormToSaveRequest(values));
   };
 
+  const handleCancelledChange = (isCancelled: boolean) => {
+    handleFormChange({ ...values, isCancelled });
+  };
+
   const isPageLoading =
     lookups.isLoading ||
     (mode === 'create' && nextNumberQuery.isLoading) ||
     (mode === 'edit' && (billQuery.isLoading || !hydrated));
 
   const pageTitle = mode === 'create' ? 'Create Bill' : `Edit Bill${values.billNumber ? ` — ${values.billNumber}` : ''}`;
+
+  const toolbarProps = {
+    isCancelled: values.isCancelled,
+    onCancelledChange: handleCancelledChange,
+    onPreview: () => setPreviewOpen(true),
+    onSave: handleSave,
+    isSaving: saveMutation.isPending,
+    isLoading: isPageLoading,
+  };
 
   if (lookups.isError) {
     return (
@@ -163,113 +175,54 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     );
   }
 
-  const actionButtons = (
-    <>
-      <Button
-        type="button"
-        variant="outline"
-        className="h-9 flex-1 sm:flex-none"
-        onClick={() => setPreviewOpen(true)}
-        disabled={isPageLoading}
-      >
-        <Eye className="size-4" />
-        Preview
-      </Button>
-      <Button
-        type="button"
-        variant="outline"
-        className="h-9 flex-1 sm:flex-none"
-        onClick={() => void navigate({ to: ROUTES.bills })}
-        disabled={saveMutation.isPending}
-      >
-        Cancel
-      </Button>
-      <Button
-        type="button"
-        className="h-9 flex-1 sm:flex-[1.5] sm:flex-none"
-        onClick={handleSave}
-        disabled={saveMutation.isPending || isPageLoading}
-      >
-        <Save className="size-4" />
-        {saveMutation.isPending ? 'Saving…' : 'Save Bill'}
-      </Button>
-    </>
-  );
-
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 pb-24 sm:pb-6">
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div className="min-w-0">
-          <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{pageTitle}</h1>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Generate a new freight bill for dispatch. Fields marked with * are required.
-          </p>
-        </div>
-        <div className="hidden shrink-0 gap-2 sm:flex">{actionButtons}</div>
+    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden pb-24 sm:pb-6">
+      <div className="mx-auto w-full max-w-6xl shrink-0">
+        <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{pageTitle}</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          Generate a new freight bill for dispatch. Fields marked with * are required unless the bill is cancelled.
+        </p>
       </div>
 
       {formError ? (
-        <p className="mx-auto w-full max-w-6xl text-sm text-destructive">{formError}</p>
+        <p className="mx-auto w-full max-w-6xl shrink-0 text-sm text-destructive">{formError}</p>
       ) : null}
       {saveMutation.isError ? (
-        <p className="mx-auto w-full max-w-6xl text-sm text-destructive">
+        <p className="mx-auto w-full max-w-6xl shrink-0 text-sm text-destructive">
           {saveMutation.error instanceof Error ? saveMutation.error.message : 'Save failed.'}
         </p>
       ) : null}
 
-      <div className="min-h-0 flex-1 overflow-y-auto">
-        {isPageLoading ? (
-          <div className="mx-auto max-w-6xl space-y-4">
-            <Skeleton className="h-48 w-full rounded-lg" />
-            <Skeleton className="h-64 w-full rounded-lg" />
-            <Skeleton className="h-48 w-full rounded-lg" />
-          </div>
-        ) : (
-          <BillForm
-            values={values}
-            locations={lookups.locations}
-            trucks={lookups.trucks}
-            parties={lookups.parties}
-            goods={lookups.goods}
-            units={lookups.units}
-            onChange={handleFormChange}
-            onTruckSelected={handleTruckSelected}
-          />
-        )}
+      <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col gap-4 overflow-hidden">
+        <BillFormToolbar {...toolbarProps} className="hidden shrink-0 sm:flex" />
+
+        <div className="min-h-0 flex-1 overflow-y-auto">
+          {isPageLoading ? (
+            <div className="space-y-4">
+              <Skeleton className="h-48 w-full rounded-lg" />
+              <Skeleton className="h-64 w-full rounded-lg" />
+              <Skeleton className="h-48 w-full rounded-lg" />
+            </div>
+          ) : (
+            <BillForm
+              values={values}
+              locations={lookups.locations}
+              trucks={lookups.trucks}
+              parties={lookups.parties}
+              goods={lookups.goods}
+              units={lookups.units}
+              onChange={handleFormChange}
+              onTruckSelected={handleTruckSelected}
+            />
+          )}
+        </div>
       </div>
 
       <BillPreviewSheet data={previewData} open={previewOpen} onOpenChange={setPreviewOpen} />
 
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 p-3 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
-        <div className="mx-auto flex max-w-lg gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            className="h-11 flex-1"
-            onClick={() => void navigate({ to: ROUTES.bills })}
-            disabled={saveMutation.isPending}
-          >
-            Cancel
-          </Button>
-          <Button
-            type="button"
-            variant="secondary"
-            className={cn('h-11 flex-1 bg-secondary/80')}
-            onClick={() => setPreviewOpen(true)}
-            disabled={isPageLoading}
-          >
-            <Eye className="size-4" />
-            Preview
-          </Button>
-          <Button
-            type="button"
-            className="h-11 flex-[1.5]"
-            onClick={handleSave}
-            disabled={saveMutation.isPending || isPageLoading}
-          >
-            <Save className="size-4" />
-            {saveMutation.isPending ? 'Saving…' : 'Save Bill'}
-          </Button>
+      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
+        <div className="mx-auto w-full min-w-0 max-w-6xl px-1">
+          <BillFormToolbar {...toolbarProps} />
         </div>
       </div>
     </div>

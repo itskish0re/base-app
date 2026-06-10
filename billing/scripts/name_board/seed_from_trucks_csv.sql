@@ -1,4 +1,4 @@
--- name_board — seed from Trucks_details.csv (91 boards)
+-- name_board — seed from Trucks_details.csv (90 boards)
 -- Source: ../../Trucks_details.csv
 -- Run after migrations and app_entity registry seeds.
 
@@ -22,7 +22,6 @@ VALUES
     ('Ayyappa', 'ayyappa', 'Govindaraj', '9094088930', true, true, false, NOW(), NOW()),
     ('Balaji Tpt', 'balaji_tpt', 'Mani', '9099140366', true, true, false, NOW(), NOW()),
     ('Balamurugan', 'balamurugan', 'Sathish', '9944245350', true, true, false, NOW(), NOW()),
-    ('Cancel', 'cancel', 'Cancel', 'Cancel', true, true, false, NOW(), NOW()),
     ('GMB', 'gmb', 'Govindan', '9943556697', true, true, false, NOW(), NOW()),
     ('Harish Tpt', 'harish_tpt', 'Vijayan', '9994350055', true, true, false, NOW(), NOW()),
     ('IM Roadways', 'im_roadways', 'Kadhir vasu', '8883322575', true, true, false, NOW(), NOW()),

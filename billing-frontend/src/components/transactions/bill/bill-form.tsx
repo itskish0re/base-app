@@ -1,8 +1,6 @@
 import { EntityFormLookupCombobox } from '@/components/derived/entity-form/ef-lookup-combobox';
 import { DatePicker } from '@/components/ui/date-picker';
 import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Switch } from '@/components/ui/switch';
 import { BillAdvanceSummary } from '@/components/transactions/bill/bill-advance-summary';
 import { BillChargesTable } from '@/components/transactions/bill/bill-charges-table';
 import {
@@ -13,10 +11,15 @@ import {
 } from '@/components/transactions/bill/bill-form-ui';
 import { BillLoadLines } from '@/components/transactions/bill/bill-load-lines';
 import { BillPaymentPanel } from '@/components/transactions/bill/bill-payment-panel';
-import { lookupItemLabel, sumLoadAdvances } from '@/lib/billForm';
+import {
+  formatBillFormTruckNumber,
+  lookupItemLabel,
+  parseBillFormNumericInput,
+  sumLoadAdvances,
+} from '@/lib/billForm';
 import type { BillFormValues } from '@/types/billForm';
 import type { LookupItem } from '@/types/common';
-import { Ban, FileText, IndianRupee, Receipt, Wallet } from 'lucide-react';
+import { FileText, IndianRupee, Receipt, Wallet } from 'lucide-react';
 
 type BillFormProps = {
   values: BillFormValues;
@@ -29,21 +32,12 @@ type BillFormProps = {
   onTruckSelected: (truckId: number) => void;
 };
 
-function parseNumericInput(raw: string): number | '' {
-  if (raw.trim() === '') {
-    return '';
-  }
-
-  const n = Number(raw);
-  return Number.isFinite(n) ? n : '';
-}
-
 function patchNumeric(
   values: BillFormValues,
   key: keyof BillFormValues,
   raw: string,
 ): BillFormValues {
-  return { ...values, [key]: parseNumericInput(raw) };
+  return { ...values, [key]: parseBillFormNumericInput(raw) };
 }
 
 export function BillForm({
@@ -63,7 +57,14 @@ export function BillForm({
   const showAdvanceSummary = sumLoadAdvances(values.loads) > 0;
 
   return (
-    <div className="mx-auto max-w-6xl space-y-4 pb-6">
+    <div className="relative space-y-4 pb-6">
+      {values.isCancelled ? (
+        <div
+          className="absolute inset-0 z-10 cursor-not-allowed bg-transparent"
+          aria-hidden
+        />
+      ) : null}
+
       <BillFormAccordionSection icon={FileText} title="Header Information">
         <div className="grid grid-cols-1 gap-x-4 gap-y-3 md:grid-cols-2 lg:grid-cols-4">
           <BillFormField id="bill-number" label="Bill No." required>
@@ -100,7 +101,7 @@ export function BillForm({
                 if (truckId != null && Number.isFinite(truckId) && truckId > 0) {
                   patch({
                     truckId,
-                    truckNumber: lookupItemLabel(trucks, truckId),
+                    truckNumber: formatBillFormTruckNumber(lookupItemLabel(trucks, truckId)),
                   });
                   onTruckSelected(truckId);
                 } else {
@@ -114,6 +115,8 @@ export function BillForm({
                 }
               }}
               items={trucks}
+              labelFormat="vehicle_number"
+              clearable={false}
               placeholder="Select truck…"
               searchPlaceholder="Search truck…"
             />
@@ -211,19 +214,6 @@ export function BillForm({
           ) : null}
         </div>
       </section>
-
-      <BillFormAccordionSection icon={Ban} title="Status" defaultOpen={values.isCancelled}>
-        <div className="flex items-center gap-2">
-          <Switch
-            id="bill-cancelled"
-            checked={values.isCancelled}
-            onCheckedChange={(checked) => patch({ isCancelled: checked })}
-          />
-          <Label htmlFor="bill-cancelled" className="text-sm">
-            Cancelled
-          </Label>
-        </div>
-      </BillFormAccordionSection>
     </div>
   );
 }

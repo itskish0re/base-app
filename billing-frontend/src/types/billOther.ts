@@ -12,5 +12,5 @@ export function sumBillOtherItems(items: BillOtherItem[]): number {
 }
 
 export function createEmptyBillOtherItem(): BillOtherItem {
-  return { key: '', value: 0 };
+  return { key: '', value: '' };
 }
