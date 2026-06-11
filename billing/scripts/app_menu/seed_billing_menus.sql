@@ -225,8 +225,8 @@ VALUES
     (
         'bills_create',
         'Create bill',
-        '/transactions/bills/create',
-        'receipt',
+        '/transactions/bill-create',
+        'file-plus',
         NULL,
         11,
         NULL,
@@ -239,8 +239,8 @@ VALUES
     (
         'bills_edit',
         'Edit bill',
-        '/transactions/bills/edit',
-        'receipt',
+        '/transactions/bill-edit',
+        'file-pen',
         NULL,
         12,
         NULL,

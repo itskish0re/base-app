@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { BillEditPage } from '@/pages/transactions/bills/edit/bill-edit-page';
 
-export const Route = createFileRoute('/_authenticated/transactions/bills/edit/$billId')({
+export const Route = createFileRoute('/_authenticated/transactions/bill-edit/$billId')({
   component: BillEditRoutePage,
 });
 

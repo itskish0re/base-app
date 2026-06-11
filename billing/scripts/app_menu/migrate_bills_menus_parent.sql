@@ -74,8 +74,8 @@ SELECT
     NOW()
 FROM (
     VALUES
-        ('bills_create', 'Create', '/transactions/bills/create', 'receipt', 20, 'Create bill'),
-        ('bills_edit', 'Edit', '/transactions/bills/edit', 'receipt', 30, 'Edit bill')
+        ('bills_create', 'Create', '/transactions/bill-create', 'file-plus', 20, 'Create bill'),
+        ('bills_edit', 'Edit', '/transactions/bill-edit', 'file-pen', 30, 'Edit bill')
 ) AS v(menu_code, display_name, route_path, icon, sort_order, tooltip)
 INNER JOIN app_menu p ON p.menu_code = 'bills' AND p.parent_menu_id IS NULL
 ON CONFLICT (menu_code) DO UPDATE

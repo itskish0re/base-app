@@ -1,11 +1,14 @@
 import {
   Circle,
   Calendar,
+  FilePenLine,
+  FilePlus,
   Home,
   LayoutDashboard,
   MapPin,
   Package,
   PanelLeft,
+  Receipt,
   Ruler,
   Settings,
   Truck,
@@ -33,6 +36,11 @@ const iconMap: Record<string, LucideIcon> = {
   unit: Ruler,
   calendar: Calendar,
   financialyear: Calendar,
+  receipt: Receipt,
+  bills: Receipt,
+  fileplus: FilePlus,
+  filepen: FilePenLine,
+  filepenline: FilePenLine,
 };
 
 export function resolveMenuIcon(icon: string | null | undefined): LucideIcon {

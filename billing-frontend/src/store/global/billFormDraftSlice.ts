@@ -3,12 +3,20 @@ import { clearAuth } from '@/store/global/authSlice';
 import type { BillFormValues } from '@/types/billForm';
 import {
   createInitialBillFormDraftState,
+  createInitialBillNavigationState,
   type BillFormCreateDraft,
-  type BillFormDraftState,
+  type BillNavigationState,
 } from '@/types/store/global/billFormDraft';
 import type { RootState } from '@/types/store/root';
 
 const initialState = createInitialBillFormDraftState();
+
+type SetBillNavigationPayload = {
+  financialYearId: number;
+  lastBillId?: number | null;
+  lastBillNumber?: string | null;
+  nextBillNumber?: string | null;
+};
 
 const billFormDraftSlice = createSlice({
   name: 'billFormDraft',
@@ -26,6 +34,16 @@ const billFormDraftSlice = createSlice({
     clearEditDraft(state, action: PayloadAction<{ billId: number }>) {
       delete state.editByBillId[action.payload.billId];
     },
+    setBillNavigation(state, action: PayloadAction<SetBillNavigationPayload>) {
+      const { financialYearId, ...patch } = action.payload;
+      const current =
+        state.navigationByFinancialYear[financialYearId] ?? createInitialBillNavigationState();
+
+      state.navigationByFinancialYear[financialYearId] = {
+        ...current,
+        ...patch,
+      };
+    },
     clearAllBillFormDrafts: () => initialState,
   },
   extraReducers: (builder) => {
@@ -41,3 +59,14 @@ export const selectBillFormCreateDraft = (state: RootState) =>
 
 export const selectBillFormEditDraft = (state: RootState, billId: number) =>
   state.billFormDraft?.editByBillId[billId] ?? null;
+
+export const selectBillNavigation = (
+  state: RootState,
+  financialYearId: number | null,
+): BillNavigationState | null => {
+  if (financialYearId == null) {
+    return null;
+  }
+
+  return state.billFormDraft?.navigationByFinancialYear[financialYearId] ?? null;
+};

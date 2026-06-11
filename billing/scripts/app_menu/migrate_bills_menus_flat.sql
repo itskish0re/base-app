@@ -71,8 +71,8 @@ SELECT
     NOW()
 FROM (
     VALUES
-        ('bills_create', 'Create bill', '/transactions/bills/create', 'receipt', 11, 'Create bill'),
-        ('bills_edit', 'Edit bill', '/transactions/bills/edit', 'receipt', 12, 'Edit bill')
+        ('bills_create', 'Create bill', '/transactions/bill-create', 'file-plus', 11, 'Create bill'),
+        ('bills_edit', 'Edit bill', '/transactions/bill-edit', 'file-pen', 12, 'Edit bill')
 ) AS v(menu_code, display_name, route_path, icon, sort_order, tooltip)
 ON CONFLICT (menu_code) DO UPDATE
 SET display_name = EXCLUDED.display_name,

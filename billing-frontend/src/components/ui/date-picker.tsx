@@ -109,21 +109,6 @@ export function DatePicker({
       </div>
       <PopoverContent className="w-auto p-0" align="start">
         <Calendar mode="single" selected={selectedDate} onSelect={handleSelect} />
-        {clearable && selectedDate ? (
-          <div className="border-t p-2">
-            <Button
-              type="button"
-              variant="ghost"
-              className="h-8 w-full justify-start font-normal text-muted-foreground"
-              onClick={() => {
-                onChange?.('');
-                setOpen(false);
-              }}
-            >
-              Clear
-            </Button>
-          </div>
-        ) : null}
       </PopoverContent>
     </Popover>
   );

@@ -1,8 +1,12 @@
 import { useRouterState } from '@tanstack/react-router';
 import { DASHBOARD_ROUTE, ROUTES } from '@/constants/routes';
 
-/** List routes that have their own sidebar entries under the same URL prefix. */
-const EXACT_MATCH_MENU_ROUTES = new Set<string>([ROUTES.bills]);
+/** Menu routes that must not match child URL prefixes (e.g. list vs create/edit siblings). */
+const EXACT_MATCH_MENU_ROUTES = new Set<string>([
+  ROUTES.bills,
+  ROUTES.billsCreate,
+  ROUTES.billsEditIndex,
+]);
 
 function normalizePath(path: string): string {
   if (!path || path === '/') {

@@ -1,6 +1,5 @@
 import { Link } from '@tanstack/react-router';
 import { forwardRef, type ComponentPropsWithoutRef } from 'react';
-import { DASHBOARD_ROUTE } from '@/constants/routes';
 
 function isExternalPath(path: string): boolean {
   return /^https?:\/\//i.test(path) || path.startsWith('mailto:');
@@ -30,14 +29,6 @@ export const MenuNavLink = forwardRef<HTMLAnchorElement, MenuNavLinkProps>(funct
     <Link
       ref={ref}
       to={routePath as '/'}
-      activeOptions={{
-        exact: routePath === DASHBOARD_ROUTE,
-        includeSearch: false,
-      }}
-      activeProps={{
-        'data-active': true,
-        'aria-current': 'page',
-      }}
       {...props}
     >
       {children}

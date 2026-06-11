@@ -4,25 +4,23 @@ import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
 
-type BillFormToolbarProps = {
+type BillFormActionBarProps = {
   isCancelled: boolean;
   onCancelledChange: (cancelled: boolean) => void;
-  onPreview: () => void;
   onSave: () => void;
   isSaving?: boolean;
   isLoading?: boolean;
   className?: string;
 };
 
-export function BillFormToolbar({
+export function BillFormActionBar({
   isCancelled,
   onCancelledChange,
-  onPreview,
   onSave,
   isSaving = false,
   isLoading = false,
   className,
-}: BillFormToolbarProps) {
+}: BillFormActionBarProps) {
   return (
     <div
       className={cn(
@@ -32,11 +30,11 @@ export function BillFormToolbar({
     >
       <div className="flex shrink-0 items-center gap-1.5 sm:gap-2 sm:border-r sm:border-border sm:pr-3">
         <Switch
-          id="bill-toolbar-cancelled"
+          id="bill-actionbar-cancelled"
           checked={isCancelled}
           onCheckedChange={onCancelledChange}
         />
-        <Label htmlFor="bill-toolbar-cancelled" className="text-xs font-medium sm:text-sm">
+        <Label htmlFor="bill-actionbar-cancelled" className="text-xs font-medium sm:text-sm">
           Cancelled
         </Label>
       </div>
@@ -47,17 +45,6 @@ export function BillFormToolbar({
           'max-sm:w-full max-sm:justify-end',
         )}
       >
-        <Button
-          type="button"
-          variant="outline"
-          size="sm"
-          className="h-8 shrink-0 px-2.5 text-xs sm:h-9 sm:px-4 sm:text-sm"
-          onClick={onPreview}
-          disabled={isLoading}
-        >
-          <Eye className="size-3.5 sm:size-4" />
-          Preview
-        </Button>
         <Button
           type="button"
           size="sm"

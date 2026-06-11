@@ -2,7 +2,10 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useNavigate } from '@tanstack/react-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { BillForm } from '@/components/transactions/bill/bill-form';
-import { BillFormToolbar } from '@/components/transactions/bill/bill-form-toolbar';
+import { BillFormActionBar } from '@/components/transactions/bill/bill-form-action-bar';
+import { BillFormNavigator } from '@/components/transactions/bill/bill-form-navigator';
+import { BillFormScreen } from '@/components/transactions/bill/bill-form-screen';
+import { BillFormTopToolbar } from '@/components/transactions/bill/bill-form-top-toolbar';
 import { BillPreviewSheet } from '@/components/transactions/bill/bill-preview-sheet';
 import { Skeleton } from '@/components/ui/skeleton';
 import { ROUTES } from '@/constants/routes';
@@ -19,6 +22,8 @@ import {
   validateBillFormFields,
   type BillFormFieldErrors,
 } from '@/lib/billForm';
+import { findBillIdByNumber } from '@/lib/billNavigation';
+import { incrementBillNumber } from '@/lib/billNumberNavigation';
 import { getNameBoardById } from '@/service/api/functions/nameBoards';
 import { getTruckById } from '@/service/api/functions/trucks';
 import { saveBillMutationOptions } from '@/service/mutation/bills';
@@ -27,6 +32,7 @@ import {
   billFormDraftActions,
   selectBillFormCreateDraft,
   selectBillFormEditDraft,
+  selectBillNavigation,
 } from '@/store/global/billFormDraftSlice';
 import { useAppDispatch, useAppSelector } from '@/store/hooks';
 import { selectSelectedFinancialYearId } from '@/store/global/financialYearContextSlice';
@@ -43,6 +49,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const queryClient = useQueryClient();
   const financialYearId = useAppSelector(selectSelectedFinancialYearId);
   const createDraft = useAppSelector(selectBillFormCreateDraft);
+  const billNavigation = useAppSelector((state) => selectBillNavigation(state, financialYearId));
   const editDraft = useAppSelector((state) =>
     billId != null && billId > 0 ? selectBillFormEditDraft(state, billId) : null,
   );
@@ -63,6 +70,8 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const [fieldErrors, setFieldErrors] = useState<BillFormFieldErrors>({});
   const [hydrated, setHydrated] = useState(mode === 'create' || restoredEditDraft);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [isNavigatingBill, setIsNavigatingBill] = useState(false);
+  const [navigatorError, setNavigatorError] = useState<string | null>(null);
   const previousFinancialYearIdRef = useRef(financialYearId);
 
   const nextNumberQuery = useQuery({
@@ -121,6 +130,17 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   const saveMutation = useMutation({
     ...saveBillMutationOptions,
     onSuccess: async (response) => {
+      if (financialYearId != null) {
+        dispatch(
+          billFormDraftActions.setBillNavigation({
+            financialYearId,
+            lastBillId: response.bill.billId,
+            lastBillNumber: response.bill.billNumber,
+            nextBillNumber: incrementBillNumber(response.bill.billNumber),
+          }),
+        );
+      }
+
       if (mode === 'create') {
         dispatch(billFormDraftActions.clearCreateDraft());
       } else if (billId != null && billId > 0) {
@@ -136,6 +156,19 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       }
     },
   });
+
+  useEffect(() => {
+    if (mode !== 'create' || financialYearId == null || !nextNumberQuery.data) {
+      return;
+    }
+
+    dispatch(
+      billFormDraftActions.setBillNavigation({
+        financialYearId,
+        nextBillNumber: nextNumberQuery.data.billNumber,
+      }),
+    );
+  }, [dispatch, financialYearId, mode, nextNumberQuery.data]);
 
   useEffect(() => {
     if (mode !== 'create') {
@@ -254,6 +287,35 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     [persistDraft],
   );
 
+  const handleNavigateBillNumber = useCallback(
+    async (billNumber: string) => {
+      setIsNavigatingBill(true);
+      setNavigatorError(null);
+
+      try {
+        const targetBillId = await findBillIdByNumber(billNumber);
+        if (targetBillId == null) {
+          setNavigatorError(`Bill ${billNumber} was not found.`);
+          return;
+        }
+
+        if (targetBillId === billId) {
+          return;
+        }
+
+        await navigate({
+          to: ROUTES.billsEdit,
+          params: { billId: String(targetBillId) },
+        });
+      } catch {
+        setNavigatorError('Could not open that bill. Try again.');
+      } finally {
+        setIsNavigatingBill(false);
+      }
+    },
+    [billId, navigate],
+  );
+
   const previewData = useMemo(() => mapBillFormToPreview(values), [values]);
 
   const handleSave = () => {
@@ -283,16 +345,7 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     isNextBillNumberLoading ||
     (mode === 'edit' && (billQuery.isLoading || !hydrated));
 
-  const pageTitle = mode === 'create' ? 'Create Bill' : `Edit Bill${values.billNumber ? ` — ${values.billNumber}` : ''}`;
-
-  const toolbarProps = {
-    isCancelled: values.isCancelled,
-    onCancelledChange: handleCancelledChange,
-    onPreview: () => setPreviewOpen(true),
-    onSave: handleSave,
-    isSaving: saveMutation.isPending,
-    isLoading: isPageLoading,
-  };
+  const maxBillNumber = billNavigation?.lastBillNumber ?? values.billNumber;
 
   if (lookups.isError) {
     return (
@@ -319,56 +372,71 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   }
 
   return (
-    <div className="flex min-h-0 flex-1 flex-col gap-4 overflow-hidden pb-24 sm:pb-6">
-      <div className="mx-auto w-full max-w-6xl shrink-0">
-        <h1 className="text-lg font-semibold tracking-tight sm:text-xl">{pageTitle}</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Generate a new freight bill for dispatch. Fields marked with * are required unless the bill is cancelled.
-        </p>
-      </div>
-
-      {formError ? (
-        <p className="mx-auto w-full max-w-6xl shrink-0 text-sm text-destructive">{formError}</p>
-      ) : null}
-      {saveMutation.isError ? (
-        <p className="mx-auto w-full max-w-6xl shrink-0 text-sm text-destructive">
-          {saveMutation.error instanceof Error ? saveMutation.error.message : 'Save failed.'}
-        </p>
-      ) : null}
-
-      <div className="mx-auto flex min-h-0 w-full max-w-6xl flex-1 flex-col gap-4 overflow-hidden">
-        <BillFormToolbar {...toolbarProps} className="hidden shrink-0 sm:flex" />
-
-        <div className="min-h-0 flex-1 overflow-y-auto">
-          {isPageLoading ? (
-            <div className="space-y-4">
-              <Skeleton className="h-48 w-full rounded-lg" />
-              <Skeleton className="h-64 w-full rounded-lg" />
-              <Skeleton className="h-48 w-full rounded-lg" />
-            </div>
-          ) : (
-            <BillForm
-              values={values}
-              fieldErrors={fieldErrors}
-              locations={lookups.locations}
-              trucks={lookups.trucks}
-              parties={lookups.parties}
-              goods={lookups.goods}
-              units={lookups.units}
-              onChange={handleFormChange}
-              onTruckSelected={handleTruckSelected}
-            />
-          )}
-        </div>
-      </div>
+    <>
+      <BillFormScreen
+        formError={formError}
+        saveError={
+          saveMutation.isError
+            ? saveMutation.error instanceof Error
+              ? saveMutation.error.message
+              : 'Save failed.'
+            : null
+        }
+        topToolbar={
+          <BillFormTopToolbar
+            mode={mode}
+            isLoading={isPageLoading}
+            onPreview={() => setPreviewOpen(true)}
+            navigator={
+              maxBillNumber.trim() ? (
+                <div className="min-w-0 flex-1">
+                  <BillFormNavigator
+                    billNumber={values.billNumber}
+                    maxBillNumber={maxBillNumber}
+                    disabled={isPageLoading}
+                    isNavigating={isNavigatingBill}
+                    onNavigate={handleNavigateBillNumber}
+                  />
+                  {navigatorError ? (
+                    <p className="mt-1 text-xs text-destructive">{navigatorError}</p>
+                  ) : null}
+                </div>
+              ) : null
+            }
+          />
+        }
+        actionBar={
+          <BillFormActionBar
+            isCancelled={values.isCancelled}
+            onCancelledChange={handleCancelledChange}
+            onSave={handleSave}
+            isSaving={saveMutation.isPending}
+            isLoading={isPageLoading}
+          />
+        }
+      >
+        {isPageLoading ? (
+          <div className="space-y-4">
+            <Skeleton className="h-48 w-full rounded-lg" />
+            <Skeleton className="h-64 w-full rounded-lg" />
+            <Skeleton className="h-48 w-full rounded-lg" />
+          </div>
+        ) : (
+          <BillForm
+            values={values}
+            fieldErrors={fieldErrors}
+            locations={lookups.locations}
+            trucks={lookups.trucks}
+            parties={lookups.parties}
+            goods={lookups.goods}
+            units={lookups.units}
+            onChange={handleFormChange}
+            onTruckSelected={handleTruckSelected}
+          />
+        )}
+      </BillFormScreen>
 
       <BillPreviewSheet data={previewData} open={previewOpen} onOpenChange={setPreviewOpen} />
-
-      <div className="fixed inset-x-0 bottom-0 z-20 border-t border-border bg-background/95 p-2 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.08)] backdrop-blur supports-[backdrop-filter]:bg-background/80 sm:hidden">
-        <div className="mx-auto w-full min-w-0 max-w-6xl px-1">
-          <BillFormToolbar {...toolbarProps} />
-        </div>
-      </div>
-    </div>
+    </>
   );
 }

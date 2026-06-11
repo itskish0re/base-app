@@ -12,9 +12,9 @@ export const ROUTES = {
   unit: '/masters/unit',
   menuAdmin: '/admin/menu',
   bills: '/transactions/bills',
-  billsCreate: '/transactions/bills/create',
-  billsEdit: '/transactions/bills/edit/$billId',
-  billsEditIndex: '/transactions/bills/edit',
+  billsCreate: '/transactions/bill-create',
+  billsEdit: '/transactions/bill-edit/$billId',
+  billsEditIndex: '/transactions/bill-edit',
   loads: '/transactions/loads',
 } as const;
 
