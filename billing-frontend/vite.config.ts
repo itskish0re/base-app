@@ -30,6 +30,8 @@ export default defineConfig(({ mode }) => {
       port: 5173,
       /** Expose dev server on LAN (e.g. http://<laptop-ip>:5173 from phone). */
       host: true,
+      /** ngrok / tunnel hostnames (Vite blocks unknown Host headers by default). */
+      allowedHosts: ['.ngrok-free.dev', '.ngrok-free.app', '.ngrok.app'],
       proxy: {
         '/api': {
           target: apiProxyTarget,

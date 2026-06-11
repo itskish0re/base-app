@@ -25,3 +25,4 @@ graphify-out/cache/
 ## Secrets
 appsettings.*.local.json
 **/secrets.json
+host-dev/ngrok.env
