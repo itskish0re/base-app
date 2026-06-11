@@ -1,5 +1,5 @@
-import { Eye, Save } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { Save } from 'lucide-react';
+import { BillFormToolbarButton } from '@/components/transactions/bill/bill-form-toolbar-button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { cn } from '@/lib/utils';
@@ -21,6 +21,9 @@ export function BillFormActionBar({
   isLoading = false,
   className,
 }: BillFormActionBarProps) {
+  const saveDisabled = isSaving || isLoading;
+  const saveLabel = isSaving ? 'Saving…' : 'Save Bill';
+
   return (
     <div
       className={cn(
@@ -45,21 +48,14 @@ export function BillFormActionBar({
           'max-sm:w-full max-sm:justify-end',
         )}
       >
-        <Button
-          type="button"
-          size="sm"
-          className="h-8 shrink-0 px-2.5 text-xs sm:h-9 sm:px-4 sm:text-sm"
+        <BillFormToolbarButton
+          label={saveLabel}
+          mobileLabel={isSaving ? 'Saving…' : 'Save'}
+          icon={Save}
+          variant="default"
           onClick={onSave}
-          disabled={isSaving || isLoading}
-        >
-          <Save className="size-3.5 sm:size-4" />
-          {isSaving ? 'Saving…' : (
-            <>
-              <span className="sm:hidden">Save</span>
-              <span className="hidden sm:inline">Save Bill</span>
-            </>
-          )}
-        </Button>
+          disabled={saveDisabled}
+        />
       </div>
     </div>
   );

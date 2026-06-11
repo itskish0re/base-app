@@ -22,8 +22,8 @@ import {
   validateBillFormFields,
   type BillFormFieldErrors,
 } from '@/lib/billForm';
-import { findBillIdByNumber } from '@/lib/billNavigation';
-import { incrementBillNumber } from '@/lib/billNumberNavigation';
+import { findBillIdByNumber, syncBillNavigationAfterSave } from '@/lib/billNavigation';
+import { toastError, toastSuccess } from '@/lib/toast';
 import { getNameBoardById } from '@/service/api/functions/nameBoards';
 import { getTruckById } from '@/service/api/functions/trucks';
 import { saveBillMutationOptions } from '@/service/mutation/bills';
@@ -66,7 +66,6 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       editDraft,
     }) ?? createInitialBillFormValues(),
   );
-  const [formError, setFormError] = useState<string | null>(null);
   const [fieldErrors, setFieldErrors] = useState<BillFormFieldErrors>({});
   const [hydrated, setHydrated] = useState(mode === 'create' || restoredEditDraft);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -127,33 +126,110 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     [persistDraft],
   );
 
+  const resetCreateFormForNextBill = useCallback(
+    (nextBillNumber: string) => {
+      const next = recalculateBillForm({
+        ...createInitialBillFormValues(),
+        billNumber: nextBillNumber,
+      });
+      setValues(next);
+      setFieldErrors({});
+      dispatch(billFormDraftActions.clearCreateDraft());
+    },
+    [dispatch],
+  );
+
+  const handleReset = useCallback(() => {
+    setFieldErrors({});
+
+    if (mode === 'create') {
+      const nextBillNumber =
+        nextNumberQuery.data?.billNumber ??
+        billNavigation?.nextBillNumber ??
+        values.billNumber;
+      resetCreateFormForNextBill(nextBillNumber);
+      return;
+    }
+
+    if (!billQuery.data) {
+      return;
+    }
+
+    const next = recalculateBillForm(
+      mapBillDetailToFormValues(billQuery.data, {
+        locations: lookups.locations,
+        parties: lookups.parties,
+        goods: lookups.goods,
+        units: lookups.units,
+        trucks: lookups.trucks,
+      }),
+    );
+    setValues(next);
+
+    if (billId != null && billId > 0) {
+      dispatch(billFormDraftActions.clearEditDraft({ billId }));
+    }
+  }, [
+    mode,
+    nextNumberQuery.data?.billNumber,
+    billNavigation?.nextBillNumber,
+    values.billNumber,
+    resetCreateFormForNextBill,
+    billQuery.data,
+    lookups.locations,
+    lookups.parties,
+    lookups.goods,
+    lookups.units,
+    lookups.trucks,
+    billId,
+    dispatch,
+  ]);
+
   const saveMutation = useMutation({
     ...saveBillMutationOptions,
     onSuccess: async (response) => {
-      if (financialYearId != null) {
-        dispatch(
-          billFormDraftActions.setBillNavigation({
-            financialYearId,
-            lastBillId: response.bill.billId,
-            lastBillNumber: response.bill.billNumber,
-            nextBillNumber: incrementBillNumber(response.bill.billNumber),
-          }),
-        );
-      }
+      let nextBillNumber = '';
 
-      if (mode === 'create') {
-        dispatch(billFormDraftActions.clearCreateDraft());
-      } else if (billId != null && billId > 0) {
-        dispatch(billFormDraftActions.clearEditDraft({ billId }));
+      if (financialYearId != null) {
+        nextBillNumber = await syncBillNavigationAfterSave(dispatch, queryClient, financialYearId, {
+          billId: response.bill.billId,
+          billNumber: response.bill.billNumber,
+        });
       }
 
       await queryClient.invalidateQueries({ queryKey: queryKeys.bills.all });
+
       if (mode === 'create') {
-        void navigate({
-          to: ROUTES.billsEdit,
-          params: { billId: String(response.bill.billId) },
+        toastSuccess(`Bill ${response.bill.billNumber} saved.`, {
+          duration: Infinity,
+          action: {
+            label: 'Edit',
+            onClick: () => {
+              dispatch(billFormDraftActions.clearCreateDraft());
+              void navigate({
+                to: ROUTES.billsEdit,
+                params: { billId: String(response.bill.billId) },
+              });
+            },
+          },
+          cancel: {
+            label: 'OK',
+            onClick: () => {
+              resetCreateFormForNextBill(nextBillNumber);
+            },
+          },
         });
+        return;
       }
+
+      if (billId != null && billId > 0) {
+        dispatch(billFormDraftActions.clearEditDraft({ billId }));
+      }
+
+      toastSuccess(`Bill ${response.bill.billNumber} saved.`);
+    },
+    onError: (error) => {
+      toastError(error instanceof Error ? error.message : 'Save failed.');
     },
   });
 
@@ -187,13 +263,11 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     ) {
       setValues(recalculateBillForm(createDraft.values));
       setFieldErrors({});
-      setFormError(null);
       return;
     }
 
     setValues(createInitialBillFormValues());
     setFieldErrors({});
-    setFormError(null);
   }, [mode, financialYearId, createDraft]);
 
   useEffect(() => {
@@ -214,6 +288,9 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       return;
     }
 
+    const suggestedBillNumber =
+      nextNumberQuery.data.billNumber ?? billNavigation?.nextBillNumber ?? '';
+
     setValues((current) => {
       if (current.billNumber) {
         return current;
@@ -221,12 +298,12 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
 
       const next = recalculateBillForm({
         ...current,
-        billNumber: nextNumberQuery.data.billNumber,
+        billNumber: suggestedBillNumber,
       });
       persistDraft(next);
       return next;
     });
-  }, [mode, financialYearId, nextNumberQuery.data, persistDraft]);
+  }, [mode, financialYearId, nextNumberQuery.data, billNavigation?.nextBillNumber, persistDraft]);
 
   useEffect(() => {
     if (mode !== 'edit' || !billQuery.data || lookups.isLoading) {
@@ -281,7 +358,6 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
       const recalculated = recalculateBillForm(next);
       setValues(recalculated);
       persistDraft(recalculated);
-      setFormError(null);
       setFieldErrors({});
     },
     [persistDraft],
@@ -322,12 +398,11 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
     const validation = validateBillFormFields(values);
     if (validation.formError) {
       setFieldErrors(validation.fieldErrors);
-      setFormError(validation.formError);
+      toastError(validation.formError);
       return;
     }
 
     setFieldErrors({});
-    setFormError(null);
     saveMutation.mutate(mapBillFormToSaveRequest(values));
   };
 
@@ -374,19 +449,12 @@ export function BillFormPage({ mode, billId }: BillFormPageProps) {
   return (
     <>
       <BillFormScreen
-        formError={formError}
-        saveError={
-          saveMutation.isError
-            ? saveMutation.error instanceof Error
-              ? saveMutation.error.message
-              : 'Save failed.'
-            : null
-        }
         topToolbar={
           <BillFormTopToolbar
             mode={mode}
             isLoading={isPageLoading}
             onPreview={() => setPreviewOpen(true)}
+            onReset={handleReset}
             navigator={
               maxBillNumber.trim() ? (
                 <div className="min-w-0 flex-1">
