@@ -962,6 +962,10 @@ namespace Infrastructure.Persistence.Migrations
                         .HasColumnType("boolean")
                         .HasColumnName("is_active");
 
+                    b.Property<bool>("IsImportant")
+                        .HasColumnType("boolean")
+                        .HasColumnName("is_important");
+
                     b.Property<bool>("IsPinned")
                         .HasColumnType("boolean")
                         .HasColumnName("is_pinned");

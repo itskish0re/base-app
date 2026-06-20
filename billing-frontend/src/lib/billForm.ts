@@ -6,7 +6,7 @@ import {
   sumBillOtherItems,
   type BillOtherItem,
 } from '@/types/billOther';
-import type { BillDetailResponse, SaveBillLoadItem, SaveBillRequest } from '@/types/entity/bill';
+import type { BillDetailResponse, BillListRowDto, SaveBillLoadItem, SaveBillRequest } from '@/types/entity/bill';
 import type { BillFormValues, BillLoadFormLine } from '@/types/billForm';
 import type { BillPreviewLoadLine, BillPreviewModel } from '@/types/billPreview';
 import type { LookupItem } from '@/types/common';
@@ -376,6 +376,44 @@ export function mapBillDetailToFormValues(
             }),
           )
         : [createEmptyLoadLine()],
+  });
+}
+
+/** Maps a bills list row to form values for read-only display before detail fetch completes. */
+export function mapBillListRowToFormValues(row: BillListRowDto): BillFormValues {
+  return recalculateBillForm({
+    ...createInitialBillFormValues(),
+    billId: row.billId,
+    billNumber: row.billNumber,
+    billDate: row.billDate.slice(0, 10),
+    fromId: row.fromId,
+    fromLocationName: row.fromLocationName,
+    truckId: row.truckId,
+    truckNumber: formatBillFormTruckNumber(row.truckNumber),
+    nameBoardName: row.nameBoardName,
+    ownerName: row.ownerName,
+    ownerMobile: row.ownerMobile ?? '',
+    driverName: row.driverName,
+    driverMobile1: row.driverMobile1 ?? '',
+    driverMobile2: row.driverMobile2 ?? '',
+    totalFreight: row.totalFreight,
+    commission: row.commission,
+    crossing: normalizeEditableNumeric(row.crossing),
+    handLoan: normalizeEditableNumeric(row.handLoan),
+    truckLoan: row.truckLoan,
+    payBy: row.payBy,
+    paidName: row.paidName ?? '',
+    paidMobile: row.paidMobile ?? '',
+    officeMamul: normalizeEditableNumeric(row.officeMamul),
+    tapalMamul: normalizeEditableNumeric(row.tapalMamul),
+    diesel: normalizeEditableNumeric(row.diesel),
+    others:
+      row.others > 0
+        ? [{ key: 'Others', value: normalizeEditableNumeric(row.others) }]
+        : [createEmptyBillOtherItem()],
+    total: row.total,
+    isCancelled: row.isCancelled,
+    loads: [],
   });
 }
 

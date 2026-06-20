@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 type DtColumnFiltersProps = {
   layout: DataTableLayout;
   visibleDataColumns: DataTableColumnDef[];
+  showExpandColumn?: boolean;
   showActionsColumn: boolean;
   actionsColumn: DataTableColumnDef | null;
   isActionsColumnOverlaying?: boolean;
@@ -25,6 +26,7 @@ type DtColumnFiltersProps = {
 export function DtColumnFilters({
   layout,
   visibleDataColumns,
+  showExpandColumn = false,
   showActionsColumn,
   actionsColumn,
   isActionsColumnOverlaying = false,
@@ -33,6 +35,15 @@ export function DtColumnFilters({
 
   return (
     <tr className={cn('border-b hover:bg-secondary', DT_TABLE_FILTER_ROW_BG_CLASS)}>
+      {showExpandColumn ? (
+        <th
+          className={cn(
+            'w-10 min-w-10 max-w-10 p-0',
+            DT_TABLE_FILTER_STICKY_CLASS,
+            DT_TABLE_FILTER_ROW_BG_CLASS,
+          )}
+        />
+      ) : null}
       {visibleDataColumns.map((column) => (
         <th
           key={`filter-${column.id}`}

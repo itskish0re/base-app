@@ -15,6 +15,7 @@ internal sealed class AppEntityScreenColumnConfiguration : IEntityTypeConfigurat
         builder.Property(x => x.EntityFieldId).HasColumnName("entity_field_id");
         builder.Property(x => x.DisplayLabel).HasColumnName("display_label");
         builder.Property(x => x.IsVisible).HasColumnName("is_visible");
+        builder.Property(x => x.IsImportant).HasColumnName("is_important");
         builder.Property(x => x.DisplayOrder).HasColumnName("display_order");
         builder.Property(x => x.ColumnWidthPercent).HasColumnName("column_width_percent");
         builder.Property(x => x.IsPinned).HasColumnName("is_pinned");

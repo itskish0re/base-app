@@ -59,6 +59,7 @@ export function LoadsPage() {
       financialYearScoped
       columns={columns}
       rowId={(row) => row.loadId}
+      rowExpansion={{}}
       searchPlaceholder="Search loads…"
       renderRowActions={({ row }) => [
         rowActionCustom({

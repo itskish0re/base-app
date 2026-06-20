@@ -51,6 +51,7 @@ export interface ScreenColumnMetadataDto {
   dataType: string;
   displayLabel: string | null;
   isVisible: boolean;
+  isImportant: boolean;
   displayOrder: number;
   columnWidthPercent: number | null;
   isPinned: boolean;

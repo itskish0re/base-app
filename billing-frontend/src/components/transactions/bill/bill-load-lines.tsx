@@ -31,7 +31,7 @@ type BillLoadLinesProps = {
   onChange: (loads: BillLoadFormLine[]) => void;
 };
 
-function formatLoadLineTitle(index: number): string {
+export function formatBillLoadLineTitle(index: number): string {
   const loadNumber = index + 1;
   const mod100 = loadNumber % 100;
 
@@ -101,7 +101,7 @@ export function BillLoadLines({
       {loads.map((line, index) => (
         <BillFormAccordionSection
           key={line.loadId ?? `new-${index}`}
-          title={formatLoadLineTitle(index)}
+          title={formatBillLoadLineTitle(index)}
           compact
           defaultOpen={loads.length === 1 || index === loads.length - 1}
           action={

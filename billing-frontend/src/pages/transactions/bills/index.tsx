@@ -5,17 +5,19 @@ import {
   getPrimaryEntityColumns,
   mapScreenColumnsToDataTableColumns,
   rowActionEdit,
+  type DataTableExpandedRowContext,
 } from '@/components/derived/data-table';
 import { ScreenDataTableSkeleton } from '@/components/derived/screen-page';
+import { BillExpandedRow } from '@/components/transactions/bill/bill-expanded-row';
 import { Button } from '@/components/ui/button';
 import { ROUTES } from '@/constants/routes';
 import { SCREEN_KEYS } from '@/constants/screenKeys';
 import { useScreenMetadata } from '@/hooks/useScreenMetadata';
 import { useScreenSlice, useScreenTableSelector } from '@/hooks/useScreenSlice';
-import { listBillsQueryOptions } from '@/service/query/bills';
+import { billByIdQueryOptions, listBillsQueryOptions } from '@/service/query/bills';
 import { useAppDispatch } from '@/store/hooks';
 import { billsScreenActions } from '@/store/screens/billsSlice';
-import type { BillListRowDto } from '@/types/entity/bill';
+import type { BillDetailResponse, BillListRowDto } from '@/types/entity/bill';
 import { SCREEN_METADATA_LOAD_STATUS } from '@/types/store/screen';
 
 export function BillsPage() {
@@ -38,6 +40,16 @@ export function BillsPage() {
     [metadata.entities],
   );
 
+  const rowExpansion = useMemo(
+    () => ({
+      detailQueryOptions: billByIdQueryOptions,
+      renderContent: (context: DataTableExpandedRowContext<BillListRowDto, BillDetailResponse>) => (
+        <BillExpandedRow context={context} />
+      ),
+    }),
+    [],
+  );
+
   const metadataReady = metadata.status === SCREEN_METADATA_LOAD_STATUS.succeeded;
 
   if (metadata.status === SCREEN_METADATA_LOAD_STATUS.failed) {
@@ -52,7 +64,7 @@ export function BillsPage() {
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
-    <DataTable<BillListRowDto>
+    <DataTable<BillListRowDto, BillDetailResponse>
       title="Bills"
       headerActions={
         <Button
@@ -70,6 +82,7 @@ export function BillsPage() {
       financialYearScoped
       columns={columns}
       rowId={(row) => row.billId}
+      rowExpansion={rowExpansion}
       searchPlaceholder="Search bills…"
       renderRowActions={({ row, rowId }) => [
         rowActionEdit({

@@ -12,6 +12,9 @@ public sealed class AppEntityScreenColumn
 
     public bool IsVisible { get; set; } = true;
 
+    /// <summary>When true, column is shown in the compact mobile grid.</summary>
+    public bool IsImportant { get; set; }
+
     public int DisplayOrder { get; set; }
 
     /// <summary>Share of the grid base width (100). Sum across columns may exceed 100 for horizontal scroll.</summary>

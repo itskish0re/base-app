@@ -1,6 +1,7 @@
 import { getColumnCellSearchText } from '@/components/derived/data-table/column-cells/get-cell-search-text';
 import {
   defaultColumnVisibleInGrid,
+  isActionsColumn,
   isDisplayableGridColumn,
   type DataTableColumnDef,
 } from '@/components/derived/data-table/dt-types';
@@ -59,10 +60,28 @@ export function getToggleableDataTableColumns(
 export function getVisibleDataTableColumns(
   columns: DataTableColumnDef[],
   columnVisibility: Record<string, boolean>,
+  options?: { isMobile?: boolean },
 ): DataTableColumnDef[] {
-  return columns.filter(
-    (column) => isDisplayableGridColumn(column) && columnVisibility[column.id] !== false,
-  );
+  return columns.filter((column) => {
+    if (!isDisplayableGridColumn(column)) {
+      return false;
+    }
+
+    if (columnVisibility[column.id] === false) {
+      return false;
+    }
+
+    if (options?.isMobile && !column.isImportant) {
+      return false;
+    }
+
+    return true;
+  });
+}
+
+/** All data columns for the expanded row detail panel (includes grid-hidden fields). */
+export function getExpandedDetailColumns(columns: DataTableColumnDef[]): DataTableColumnDef[] {
+  return columns.filter((column) => !isActionsColumn(column));
 }
 
 /** Soft-delete / inactive rows (`is_active` on entity DTOs). */

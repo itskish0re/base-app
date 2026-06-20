@@ -1,13 +1,14 @@
+import { Fragment, useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
 import {
   flexRender,
   getCoreRowModel,
   useReactTable,
   type ColumnDef,
 } from '@tanstack/react-table';
-import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { ArrowDown, ArrowUp, ArrowUpDown, ChevronDown, ChevronRight } from 'lucide-react';
 import { DtActionsColumnHeader } from '@/components/derived/data-table/dt-actions-column-header';
 import { DtColumnFilters } from '@/components/derived/data-table/dt-column-filters';
+import { DataTableExpandedRowPanel } from '@/components/derived/data-table/dt-expanded-row-panel';
 import { DtTableFetchProgress } from '@/components/derived/data-table/dt-table-fetch-progress';
 import {
   actionsColumnStyle,
@@ -28,6 +29,7 @@ import { DtHeader } from '@/components/derived/data-table/dt-header';
 import { DtPagination } from '@/components/derived/data-table/dt-pagination';
 import { DtToolbar } from '@/components/derived/data-table/dt-toolbar';
 import {
+  DT_EXPAND_COLUMN_ID,
   DT_TABLE_HEADER_BG_CLASS,
   DT_TABLE_HEADER_HEIGHT_CLASS,
   DT_TABLE_HEADER_STICKY_CLASS,
@@ -37,6 +39,7 @@ import {
   type DataTableColumnDef,
   type DataTableMutationsHandle,
   type DataTableProps,
+  type DataTableRowExpansionConfig,
   type DataTableSortState,
   partitionDataTableColumns,
 } from '@/components/derived/data-table/dt-types';
@@ -44,12 +47,17 @@ import { DataTableCell } from '@/components/derived/data-table/column-cells';
 import {
   applyColumnFilters,
   dataTableColumnAlignClass,
+  getExpandedDetailColumns,
   getVisibleDataTableColumns,
   inactiveDataTableRowClassName,
 } from '@/components/derived/data-table/dt-utils';
 import { useDataTable } from '@/components/derived/data-table/hooks';
+import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
+import { useIsMobile } from '@/hooks/useMobile';
 import { cn } from '@/lib/utils';
+
+const EXPAND_COLUMN_CLASS = 'w-10 min-w-10 max-w-10 p-0 ps-1';
 
 function SortIndicator({
   fieldName,
@@ -129,11 +137,12 @@ function buildTanStackColumns<TRow extends object>(
   ];
 }
 
-type DataTableViewProps<TRow extends object> = Pick<
-  DataTableProps<TRow>,
+type DataTableViewProps<TRow extends object, TDetail> = Pick<
+  DataTableProps<TRow, TDetail>,
   | 'columns'
   | 'rowId'
   | 'renderRowActions'
+  | 'rowExpansion'
   | 'emptyMessage'
   | 'title'
   | 'headerActions'
@@ -142,17 +151,19 @@ type DataTableViewProps<TRow extends object> = Pick<
   | 'pagination'
 >;
 
-function DataTableView<TRow extends object>({
+function DataTableView<TRow extends object, TDetail = TRow>({
   columns,
   rowId,
   renderRowActions,
+  rowExpansion,
   emptyMessage = 'No results.',
   title,
   headerActions,
   searchPlaceholder,
   maxHeight,
   pagination,
-}: DataTableViewProps<TRow>) {
+}: DataTableViewProps<TRow, TDetail>) {
+  const isMobile = useIsMobile();
   const {
     tableState,
     rows,
@@ -165,20 +176,31 @@ function DataTableView<TRow extends object>({
     showColumnSearch,
     columnFilters,
     setColumns,
+    expandedRowIds,
+    toggleExpandedRowId,
+    setExpandedRowIds,
   } = useDataTable<TRow>();
 
   useEffect(() => {
     setColumns(columns);
   }, [columns, setColumns]);
 
+  useEffect(() => {
+    if (isMobile && expandedRowIds.length > 1) {
+      setExpandedRowIds([expandedRowIds[expandedRowIds.length - 1]!]);
+    }
+  }, [isMobile, expandedRowIds, setExpandedRowIds]);
+
   const { dataColumns, actionsColumn: actionsColumnMeta } = useMemo(
     () => partitionDataTableColumns(columns),
     [columns],
   );
 
+  const detailColumns = useMemo(() => getExpandedDetailColumns(dataColumns), [dataColumns]);
+
   const visibleDataColumns = useMemo(
-    () => getVisibleDataTableColumns(dataColumns, columnVisibility),
-    [dataColumns, columnVisibility],
+    () => getVisibleDataTableColumns(dataColumns, columnVisibility, { isMobile }),
+    [dataColumns, columnVisibility, isMobile],
   );
 
   const displayRows = useMemo(
@@ -187,6 +209,7 @@ function DataTableView<TRow extends object>({
   );
 
   const showActionsColumn = Boolean(actionsColumnMeta && renderRowActions);
+  const showExpandColumn = Boolean(rowExpansion);
 
   const rootRef = useRef<HTMLDivElement>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
@@ -294,7 +317,10 @@ function DataTableView<TRow extends object>({
 
   const errorMessages = errorMessage ? [errorMessage] : [];
   const skeletonRowCount = 5;
-  const columnCount = visibleDataColumns.length + (showActionsColumn ? 1 : 0);
+  const columnCount =
+    visibleDataColumns.length +
+    (showExpandColumn ? 1 : 0) +
+    (showActionsColumn ? 1 : 0);
   const isActionsColumnOverlaying = useActionsColumnOverlay(scrollContainerRef, showActionsColumn);
   const stickyActionsHeadClass = cn(
     getStickyActionsHeadClass(isActionsColumnOverlaying),
@@ -304,6 +330,77 @@ function DataTableView<TRow extends object>({
   );
   const stickyActionsCellClass = getStickyActionsCellClass(isActionsColumnOverlaying);
   const showFetchProgress = isFetching && !isLoading;
+
+  const handleToggleExpand = (id: number) => {
+    toggleExpandedRowId(id, isMobile);
+  };
+
+  const renderExpandHeaderCell = () => {
+    if (!showExpandColumn) {
+      return null;
+    }
+
+    return (
+      <th
+        key={DT_EXPAND_COLUMN_ID}
+        className={cn(
+          DT_TABLE_HEADER_STICKY_CLASS,
+          DT_TABLE_HEADER_HEIGHT_CLASS,
+          DT_TABLE_HEADER_BG_CLASS,
+          EXPAND_COLUMN_CLASS,
+          'align-middle',
+        )}
+        aria-label="Expand row"
+      />
+    );
+  };
+
+  const renderExpandBodyCell = (id: number) => {
+    if (!showExpandColumn) {
+      return null;
+    }
+
+    const isExpanded = expandedRowIds.includes(id);
+
+    return (
+      <td key={`${id}-expand`} className={cn('align-middle', EXPAND_COLUMN_CLASS)}>
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          className="size-8 shrink-0"
+          aria-expanded={isExpanded}
+          aria-label={isExpanded ? 'Collapse row' : 'Expand row'}
+          onClick={() => handleToggleExpand(id)}
+        >
+          {isExpanded ? (
+            <ChevronDown className="size-4" />
+          ) : (
+            <ChevronRight className="size-4" />
+          )}
+        </Button>
+      </td>
+    );
+  };
+
+  const renderExpandedDetailRow = (original: TRow, id: number) => {
+    if (!rowExpansion || !expandedRowIds.includes(id)) {
+      return null;
+    }
+
+    return (
+      <tr key={`${id}-detail`} className="border-b bg-muted/30">
+        <td colSpan={columnCount} className="p-3 align-top sm:p-4">
+          <DataTableExpandedRowPanel
+            row={original}
+            rowId={id}
+            detailColumns={detailColumns}
+            rowExpansion={rowExpansion as DataTableRowExpansionConfig<TRow, TDetail>}
+          />
+        </td>
+      </tr>
+    );
+  };
 
   return (
     <div
@@ -333,6 +430,7 @@ function DataTableView<TRow extends object>({
         >
           <thead className={cn('[&_tr]:border-b', DT_TABLE_HEADER_BG_CLASS)}>
             <tr className="border-b">
+              {renderExpandHeaderCell()}
               {visibleDataColumns.map((column) => (
                 <th
                   key={column.id}
@@ -379,6 +477,7 @@ function DataTableView<TRow extends object>({
               <DtColumnFilters
                 layout={layout}
                 visibleDataColumns={visibleDataColumns}
+                showExpandColumn={showExpandColumn}
                 showActionsColumn={showActionsColumn}
                 actionsColumn={actionsColumnMeta}
                 isActionsColumnOverlaying={isActionsColumnOverlaying}
@@ -394,6 +493,11 @@ function DataTableView<TRow extends object>({
             {isLoading ? (
               Array.from({ length: skeletonRowCount }).map((_, index) => (
                 <tr key={`skeleton-${index}`} className="border-b">
+                  {showExpandColumn ? (
+                    <td className={cn('align-middle', EXPAND_COLUMN_CLASS)}>
+                      <Skeleton className="mx-auto size-8 rounded-md" />
+                    </td>
+                  ) : null}
                   {visibleDataColumns.map((column) => (
                     <td
                       key={`${index}-${column.id}`}
@@ -420,45 +524,53 @@ function DataTableView<TRow extends object>({
                 </td>
               </tr>
             ) : (
-              table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={cn(
-                    'group border-b transition-colors hover:bg-muted/50',
-                    inactiveDataTableRowClassName(row.original),
-                  )}
-                  data-state={row.getIsSelected() ? 'selected' : undefined}
-                >
-                  {row.getVisibleCells().map((cell) => {
-                    const columnDef = (
-                      cell.column.columnDef.meta as { columnDef?: DataTableColumnDef } | undefined
-                    )?.columnDef;
-                    const align = columnDef?.align ?? 'left';
-                    const isActions = (cell.column.columnDef.meta as { isActions?: boolean })
-                      ?.isActions;
+              table.getRowModel().rows.map((row) => {
+                const id = rowId(row.original);
 
-                    return (
-                      <td
-                        key={cell.id}
-                        className={cn(
-                          'max-w-0 p-2 align-middle whitespace-nowrap',
-                          dataTableColumnAlignClass(align),
-                          isActions && stickyActionsCellClass,
-                        )}
-                        style={
-                          isActions
-                            ? actionsColumnStyle(layout)
-                            : columnDef
-                              ? dataColumnStyle(layout, columnDef.id)
-                              : undefined
-                        }
-                      >
-                        {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                      </td>
-                    );
-                  })}
-                </tr>
-              ))
+                return (
+                  <Fragment key={row.id}>
+                    <tr
+                      className={cn(
+                        'group border-b transition-colors hover:bg-muted/50',
+                        inactiveDataTableRowClassName(row.original),
+                        expandedRowIds.includes(id) && 'bg-muted/20',
+                      )}
+                      data-state={row.getIsSelected() ? 'selected' : undefined}
+                    >
+                      {renderExpandBodyCell(id)}
+                      {row.getVisibleCells().map((cell) => {
+                        const columnDef = (
+                          cell.column.columnDef.meta as { columnDef?: DataTableColumnDef } | undefined
+                        )?.columnDef;
+                        const align = columnDef?.align ?? 'left';
+                        const isActions = (cell.column.columnDef.meta as { isActions?: boolean })
+                          ?.isActions;
+
+                        return (
+                          <td
+                            key={cell.id}
+                            className={cn(
+                              'max-w-0 p-2 align-middle whitespace-nowrap',
+                              dataTableColumnAlignClass(align),
+                              isActions && stickyActionsCellClass,
+                            )}
+                            style={
+                              isActions
+                                ? actionsColumnStyle(layout)
+                                : columnDef
+                                  ? dataColumnStyle(layout, columnDef.id)
+                                  : undefined
+                            }
+                          >
+                            {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                          </td>
+                        );
+                      })}
+                    </tr>
+                    {renderExpandedDetailRow(row.original, id)}
+                  </Fragment>
+                );
+              })
             )}
           </tbody>
         </table>
@@ -471,11 +583,14 @@ function DataTableView<TRow extends object>({
   );
 }
 
-export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
+export function DataTable<TRow extends object, TDetail = TRow>(
+  props: DataTableProps<TRow, TDetail>,
+) {
   const {
     columns,
     rowId,
     renderRowActions,
+    rowExpansion,
     emptyMessage,
     title,
     headerActions,
@@ -491,6 +606,7 @@ export function DataTable<TRow extends object>(props: DataTableProps<TRow>) {
         columns={columns}
         rowId={rowId}
         renderRowActions={renderRowActions}
+        rowExpansion={rowExpansion}
         emptyMessage={emptyMessage}
         title={title}
         headerActions={headerActions}

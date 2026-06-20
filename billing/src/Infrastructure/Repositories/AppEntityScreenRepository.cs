@@ -96,6 +96,7 @@ internal sealed class AppEntityScreenRepository(BillingDbContext context) : IApp
                 c.EntityField.FieldDataType.TypeCode,
                 c.DisplayLabel,
                 c.IsVisible,
+                c.IsImportant,
                 c.DisplayOrder,
                 c.ColumnWidthPercent,
                 c.IsPinned,

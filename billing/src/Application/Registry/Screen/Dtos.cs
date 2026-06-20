@@ -48,6 +48,7 @@ public sealed record ScreenColumnMetadataDto(
     string DataType,
     string? DisplayLabel,
     bool IsVisible,
+    bool IsImportant,
     int DisplayOrder,
     int? ColumnWidthPercent,
     bool IsPinned,

@@ -27,7 +27,7 @@ export function useDataTable<TRow = unknown>() {
     store,
     useShallow((state) => ({
       tableState: state.tableState,
-      activeRowId: state.activeRowId,
+      expandedRowIds: state.expandedRowIds,
       openMenuRowId: state.openMenuRowId,
       rows: state.rows,
       totalCount: state.totalCount,
@@ -41,7 +41,8 @@ export function useDataTable<TRow = unknown>() {
       setPageSize: state.setPageSize,
       toggleSort: state.toggleSort,
       setSelectedIds: state.setSelectedIds,
-      setActiveRowId: state.setActiveRowId,
+      toggleExpandedRowId: state.toggleExpandedRowId,
+      setExpandedRowIds: state.setExpandedRowIds,
       setOpenMenuRowId: state.setOpenMenuRowId,
       columns: state.columns,
       columnVisibility: state.columnVisibility,

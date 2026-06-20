@@ -1,5 +1,5 @@
 import type { LucideIcon } from 'lucide-react';
-import { Pencil, Trash2 } from 'lucide-react';
+import { ExternalLink, Pencil, Trash2 } from 'lucide-react';
 import type { ReactNode } from 'react';
 import { DtActionIconButton } from '@/components/derived/data-table/dt-action-button';
 import { DtActionToggleSwitch } from '@/components/derived/data-table/dt-action-toggle';
@@ -209,6 +209,35 @@ type RowActionCustomOptions = {
   renderMenu: (ctx: DataTableRowActionRenderContext) => ReactNode;
 };
 
-export function rowActionCustom(options: RowActionCustomOptions): DataTableRowActionItem {
-  return options;
+/** Shorthand for a single icon action with label + click handler. */
+type RowActionCustomClickOptions = {
+  id?: string;
+  label: string;
+  icon?: LucideIcon;
+  onClick: () => void;
+  disabled?: boolean;
+  hidden?: boolean;
+};
+
+function isFullRowActionCustom(
+  options: RowActionCustomOptions | RowActionCustomClickOptions,
+): options is RowActionCustomOptions {
+  return 'renderInline' in options && typeof options.renderInline === 'function';
+}
+
+export function rowActionCustom(
+  options: RowActionCustomOptions | RowActionCustomClickOptions,
+): DataTableRowActionItem {
+  if (isFullRowActionCustom(options)) {
+    return options;
+  }
+
+  return rowActionIcon({
+    id: options.id ?? options.label.toLowerCase().replace(/\s+/g, '-'),
+    label: options.label,
+    icon: options.icon ?? ExternalLink,
+    onClick: options.onClick,
+    disabled: options.disabled,
+    hidden: options.hidden,
+  });
 }

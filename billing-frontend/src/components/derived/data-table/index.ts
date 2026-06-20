@@ -33,6 +33,8 @@ export {
 export { DtToolbar, type DtToolbarProps } from '@/components/derived/data-table/dt-toolbar';
 export { DtToolbarOptions } from '@/components/derived/data-table/dt-toolbar-options';
 export { DtToolbarSearch, type DtToolbarSearchProps } from '@/components/derived/data-table/dt-toolbar-search';
+export { DataTableExpandedFields } from '@/components/derived/data-table/dt-expanded-fields';
+export { DataTableExpandedRowPanel } from '@/components/derived/data-table/dt-expanded-row-panel';
 export {
   computeDataTableLayout,
   DT_ACTION_ICON_WIDTH_PX,
@@ -55,6 +57,7 @@ export {
   formatDataTableCellValue,
   getToggleableDataTableColumns,
   getVisibleDataTableColumns,
+  getExpandedDetailColumns,
   inactiveDataTableRowClassName,
   isInactiveDataTableRow,
 } from '@/components/derived/data-table/dt-utils';
@@ -100,6 +103,8 @@ export {
   type DataTablePaginationState,
   type DataTableProps,
   type DataTableQueryOptionsFactory,
+  type DataTableExpandedRowContext,
+  type DataTableRowExpansionConfig,
   type DataTableSelectionMode,
   type DataTableSelectionState,
   type DataTableSortDirection,

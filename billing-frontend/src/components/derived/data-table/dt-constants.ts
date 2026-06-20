@@ -1,6 +1,9 @@
 /** `app_entity_screen_column.column_component` for the sticky row actions column. */
 export const DT_COLUMN_COMPONENT_ACTIONS = 'actions';
 
+/** Synthetic expand/collapse column id (not from screen metadata). */
+export const DT_EXPAND_COLUMN_ID = '__expand';
+
 /** Tooltip for the actions column header ellipsis icon. */
 export const DT_ACTIONS_HEADER_TOOLTIP = 'Actions';
 

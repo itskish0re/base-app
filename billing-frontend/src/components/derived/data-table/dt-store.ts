@@ -10,7 +10,7 @@ import {
 
 /** Ephemeral UI state — lives only in the per-table Zustand instance. */
 export type DataTableUiState = {
-  activeRowId: number | null;
+  expandedRowIds: number[];
   openMenuRowId: number | null;
   /** Column defs synced from props (metadata). */
   columns: DataTableColumnDef[];
@@ -40,7 +40,8 @@ export type DataTableStoreState<TRow> = DataTableUiState &
     setPageSize: (pageSize: number) => void;
     toggleSort: (fieldName: string, sortable: boolean) => void;
     setSelectedIds: (selectedIds: number[]) => void;
-    setActiveRowId: (rowId: number | null) => void;
+    toggleExpandedRowId: (rowId: number, single: boolean) => void;
+    setExpandedRowIds: (rowIds: number[]) => void;
     setOpenMenuRowId: (rowId: number | null) => void;
     setColumns: (columns: DataTableColumnDef[]) => void;
     setColumnVisibility: (columnId: string, visible: boolean) => void;
@@ -90,7 +91,7 @@ export function createDataTableStore<TRow>(
 ): DataTableStoreApi<TRow> {
   return createStore<DataTableStoreState<TRow>>((set, get) => ({
     tableState: initialTableState,
-    activeRowId: null,
+    expandedRowIds: [],
     openMenuRowId: null,
     columns: [],
     columnVisibility: {},
@@ -146,7 +147,24 @@ export function createDataTableStore<TRow>(
       }));
     },
 
-    setActiveRowId: (activeRowId) => set({ activeRowId }),
+    toggleExpandedRowId: (rowId, single) => {
+      const current = get().expandedRowIds;
+      const isExpanded = current.includes(rowId);
+
+      if (single) {
+        set({ expandedRowIds: isExpanded ? [] : [rowId] });
+        return;
+      }
+
+      set({
+        expandedRowIds: isExpanded
+          ? current.filter((id) => id !== rowId)
+          : [...current, rowId],
+      });
+    },
+
+    setExpandedRowIds: (expandedRowIds) => set({ expandedRowIds }),
+
     setOpenMenuRowId: (openMenuRowId) => set({ openMenuRowId }),
 
     setColumns: (columns) => {

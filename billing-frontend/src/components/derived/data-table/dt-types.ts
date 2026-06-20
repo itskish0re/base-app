@@ -1,4 +1,4 @@
-import type { UseMutationOptions, UseMutationResult, UseQueryOptions } from '@tanstack/react-query';
+import type { UseMutationOptions, UseMutationResult, UseQueryOptions, QueryKey } from '@tanstack/react-query';
 import type { ReactNode } from 'react';
 import { DT_COLUMN_COMPONENT_ACTIONS } from '@/components/derived/data-table/dt-constants';
 import type {
@@ -90,6 +90,8 @@ export interface DataTableColumnDef {
   align?: 'left' | 'center' | 'right';
   sortable: boolean;
   visible: boolean;
+  /** Shown in the compact mobile grid when true. */
+  isImportant: boolean;
   columnComponent: string | null;
 }
 
@@ -117,6 +119,7 @@ export function mapScreenColumnToDataTableColumn(
     align: normalizeColumnAlign(column.align),
     sortable: column.allowSort ?? false,
     visible: column.isVisible,
+    isImportant: column.isImportant,
     columnComponent: column.columnComponent,
   };
 }
@@ -197,7 +200,23 @@ export type DataTableRowActionsRender<TRow> = (
   props: DataTableRowActionsRenderProps<TRow>,
 ) => DataTableRowActionItem[];
 
-export interface DataTableProps<TRow> {
+export type DataTableExpandedRowContext<TRow, TDetail> = {
+  row: TRow;
+  rowId: number;
+  detail: TDetail | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  error: Error | null;
+};
+
+export type DataTableRowExpansionConfig<TRow, TDetail = TRow> = {
+  /** When provided, fetches full entity data when a row is expanded. */
+  detailQueryOptions?: (rowId: number) => UseQueryOptions<TDetail, Error, TDetail, QueryKey>;
+  /** Custom expanded content. Defaults to all metadata fields. */
+  renderContent?: (ctx: DataTableExpandedRowContext<TRow, TDetail>) => ReactNode;
+};
+
+export interface DataTableProps<TRow, TDetail = TRow> {
   /** Top bar: table name (left). */
   title?: ReactNode;
   /** Top bar: e.g. Add button (right). */
@@ -227,6 +246,9 @@ export interface DataTableProps<TRow> {
   financialYearScoped?: boolean;
   emptyMessage?: string;
   searchPlaceholder?: string;
+
+  /** Row expand/collapse with optional fetch-by-id and detail template. */
+  rowExpansion?: DataTableRowExpansionConfig<TRow, TDetail>;
 
   /**
    * Max height for the entire table shell (header, toolbar, scroll body, pagination).
